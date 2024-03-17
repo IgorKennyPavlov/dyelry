@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
   sessionPlaque: {
     height: 44,
     marginVertical: 8,
-    padding: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

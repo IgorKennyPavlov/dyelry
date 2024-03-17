@@ -1,13 +1,28 @@
-import { FlatList, View } from 'react-native'
+import { FlatList, View, Button, StyleSheet } from 'react-native'
 import Session from './Session'
-import { SessionListProps } from './types'
+import { PageProps } from './types'
+import BasicLayout from '../layouts/BasicLayout'
+import { mockSessionList } from '../../mock'
 
-const SessionList = ({ sessions }: SessionListProps) => {
+const SessionList = ({ navigation }: PageProps) => {
   return (
-    <View>
-      <FlatList data={sessions} renderItem={Session} />
-    </View>
+    <BasicLayout navigation={navigation}>
+      <View id="btn-panel" style={styles.actionPanel}>
+        <Button title="Some Action" />
+        <Button title="Another Action" />
+      </View>
+      <FlatList data={mockSessionList} renderItem={Session} />
+    </BasicLayout>
   )
 }
+
+const styles = StyleSheet.create({
+  actionPanel: {
+    marginVertical: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+})
 
 export default SessionList
