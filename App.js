@@ -1,11 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { mockSessionList } from "./mock";
+import BasicLayout from "./src/layouts/BasicLayout";
 import SessionList from "./src/pages/SessionList";
 
 const App = () => (
   <View style={styles.container}>
-    <SessionList sessions={mockSessionList} />
+    <BasicLayout>
+      <SessionList sessions={mockSessionList} />
+    </BasicLayout>
     <StatusBar style="auto" />
   </View>
 );
@@ -13,9 +16,7 @@ const App = () => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: "#fff"
   }
 });
 
