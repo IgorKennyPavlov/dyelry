@@ -1,32 +1,15 @@
-import { Text, ListRenderItemInfo, StyleSheet, Pressable } from 'react-native'
-import { SessionProps } from './types'
+import { PageProps, SessionProps } from './types'
+import { Text, View } from 'react-native'
 
-const Session = ({ item }: ListRenderItemInfo<SessionProps>) => {
-  const onPress = () => {
-    console.log(`Open ${item.id}`)
-  }
+const Session = ({ route }: PageProps) => {
+  const { id, date } = route.params.item as SessionProps
 
   return (
-    <Pressable style={styles.sessionPlaque} onPress={onPress}>
-      <Text>{item.date}</Text>
-    </Pressable>
+    <View>
+      <Text>Session #{id}</Text>
+      <Text>{date}</Text>
+    </View>
   )
 }
-
-const styles = StyleSheet.create({
-  sessionPlaque: {
-    height: 44,
-    marginVertical: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#ccc',
-    borderRadius: 8,
-  },
-})
 
 export default Session

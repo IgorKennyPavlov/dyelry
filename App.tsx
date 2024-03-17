@@ -5,8 +5,9 @@ import { StyleSheet, View } from 'react-native'
 import SessionList from './src/pages/SessionList'
 import About from './src/pages/About'
 import { Router } from './src/pages/router'
+import Session from './src/pages/Session'
 
-// TODO PAVLOV router is strange. Is there something with better typing?
+// TODO PAVLOV this router is hot garbage. Is there something that sucks less in typing?
 const Stack = createNativeStackNavigator()
 
 const App = () => {
@@ -17,6 +18,10 @@ const App = () => {
           <Stack.Screen
             name={Router.SessionList}
             component={SessionList}
+          />
+          <Stack.Screen
+            name={Router.Session}
+            component={Session}
           />
           <Stack.Screen
             name={Router.About}
