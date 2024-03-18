@@ -1,16 +1,12 @@
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from 'react-native'
-import { SessionProps } from './types'
-import { useNavigation } from '@react-navigation/native'
-import { Router } from './router'
+import { SessionProps } from '../app/types'
+import { useRouter } from 'expo-router'
+import React from 'react'
 
 const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
-  const { navigate } = useNavigation()
+  const router = useRouter()
 
-  const openSession = () => {
-    // TODO PAVLOV for fuck's sake, how to type this!?
-    // @ts-ignore
-    navigate(Router.Session, { item })
-  }
+  const openSession = () => router.push(`/session/${item.id}`)
 
   return (
     <Pressable style={styles.sessionPlaque} onPress={openSession}>
