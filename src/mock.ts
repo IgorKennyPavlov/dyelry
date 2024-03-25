@@ -1,4 +1,4 @@
-import { SessionProps } from './src/pages/types'
+import { SessionProps } from './app/types'
 
 export const mockSessionList: SessionProps[] = [
   { id: '0', date: '22.03.2015' },

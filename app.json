@@ -3,6 +3,7 @@
     "name": "dyelry",
     "slug": "dyelry",
     "version": "1.0.0",
+    "entryPoint": "./src/app/index",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "dyelry-app-scheme",
