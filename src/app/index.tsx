@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ListRenderItemInfo,
   Text,
+  Alert,
 } from "react-native";
 
 import SessionListItem from "../components/SessionListItem";
@@ -14,12 +15,31 @@ import { useStore } from "../store";
 
 const SessionList = () => {
   const router = useRouter();
-  const { sessions } = useStore();
+  const { sessions, clearStore } = useStore();
 
   const renderItem = (props: ListRenderItemInfo<SessionProps>) => (
     <SessionListItem {...props} />
   );
   const addSession = () => router.push(`/session/new-session`);
+
+  const tryToClearStore = () => {
+    Alert.alert(
+      "Cleaning storage",
+      "Are you REALLY sure?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Confirm",
+          style: "default",
+          onPress: clearStore,
+        },
+      ],
+      { cancelable: true },
+    );
+  };
 
   return (
     <>
@@ -30,6 +50,10 @@ const SessionList = () => {
           <Text>No sessions recorded</Text>
         </View>
       )}
+
+      <View style={{ ...styles.confirmBtn, bottom: 40 }}>
+        <Button title="Clear store" color="red" onPress={tryToClearStore} />
+      </View>
 
       <View style={styles.confirmBtn}>
         <Button title="Add session" onPress={addSession} />

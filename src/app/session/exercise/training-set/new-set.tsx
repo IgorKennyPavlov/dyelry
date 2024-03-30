@@ -12,7 +12,7 @@ interface SetEditForm {
   weight: string;
   reps: string;
   feels: Feels;
-  comment: string;
+  comment?: string;
 }
 
 const NewSet = () => {
@@ -22,9 +22,10 @@ const NewSet = () => {
   const intervalId = useRef(null);
 
   const params = useLocalSearchParams() as Record<string, string>;
-  const { sessionId, exerciseId, start } = params;
+  const { sessionId, exerciseId, started } = params;
 
-  const config = { defaultValues: { feels: Feels.Ok } };
+  const defaultValues: SetEditForm = { weight: "", reps: "", feels: Feels.Ok };
+  const config = { defaultValues };
   const { getValues, control } = useForm<SetEditForm>(config);
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const NewSet = () => {
 
             addSet(sessionId, exerciseId, {
               id,
-              start: new Date(start),
+              start: new Date(+started),
               end: new Date(),
               weight: +weight,
               reps: +reps,
@@ -76,7 +77,7 @@ const NewSet = () => {
       ],
       { cancelable: true },
     );
-  }, [addSet, exerciseId, getValues, sessionId, start, timer]);
+  }, [addSet, exerciseId, getValues, sessionId, started, timer]);
 
   return (
     <>
@@ -127,7 +128,7 @@ const NewSet = () => {
                 onBlur={onBlur}
               >
                 {[...FeelsReadable.entries()].map(([value, label]) => (
-                  <Picker.Item label={label} value={value} />
+                  <Picker.Item key={value} label={label} value={value} />
                 ))}
               </Picker>
             )}

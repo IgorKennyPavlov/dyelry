@@ -15,7 +15,7 @@ const NewExercise = () => {
   const sessionId = useLocalSearchParams().sessionId as string;
 
   const { getValues, control } = useForm<ExerciseEditForm>({
-    defaultValues: { title: "test" },
+    defaultValues: { title: "" },
   });
 
   const createNewExercise = useCallback(() => {

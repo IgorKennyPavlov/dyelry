@@ -39,7 +39,7 @@ const NewSet = () => {
             const q = queryfy({
               sessionId,
               exerciseId,
-              start: started.valueOf(),
+              started: started.valueOf(),
             });
 
             router.push(`/session/exercise/training-set/new-set?${q}`);
