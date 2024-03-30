@@ -2,15 +2,16 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
-import { SessionProps } from "../app/types";
+import { ExerciseProps } from "../app/types";
 
-const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
+const ExerciseListItem = ({ item }: ListRenderItemInfo<ExerciseProps>) => {
   const router = useRouter();
 
-  const openSession = () => router.push(`/session/${item.id}`);
+  const openExercise = () => router.push(`/`);
 
   return (
-    <Pressable style={styles.sessionPlaque} onPress={openSession}>
+    <Pressable style={styles.sessionPlaque} onPress={openExercise}>
+      <Text>{item.title}</Text>
       <Text>{item.start.toLocaleString("ru-RU")}</Text>
     </Pressable>
   );
@@ -32,4 +33,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SessionListItem;
+export default ExerciseListItem;

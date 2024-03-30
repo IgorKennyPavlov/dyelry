@@ -3,8 +3,11 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { useCallback, useState } from "react";
 import { Text, Button, Pressable, View, StyleSheet } from "react-native";
+import { useStore } from "../../store";
+import { router } from "expo-router";
 
 const NewSession = () => {
+  const { addSession } = useStore();
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -14,7 +17,9 @@ const NewSession = () => {
   }, []);
 
   const createNewSession = useCallback(() => {
-    console.log(date.toLocaleDateString("ru-RU"));
+    const id = Date.now().toString();
+    addSession({ id, start: date });
+    router.push(`/session/${id}`);
   }, [date]);
 
   return (
