@@ -1,4 +1,4 @@
 export interface SessionProps {
-  id: string
-  date: string
+  id: string;
+  date: string;
 }

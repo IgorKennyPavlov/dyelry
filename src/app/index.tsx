@@ -1,14 +1,23 @@
-import { FlatList, View, Button, StyleSheet, ListRenderItemInfo } from 'react-native'
-import SessionListItem from '../components/SessionListItem'
-import { useCallback } from 'react'
-import { SessionProps } from './types'
-import { mockSessionList } from '../mock'
-import { useRouter } from 'expo-router'
+import { useRouter } from "expo-router";
+import { useCallback } from "react";
+import {
+  FlatList,
+  View,
+  Button,
+  StyleSheet,
+  ListRenderItemInfo,
+} from "react-native";
+
+import { SessionProps } from "./types";
+import SessionListItem from "../components/SessionListItem";
+import { mockSessionList } from "../mock";
 
 const SessionList = () => {
-  const router = useRouter()
-  const renderItem = useCallback((props: ListRenderItemInfo<SessionProps>) => <SessionListItem {...props} />, [])
-  const onNewSessionClick = useCallback(() => router.push(`/session/new-session`), [])
+  const router = useRouter();
+  const renderItem = (props: ListRenderItemInfo<SessionProps>) => (
+    <SessionListItem {...props} />
+  );
+  const onNewSessionClick = () => router.push(`/session/new-session`);
 
   return (
     <>
@@ -18,16 +27,16 @@ const SessionList = () => {
       </View>
       <FlatList data={mockSessionList} renderItem={renderItem} />
     </>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   actionPanel: {
     marginVertical: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
-})
+});
 
-export default SessionList
+export default SessionList;
