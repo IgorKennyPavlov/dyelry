@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "7.6.1",
+    "@react-native-picker/picker": "2.6.1",
     "@types/react": "~18.2.45",
     "expo": "~50.0.14",
     "expo-constants": "~15.4.5",
