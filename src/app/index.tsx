@@ -8,18 +8,18 @@ import {
   Text,
 } from "react-native";
 
-import { SessionProps } from "./types";
 import SessionListItem from "../components/SessionListItem";
-import React from "react";
+import { SessionProps } from "../global";
 import { useStore } from "../store";
 
 const SessionList = () => {
   const router = useRouter();
   const { sessions } = useStore();
+
   const renderItem = (props: ListRenderItemInfo<SessionProps>) => (
     <SessionListItem {...props} />
   );
-  const onNewSessionClick = () => router.push(`/session/new-session`);
+  const addSession = () => router.push(`/session/new-session`);
 
   return (
     <>
@@ -32,7 +32,7 @@ const SessionList = () => {
       )}
 
       <View style={styles.confirmBtn}>
-        <Button title="New session" onPress={onNewSessionClick} />
+        <Button title="Add session" onPress={addSession} />
       </View>
     </>
   );

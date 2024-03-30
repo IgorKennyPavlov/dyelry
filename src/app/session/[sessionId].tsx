@@ -1,5 +1,4 @@
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
-import React from "react";
 import {
   Text,
   View,
@@ -7,15 +6,17 @@ import {
   Button,
   FlatList,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 
-import { useStore } from "../../store";
-import { ExerciseProps } from "../types";
 import ExerciseListItem from "../../components/ExerciseListItem";
+import { ExerciseProps } from "../../global";
+import { useStore } from "../../store";
+import { queryfy } from "../../utils";
 
 const Session = () => {
   const router = useRouter();
-  const { sessions, addExercise } = useStore();
+  const { sessions, editSession } = useStore();
   const sessionId = useLocalSearchParams().sessionId as string;
   const session = sessions.find((el) => el.id === sessionId);
 
@@ -23,8 +24,15 @@ const Session = () => {
     <ExerciseListItem {...props} />
   );
 
-  const onNewExerciseClick = () => {
-    router.push(`/session/exercise/new-exercise?sessionId=${sessionId}`);
+  const q = queryfy({ sessionId });
+
+  const addExercise = () => {
+    router.push(`/session/exercise/new-exercise?${q}`);
+  };
+
+  const endSession = () => {
+    editSession(sessionId, { end: new Date() });
+    router.push(`/`);
   };
 
   return (
@@ -42,8 +50,11 @@ const Session = () => {
         </View>
       )}
 
-      <View style={styles.confirmBtn}>
-        <Button title="New exercise" onPress={onNewExerciseClick} />
+      <View style={{ ...styles.btn, ...styles.btnLeft }}>
+        <Button title="Add exercise" color="green" onPress={addExercise} />
+      </View>
+      <View style={{ ...styles.btn, ...styles.btnRight }}>
+        <Button title="Finish session" color="orange" onPress={endSession} />
       </View>
     </>
   );
@@ -55,7 +66,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  btn: {
+    position: "absolute",
+    bottom: 0,
+    width: Dimensions.get("window").width / 2,
+  },
+  btnLeft: { left: 0 },
+  btnRight: { right: 0 },
 });
 
 export default Session;

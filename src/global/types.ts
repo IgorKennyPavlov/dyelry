@@ -1,10 +1,4 @@
-export const enum Feel {
-  Nothing,
-  Easy,
-  Ok,
-  Heavy,
-  Failed,
-}
+import { Feels } from "./constants";
 
 export interface SessionProps {
   id: string;
@@ -28,7 +22,7 @@ export interface SetProps {
   end: Date;
   weight: number;
   reps: number;
-  feel: Feel;
+  feels: Feels;
   rest: number;
   comment?: string;
 }

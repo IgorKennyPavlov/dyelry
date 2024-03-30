@@ -1,8 +1,10 @@
-import React, { useCallback } from "react";
-import { Text, Button, View, StyleSheet, TextInput } from "react-native";
-import { useStore } from "../../../store";
-import { useForm, Controller } from "react-hook-form";
 import { useLocalSearchParams, router } from "expo-router";
+import { useCallback } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Text, Button, View, StyleSheet, TextInput } from "react-native";
+
+import { useStore } from "../../../store";
+import { queryfy } from "../../../utils";
 
 interface ExerciseEditForm {
   title: string;
@@ -10,17 +12,26 @@ interface ExerciseEditForm {
 
 const NewExercise = () => {
   const { addExercise } = useStore();
+  const sessionId = useLocalSearchParams().sessionId as string;
+
   const { getValues, control } = useForm<ExerciseEditForm>({
     defaultValues: { title: "test" },
   });
-  const sessionId = useLocalSearchParams().sessionId as string;
 
   const createNewExercise = useCallback(() => {
     const title = getValues().title;
+
+    // TODO replace with proper validation
+    if (title === "") {
+      alert("Fill the title field!");
+      return;
+    }
+
     const id = Date.now().toString();
     addExercise(sessionId, { id, title, start: new Date() });
-    router.push(`/session/exercise/${id}?sessionId=${sessionId}`);
-  }, []);
+    const q = queryfy({ sessionId });
+    router.push(`/session/exercise/${id}?${q}`);
+  }, [addExercise, getValues, sessionId]);
 
   return (
     <>
@@ -49,7 +60,7 @@ const NewExercise = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  titleField: { fontSize: 16, borderWidth: 1, borderColor: "#000" },
+  titleField: { height: 44, fontSize: 20, borderWidth: 1, borderColor: "#000" },
   confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 

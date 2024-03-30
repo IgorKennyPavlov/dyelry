@@ -1,11 +1,21 @@
-import { create } from "zustand";
-import { SessionProps, ExerciseProps, SetProps } from "./app/types";
 import { produce } from "immer";
+import { create } from "zustand";
+
+import { SessionProps, ExerciseProps, SetProps } from "../global";
 
 interface SessionsStore {
   sessions: SessionProps[];
   addSession: (newSession: SessionProps) => void;
+  editSession: (
+    sessionId: string,
+    editedSession: Partial<SessionProps>,
+  ) => void;
   addExercise: (sessionId: string, newExercise: ExerciseProps) => void;
+  editExercise: (
+    sessionId: string,
+    exerciseId: string,
+    editedExercise: Partial<ExerciseProps>,
+  ) => void;
   addSet: (sessionId: string, exerciseId: string, newSet: SetProps) => void;
 }
 
@@ -15,6 +25,15 @@ export const useStore = create<SessionsStore>()((set) => ({
     set(
       produce((state: SessionsStore) => {
         state.sessions.push(newSession);
+      }),
+    ),
+  editSession: (sessionId: string, editedSession: SessionProps) =>
+    set(
+      produce((state: SessionsStore) => {
+        const sessions = state.sessions;
+        const session = sessions.find((s) => s.id === sessionId);
+
+        Object.assign(session, editedSession);
       }),
     ),
   addExercise: (sessionId: string, newExercise: ExerciseProps) =>
@@ -28,6 +47,20 @@ export const useStore = create<SessionsStore>()((set) => ({
         }
 
         session.exercises.push(newExercise);
+      }),
+    ),
+  editExercise: (
+    sessionId: string,
+    exerciseId: string,
+    editedExercise: Partial<ExerciseProps>,
+  ) =>
+    set(
+      produce((state: SessionsStore) => {
+        const sessions = state.sessions;
+        const session = sessions.find((s) => s.id === sessionId);
+        const exercise = session.exercises.find((e) => e.id === exerciseId);
+
+        Object.assign(exercise, editedExercise);
       }),
     ),
   addSet: (sessionId: string, exerciseId: string, newSet: SetProps) =>

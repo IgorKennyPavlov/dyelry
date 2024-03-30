@@ -1,8 +1,7 @@
 import { useRouter } from "expo-router";
-import React from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
-import { SessionProps } from "../app/types";
+import { SessionProps } from "../global";
 
 const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
   const router = useRouter();
@@ -11,7 +10,10 @@ const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
 
   return (
     <Pressable style={styles.sessionPlaque} onPress={openSession}>
+      <Text>Start:</Text>
       <Text>{item.start.toLocaleString("ru-RU")}</Text>
+      <Text>End:</Text>
+      <Text>{item.end?.toLocaleString("ru-RU")}</Text>
     </Pressable>
   );
 };

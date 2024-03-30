@@ -1,8 +1,7 @@
 import { useRouter } from "expo-router";
-import React from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
-import { ExerciseProps } from "../app/types";
+import { ExerciseProps } from "../global";
 
 const ExerciseListItem = ({ item }: ListRenderItemInfo<ExerciseProps>) => {
   const router = useRouter();

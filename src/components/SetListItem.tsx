@@ -1,8 +1,7 @@
 import { useRouter } from "expo-router";
-import React from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
-import { ExerciseProps, SetProps } from "../app/types";
+import { SetProps, FeelsReadable } from "../global";
 
 const SetListItem = ({ item }: ListRenderItemInfo<SetProps>) => {
   const router = useRouter();
@@ -11,9 +10,13 @@ const SetListItem = ({ item }: ListRenderItemInfo<SetProps>) => {
 
   return (
     <Pressable style={styles.sessionPlaque} onPress={openExercise}>
+      <Text>Reps:</Text>
       <Text>{item.reps}</Text>
+      <Text>Weight:</Text>
       <Text>{item.weight}</Text>
-      <Text>{item.feel}</Text>
+      <Text>Feels:</Text>
+      <Text>{FeelsReadable.get(item.feels)}</Text>
+      <Text>Rest:</Text>
       <Text>{item.rest}</Text>
     </Pressable>
   );
