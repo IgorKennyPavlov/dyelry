@@ -3,7 +3,6 @@
     "name": "dyelry",
     "slug": "dyelry",
     "version": "1.0.0",
-    "entryPoint": "./src/app/index",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "dyelry-app-scheme",
@@ -23,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ipdev.dyelry"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +33,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "64636102-7c1f-430a-ba3a-b1cbe509cf56"
+      }
     }
   }
 }
