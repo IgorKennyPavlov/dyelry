@@ -57,12 +57,20 @@ const Exercise = () => {
         </View>
       )}
 
-      <View style={{ ...styles.btn, ...styles.btnLeft }}>
-        <Button title="Add set" color="green" onPress={addSet} />
-      </View>
-      <View style={{ ...styles.btn, ...styles.btnRight }}>
-        <Button title="Finish exercise" color="orange" onPress={endExercise} />
-      </View>
+      {!exercise.end && (
+        <>
+          <View style={{ ...styles.btn, ...styles.btnLeft }}>
+            <Button title="Add set" color="green" onPress={addSet} />
+          </View>
+          <View style={{ ...styles.btn, ...styles.btnRight }}>
+            <Button
+              title="Finish exercise"
+              color="orange"
+              onPress={endExercise}
+            />
+          </View>
+        </>
+      )}
     </>
   );
 };

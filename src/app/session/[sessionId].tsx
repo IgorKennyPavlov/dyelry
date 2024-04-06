@@ -49,12 +49,20 @@ const Session = () => {
         </View>
       )}
 
-      <View style={{ ...styles.btn, ...styles.btnLeft }}>
-        <Button title="Add exercise" color="green" onPress={addExercise} />
-      </View>
-      <View style={{ ...styles.btn, ...styles.btnRight }}>
-        <Button title="Finish session" color="orange" onPress={endSession} />
-      </View>
+      {!session.end && (
+        <>
+          <View style={{ ...styles.btn, ...styles.btnLeft }}>
+            <Button title="Add exercise" color="green" onPress={addExercise} />
+          </View>
+          <View style={{ ...styles.btn, ...styles.btnRight }}>
+            <Button
+              title="Finish session"
+              color="orange"
+              onPress={endSession}
+            />
+          </View>
+        </>
+      )}
     </>
   );
 };

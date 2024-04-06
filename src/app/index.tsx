@@ -27,15 +27,8 @@ const SessionList = () => {
       "Cleaning storage",
       "Are you REALLY sure?",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          style: "default",
-          onPress: clearStore,
-        },
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: clearStore },
       ],
       { cancelable: true },
     );
