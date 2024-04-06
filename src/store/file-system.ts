@@ -1,11 +1,13 @@
 import * as FileSystem from "expo-file-system";
 import { WritingOptions, ReadingOptions } from "expo-file-system";
+import * as Sharing from "expo-sharing";
 
-const getStoreDir = (key: string) => `${FileSystem.cacheDirectory}${key}/`;
+import { SESSIONS } from "./constants";
+
 const options = { encoding: "utf8" } as WritingOptions | ReadingOptions;
 
 const ensureStore = async (key: string) => {
-  const storeDir = getStoreDir(key);
+  const storeDir = `${FileSystem.cacheDirectory}${key}/`;
   const dirInfo = await FileSystem.getInfoAsync(storeDir);
 
   if (!dirInfo.exists) {
@@ -49,6 +51,15 @@ const removeItem = async (key: string) => {
     await FileSystem.deleteAsync(uri);
   } catch (e) {
     console.error("FileSystem: Failed to remove storage", e);
+  }
+};
+
+export const exportStore = async () => {
+  try {
+    const uri = await ensureStore(SESSIONS);
+    await Sharing.shareAsync(uri);
+  } catch (e) {
+    console.error("FileSystem: Failed to export storage", e);
   }
 };
 

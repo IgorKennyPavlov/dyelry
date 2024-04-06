@@ -11,7 +11,7 @@ import {
 
 import SessionListItem from "../components/SessionListItem";
 import { SessionProps } from "../global";
-import { useStore } from "../store";
+import { useStore, exportStore } from "../store";
 
 const SessionList = () => {
   const router = useRouter();
@@ -50,6 +50,10 @@ const SessionList = () => {
           <Text>No sessions recorded</Text>
         </View>
       )}
+
+      <View style={{ ...styles.confirmBtn, bottom: 80 }}>
+        <Button title="Export store" color="green" onPress={exportStore} />
+      </View>
 
       <View style={{ ...styles.confirmBtn, bottom: 40 }}>
         <Button title="Clear store" color="red" onPress={tryToClearStore} />

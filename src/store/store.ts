@@ -2,6 +2,7 @@ import { produce } from "immer";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
+import { SESSIONS } from "./constants";
 import { fileSystemStorage } from "./file-system";
 import { SessionProps, ExerciseProps, SetProps } from "../global";
 
@@ -25,7 +26,7 @@ interface SessionsStore {
 export const useStore = create<SessionsStore>()(
   persist(
     (set) => ({
-      sessions: [],
+      [SESSIONS]: [],
       addSession: (newSession: SessionProps) =>
         set(
           produce((state: SessionsStore) => {
@@ -90,7 +91,7 @@ export const useStore = create<SessionsStore>()(
         ),
     }),
     {
-      name: "sessions",
+      name: SESSIONS,
       storage: createJSONStorage(() => fileSystemStorage, {
         reviver: (key, value) => {
           if (
