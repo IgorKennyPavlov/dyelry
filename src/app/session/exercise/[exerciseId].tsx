@@ -48,7 +48,9 @@ const Exercise = () => {
         }}
       />
       {exercise.sets?.length ? (
-        <FlatList data={exercise.sets} renderItem={renderItem} />
+        <View style={styles.list}>
+          <FlatList data={exercise.sets} renderItem={renderItem} />
+        </View>
       ) : (
         <View style={styles.emptyListMsgWrap}>
           <Text>No sets recorded</Text>
@@ -66,6 +68,7 @@ const Exercise = () => {
 };
 
 const styles = StyleSheet.create({
+  list: { paddingBottom: 40 },
   emptyListMsgWrap: {
     height: 200,
     justifyContent: "center",

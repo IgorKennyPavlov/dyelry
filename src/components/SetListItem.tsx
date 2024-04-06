@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import {
   Text,
   ListRenderItemInfo,
@@ -17,6 +18,9 @@ export interface SetListItemProps extends ListRenderItemInfo<SetProps> {
 }
 
 const SetListItem = (props: SetListItemProps) => {
+  const intervalId = useRef(null);
+  const [rest, setRest] = useState(0);
+
   const { [SESSIONS]: sessions } = useStore();
   const { item, sessionId, exerciseId } = props;
   const session = sessions.find((s) => s.id === sessionId);
@@ -24,16 +28,24 @@ const SetListItem = (props: SetListItemProps) => {
   const targetSet = exercise.sets.find((s) => s.id === item.id);
   const targetSetIdx = exercise.sets.indexOf(targetSet);
 
-  // TODO add rest calculation logic to the current moment
-  const rest =
-    targetSet === exercise.sets.at(-1)
-      ? exercise.end
-        ? getIntervalSeconds(exercise.end, targetSet.end)
-        : "--"
-      : getIntervalSeconds(
-          exercise.sets[targetSetIdx + 1].start,
-          targetSet.end,
-        );
+  useEffect(() => {
+    if (targetSet !== exercise.sets.at(-1)) {
+      const prevSetStart = exercise.sets[targetSetIdx + 1].start;
+      setRest(getIntervalSeconds(prevSetStart, targetSet.end));
+      return;
+    }
+
+    if (exercise.end) {
+      setRest(getIntervalSeconds(exercise.end, targetSet.end));
+      return;
+    }
+
+    intervalId.current = setInterval(() => {
+      setRest(getIntervalSeconds(new Date(), targetSet.end));
+    }, 1000);
+
+    return () => clearInterval(intervalId.current);
+  }, [exercise.end, exercise.sets, targetSet, targetSet.end, targetSetIdx]);
 
   // TODO Open set editor?
   const openExercise = () => {

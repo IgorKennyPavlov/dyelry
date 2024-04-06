@@ -3,7 +3,7 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
 import { useStore } from "../../../../store";
-import { queryfy } from "../../../../utils";
+import { queryfy, getIntervalSeconds } from "../../../../utils";
 
 const NewSet = () => {
   const { addSet } = useStore();
@@ -19,8 +19,7 @@ const NewSet = () => {
 
   useEffect(() => {
     intervalId.current = setInterval(() => {
-      const start = started?.valueOf() || 0;
-      setTimer(start ? Math.floor((Date.now() - start) / 1000) : 0);
+      setTimer(started ? getIntervalSeconds(new Date(), started) : 0);
     }, 1000);
 
     return () => clearInterval(intervalId.current);
