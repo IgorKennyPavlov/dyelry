@@ -9,6 +9,7 @@ import {
 import { SetProps, FeelsReadable } from "../global";
 import { useStore } from "../store";
 import { SESSIONS } from "../store/constants";
+import { getIntervalSeconds } from "../utils";
 
 export interface SetListItemProps extends ListRenderItemInfo<SetProps> {
   sessionId: string;
@@ -18,14 +19,24 @@ export interface SetListItemProps extends ListRenderItemInfo<SetProps> {
 const SetListItem = (props: SetListItemProps) => {
   const { [SESSIONS]: sessions } = useStore();
   const { item, sessionId, exerciseId } = props;
+  const session = sessions.find((s) => s.id === sessionId);
+  const exercise = session.exercises.find((e) => e.id === exerciseId);
+  const targetSet = exercise.sets.find((s) => s.id === item.id);
+  const targetSetIdx = exercise.sets.indexOf(targetSet);
+
+  // TODO add rest calculation logic to the current moment
+  const rest =
+    targetSet === exercise.sets.at(-1)
+      ? exercise.end
+        ? getIntervalSeconds(exercise.end, targetSet.end)
+        : "--"
+      : getIntervalSeconds(
+          exercise.sets[targetSetIdx + 1].start,
+          targetSet.end,
+        );
 
   // TODO Open set editor?
   const openExercise = () => {
-    const targetSet = sessions
-      .find((s) => s.id === sessionId)
-      .exercises.find((e) => e.id === exerciseId)
-      .sets.find((s) => s.id === item.id);
-
     Alert.alert(
       "Set info",
       JSON.stringify(targetSet, null, 2),
@@ -43,7 +54,7 @@ const SetListItem = (props: SetListItemProps) => {
       <Text>Feels:</Text>
       <Text>{FeelsReadable.get(item.feels)}</Text>
       <Text>Rest:</Text>
-      <Text>{item.rest}</Text>
+      <Text>{rest}</Text>
     </Pressable>
   );
 };

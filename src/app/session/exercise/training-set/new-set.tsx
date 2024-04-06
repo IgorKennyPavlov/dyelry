@@ -15,7 +15,7 @@ import {
 import { Feels, FeelsReadable } from "../../../../global";
 import { useStore } from "../../../../store";
 import { SESSIONS } from "../../../../store/constants";
-import { queryfy } from "../../../../utils";
+import { queryfy, getIntervalSeconds } from "../../../../utils";
 
 interface SetEditForm {
   weight: string;
@@ -44,8 +44,7 @@ const NewSet = () => {
 
   useEffect(() => {
     intervalId.current = setInterval(() => {
-      const end = targetSet.end.valueOf();
-      setTimer(Math.floor((Date.now() - end) / 1000));
+      setTimer(getIntervalSeconds(new Date(), targetSet.end));
     }, 1000);
 
     return () => clearInterval(intervalId.current);
