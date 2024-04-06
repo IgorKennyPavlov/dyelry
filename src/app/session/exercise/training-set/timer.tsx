@@ -2,9 +2,11 @@ import { useLocalSearchParams, router } from "expo-router";
 import { useCallback, useState, useRef, useEffect } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
+import { useStore } from "../../../../store";
 import { queryfy } from "../../../../utils";
 
 const NewSet = () => {
+  const { addSet } = useStore();
   const [started, setStarted] = useState<Date | null>(null);
 
   const [timer, setTimer] = useState(0);
@@ -24,33 +26,32 @@ const NewSet = () => {
     return () => clearInterval(intervalId.current);
   }, [started]);
 
+  const addNewSet = useCallback(() => {
+    const id = Date.now().toString();
+
+    addSet(sessionId, exerciseId, {
+      id,
+      start: started,
+      end: new Date(),
+    });
+
+    const q = queryfy({ sessionId, exerciseId, setId: id });
+
+    // @ts-ignore
+    router.push(`/session/exercise/training-set/new-set?${q}`);
+  }, [addSet, exerciseId, sessionId, started]);
+
   const finishSet = useCallback(() => {
     Alert.alert(
       "Finishing set",
       "Are you sure?",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          style: "default",
-          onPress: () => {
-            const q = queryfy({
-              sessionId,
-              exerciseId,
-              started: started.valueOf(),
-            });
-
-            // @ts-ignore
-            router.push(`/session/exercise/training-set/new-set?${q}`);
-          },
-        },
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: addNewSet },
       ],
       { cancelable: true },
     );
-  }, [exerciseId, sessionId, started]);
+  }, [addNewSet]);
 
   return (
     <>

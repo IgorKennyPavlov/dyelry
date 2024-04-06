@@ -2,10 +2,19 @@ import { Picker } from "@react-native-picker/picker";
 import { useLocalSearchParams, router } from "expo-router";
 import { useCallback, useState, useRef, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Text, Button, View, StyleSheet, TextInput, Alert } from "react-native";
+import {
+  Text,
+  Button,
+  View,
+  StyleSheet,
+  TextInput,
+  Alert,
+  ScrollView,
+} from "react-native";
 
 import { Feels, FeelsReadable } from "../../../../global";
 import { useStore } from "../../../../store";
+import { SESSIONS } from "../../../../store/constants";
 import { queryfy } from "../../../../utils";
 
 interface SetEditForm {
@@ -16,78 +25,78 @@ interface SetEditForm {
 }
 
 const NewSet = () => {
-  const { addSet } = useStore();
+  const { [SESSIONS]: sessions, editSet } = useStore();
 
+  // TODO separate textarea into a component?
+  const [commentHeight, setCommentHeight] = useState(0);
   const [timer, setTimer] = useState(0);
   const intervalId = useRef(null);
 
   const params = useLocalSearchParams() as Record<string, string>;
-  const { sessionId, exerciseId, started } = params;
+  const { sessionId, exerciseId, setId } = params;
+  const session = sessions.find((s) => s.id === sessionId);
+  const exercise = session.exercises.find((e) => e.id === exerciseId);
+  const targetSet = exercise.sets.find((s) => s.id === setId);
 
   const defaultValues: SetEditForm = { weight: "", reps: "", feels: Feels.Ok };
   const config = { defaultValues };
   const { getValues, control } = useForm<SetEditForm>(config);
 
   useEffect(() => {
-    intervalId.current = setInterval(
-      () => setTimer((prevTimer) => prevTimer + 1),
-      1000,
-    );
-  }, []);
+    intervalId.current = setInterval(() => {
+      const end = targetSet.end.valueOf();
+      setTimer(Math.floor((Date.now() - end) / 1000));
+    }, 1000);
+
+    return () => clearInterval(intervalId.current);
+  }, [targetSet.end]);
+
+  const editSetParams = useCallback(() => {
+    // TODO rename fields to transform data easier?
+    const { weight, reps, feels, comment } = getValues();
+
+    // TODO replace with proper validation
+    if (weight === "" || reps === "") {
+      alert("Fill the required fields!");
+      return;
+    }
+
+    // TODO remove rest field after the migration
+    const updatedSet = {
+      weight: +weight,
+      reps: +reps,
+      feels,
+      comment,
+      rest: 0,
+    };
+    editSet(sessionId, exerciseId, setId, updatedSet);
+
+    const q = queryfy({ sessionId });
+    router.push(`/session/exercise/${exerciseId}?${q}`);
+  }, [editSet, exerciseId, getValues, sessionId, setId]);
 
   const finishExercise = useCallback(() => {
     Alert.alert(
       "Finishing set",
       "Are you sure?",
       [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Confirm",
-          style: "default",
-          onPress: () => {
-            clearInterval(intervalId.current);
-
-            const id = Date.now().toString();
-            const { weight, reps, feels, comment } = getValues();
-
-            // TODO replace with proper validation
-            if (weight === "" || reps === "") {
-              alert("Fill the required fields!");
-              return;
-            }
-
-            addSet(sessionId, exerciseId, {
-              id,
-              start: new Date(+started),
-              end: new Date(),
-              weight: +weight,
-              reps: +reps,
-              feels,
-              comment,
-              rest: timer,
-            });
-
-            const q = queryfy({ sessionId });
-            router.push(`/session/exercise/${exerciseId}?${q}`);
-          },
-        },
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: editSetParams },
       ],
       { cancelable: true },
     );
-  }, [addSet, exerciseId, getValues, sessionId, started, timer]);
+  }, [editSetParams]);
 
   return (
     <>
-      <View style={styles.formWrap}>
+      <ScrollView style={styles.formWrap}>
         <View style={styles.fieldWrap}>
           <Text>Weight:</Text>
           <Controller
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
               <TextInput
+                inputMode="numeric"
                 style={styles.textField}
                 value={value}
                 onChangeText={(value) => onChange(value)}
@@ -105,6 +114,7 @@ const NewSet = () => {
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
               <TextInput
+                inputMode="numeric"
                 style={styles.textField}
                 value={value}
                 onChangeText={(value) => onChange(value)}
@@ -142,10 +152,14 @@ const NewSet = () => {
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
               <TextInput
-                style={styles.textField}
+                multiline
+                style={{ ...styles.textField, height: commentHeight }}
                 value={value}
                 onChangeText={(value) => onChange(value)}
                 onBlur={onBlur}
+                onContentSizeChange={(e) =>
+                  setCommentHeight(e.nativeEvent.contentSize.height + 24)
+                }
               />
             )}
             name="comment"
@@ -154,7 +168,7 @@ const NewSet = () => {
 
         <Text>Rest timer:</Text>
         <Text style={styles.timer}>{timer.toString()}</Text>
-      </View>
+      </ScrollView>
 
       <View style={styles.btn}>
         <Button title="Finish rest, save set" onPress={finishExercise} />
@@ -166,8 +180,17 @@ const NewSet = () => {
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
   fieldWrap: { marginBottom: 20 },
-  textField: { height: 44, fontSize: 20, borderWidth: 1, borderColor: "#000" },
-  selectField: { height: 44, fontSize: 20, textAlign: "left" },
+  textField: {
+    minHeight: 44,
+    fontSize: 20,
+    borderWidth: 1,
+    borderColor: "#000",
+  },
+  selectField: {
+    minHeight: 44,
+    fontSize: 20,
+    textAlign: "left",
+  },
   timer: { fontSize: 44, color: "green" },
   btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });

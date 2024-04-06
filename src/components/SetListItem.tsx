@@ -29,12 +29,7 @@ const SetListItem = (props: SetListItemProps) => {
     Alert.alert(
       "Set info",
       JSON.stringify(targetSet, null, 2),
-      [
-        {
-          text: "OK",
-          style: "cancel",
-        },
-      ],
+      [{ text: "OK", style: "cancel" }],
       { cancelable: true },
     );
   };

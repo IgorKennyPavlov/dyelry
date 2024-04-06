@@ -20,9 +20,9 @@ export interface SetProps {
   id: string;
   start: Date;
   end: Date;
-  weight: number;
-  reps: number;
-  feels: Feels;
-  rest: number;
+  weight?: number;
+  reps?: number;
+  feels?: Feels;
+  rest?: number;
   comment?: string;
 }

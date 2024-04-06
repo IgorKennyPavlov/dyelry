@@ -20,6 +20,12 @@ interface SessionsStore {
     editedExercise: Partial<ExerciseProps>,
   ) => void;
   addSet: (sessionId: string, exerciseId: string, newSet: SetProps) => void;
+  editSet: (
+    sessionId: string,
+    exerciseId: string,
+    setId: string,
+    updatedSet: Partial<SetProps>,
+  ) => void;
   clearStore: () => void;
 }
 
@@ -30,13 +36,13 @@ export const useStore = create<SessionsStore>()(
       addSession: (newSession: SessionProps) =>
         set(
           produce((state: SessionsStore) => {
-            state.sessions.push(newSession);
+            state[SESSIONS].push(newSession);
           }),
         ),
       editSession: (sessionId: string, editedSession: SessionProps) =>
         set(
           produce((state: SessionsStore) => {
-            const sessions = state.sessions;
+            const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
 
             Object.assign(session, editedSession);
@@ -45,7 +51,7 @@ export const useStore = create<SessionsStore>()(
       addExercise: (sessionId: string, newExercise: ExerciseProps) =>
         set(
           produce((state: SessionsStore) => {
-            const sessions = state.sessions;
+            const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
 
             if (!session.exercises) {
@@ -62,7 +68,7 @@ export const useStore = create<SessionsStore>()(
       ) =>
         set(
           produce((state: SessionsStore) => {
-            const sessions = state.sessions;
+            const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
             const exercise = session.exercises.find((e) => e.id === exerciseId);
 
@@ -72,7 +78,8 @@ export const useStore = create<SessionsStore>()(
       addSet: (sessionId: string, exerciseId: string, newSet: SetProps) =>
         set(
           produce((state: SessionsStore) => {
-            const sessions = state.sessions;
+            // TODO duplicate. How to make getters?
+            const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
             const exercise = session.exercises.find((e) => e.id === exerciseId);
 
@@ -83,10 +90,25 @@ export const useStore = create<SessionsStore>()(
             exercise.sets.push(newSet);
           }),
         ),
+      editSet: (
+        sessionId: string,
+        exerciseId: string,
+        setId: string,
+        updatedSet: Partial<SetProps>,
+      ) =>
+        set(
+          produce((state: SessionsStore) => {
+            const sessions = state[SESSIONS];
+            const session = sessions.find((s) => s.id === sessionId);
+            const exercise = session.exercises.find((e) => e.id === exerciseId);
+            const targetSet = exercise.sets.find((s) => s.id === setId);
+            Object.assign(targetSet, updatedSet);
+          }),
+        ),
       clearStore: () =>
         set(
           produce((state: SessionsStore) => {
-            state.sessions = [];
+            state[SESSIONS] = [];
           }),
         ),
     }),
