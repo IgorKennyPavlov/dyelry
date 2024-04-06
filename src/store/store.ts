@@ -7,7 +7,7 @@ import { fileSystemStorage } from "./file-system";
 import { SessionProps, ExerciseProps, SetProps } from "../global";
 
 interface SessionsStore {
-  sessions: SessionProps[];
+  [SESSIONS]: SessionProps[];
   addSession: (newSession: SessionProps) => void;
   editSession: (
     sessionId: string,

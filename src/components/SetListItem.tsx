@@ -1,12 +1,43 @@
-import { useRouter } from "expo-router";
-import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
+import {
+  Text,
+  ListRenderItemInfo,
+  StyleSheet,
+  Pressable,
+  Alert,
+} from "react-native";
 
 import { SetProps, FeelsReadable } from "../global";
+import { useStore } from "../store";
+import { SESSIONS } from "../store/constants";
 
-const SetListItem = ({ item }: ListRenderItemInfo<SetProps>) => {
-  const router = useRouter();
+export interface SetListItemProps extends ListRenderItemInfo<SetProps> {
+  sessionId: string;
+  exerciseId: string;
+}
 
-  const openExercise = () => router.push(`/`);
+const SetListItem = (props: SetListItemProps) => {
+  const { [SESSIONS]: sessions } = useStore();
+  const { item, sessionId, exerciseId } = props;
+
+  // TODO Open set editor?
+  const openExercise = () => {
+    const targetSet = sessions
+      .find((s) => s.id === sessionId)
+      .exercises.find((e) => e.id === exerciseId)
+      .sets.find((s) => s.id === item.id);
+
+    Alert.alert(
+      "Set info",
+      JSON.stringify(targetSet, null, 2),
+      [
+        {
+          text: "OK",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true },
+    );
+  };
 
   return (
     <Pressable style={styles.sessionPlaque} onPress={openExercise}>

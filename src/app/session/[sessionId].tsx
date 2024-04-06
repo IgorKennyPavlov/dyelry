@@ -2,33 +2,32 @@ import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import {
   Text,
   View,
-  ListRenderItemInfo,
   Button,
   FlatList,
   StyleSheet,
   Dimensions,
 } from "react-native";
 
-import ExerciseListItem from "../../components/ExerciseListItem";
-import { ExerciseProps } from "../../global";
+import ExerciseListItem, {
+  ExerciseListItemProps,
+} from "../../components/ExerciseListItem";
 import { useStore } from "../../store";
+import { SESSIONS } from "../../store/constants";
 import { queryfy } from "../../utils";
 
 const Session = () => {
   const router = useRouter();
-  const { sessions, editSession } = useStore();
+  const { [SESSIONS]: sessions, editSession } = useStore();
   const sessionId = useLocalSearchParams().sessionId as string;
   const session = sessions.find((el) => el.id === sessionId);
 
-  const renderItem = (props: ListRenderItemInfo<ExerciseProps>) => (
-    <ExerciseListItem {...props} />
+  const renderItem = (props: ExerciseListItemProps) => (
+    <ExerciseListItem sessionId={sessionId} {...props} />
   );
 
   const q = queryfy({ sessionId });
 
-  const addExercise = () => {
-    router.push(`/session/exercise/new-exercise?${q}`);
-  };
+  const addExercise = () => router.push(`/session/exercise/new-exercise?${q}`);
 
   const endSession = () => {
     editSession(sessionId, { end: new Date() });

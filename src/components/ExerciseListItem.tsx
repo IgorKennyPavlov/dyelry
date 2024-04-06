@@ -2,11 +2,21 @@ import { useRouter } from "expo-router";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
 import { ExerciseProps } from "../global";
+import { queryfy } from "../utils";
 
-const ExerciseListItem = ({ item }: ListRenderItemInfo<ExerciseProps>) => {
+export interface ExerciseListItemProps
+  extends ListRenderItemInfo<ExerciseProps> {
+  sessionId: string;
+}
+
+const ExerciseListItem = (props: ExerciseListItemProps) => {
+  const { item, sessionId } = props;
   const router = useRouter();
 
-  const openExercise = () => router.push(`/`);
+  const openExercise = () => {
+    const q = queryfy({ sessionId });
+    router.push(`/session/exercise/${item.id}?${q}`);
+  };
 
   return (
     <Pressable style={styles.sessionPlaque} onPress={openExercise}>

@@ -25,11 +25,12 @@ const Exercise = () => {
   const exercise = session.exercises.find((el) => el.id === exerciseId);
 
   const renderItem = (props: ListRenderItemInfo<SetProps>) => (
-    <SetListItem {...props} />
+    <SetListItem sessionId={sessionId} exerciseId={exerciseId} {...props} />
   );
 
   const addSet = () => {
     const q = queryfy({ sessionId, exerciseId });
+    // @ts-ignore
     router.push(`/session/exercise/training-set/timer?${q}`);
   };
 
