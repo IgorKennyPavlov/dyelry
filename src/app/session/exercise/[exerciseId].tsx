@@ -10,9 +10,8 @@ import {
 } from "react-native";
 
 import SetListItem from "../../../components/SetListItem";
-import { SetProps } from "../../../global";
+import { SetProps, querify } from "../../../global";
 import { useStore } from "../../../store";
-import { queryfy } from "../../../utils";
 
 const Exercise = () => {
   const router = useRouter();
@@ -29,7 +28,7 @@ const Exercise = () => {
   );
 
   const addSet = () => {
-    const q = queryfy({ sessionId, exerciseId });
+    const q = querify({ sessionId, exerciseId });
     // @ts-ignore
     router.push(`/session/exercise/training-set/timer?${q}`);
   };

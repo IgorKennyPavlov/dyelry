@@ -11,7 +11,7 @@ import {
 
 import SessionListItem from "../components/SessionListItem";
 import { SessionProps } from "../global";
-import { useStore, exportStore } from "../store";
+import { useStore, exportStoreAsync, importSessionsAsync } from "../store";
 
 const SessionList = () => {
   const router = useRouter();
@@ -34,9 +34,26 @@ const SessionList = () => {
     );
   };
 
+  const importSessions = async () => {
+    await importSessionsAsync();
+    useStore.persist.rehydrate();
+  };
+
+  const tryToImportSessions = () => {
+    Alert.alert(
+      "Importing sessions",
+      "Are you REALLY sure? Your sessions will be overridden!",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: importSessions },
+      ],
+      { cancelable: true },
+    );
+  };
+
   return (
     <>
-      {sessions.length ? (
+      {sessions?.length ? (
         <FlatList data={sessions} renderItem={renderItem} />
       ) : (
         <View style={styles.emptyListMsgWrap}>
@@ -44,8 +61,20 @@ const SessionList = () => {
         </View>
       )}
 
+      <View style={{ ...styles.confirmBtn, bottom: 120 }}>
+        <Button
+          title="Import store"
+          color="green"
+          onPress={tryToImportSessions}
+        />
+      </View>
+
       <View style={{ ...styles.confirmBtn, bottom: 80 }}>
-        <Button title="Export store" color="green" onPress={exportStore} />
+        <Button
+          title="Export store"
+          color="orange"
+          onPress={exportStoreAsync}
+        />
       </View>
 
       <View style={{ ...styles.confirmBtn, bottom: 40 }}>

@@ -1,8 +1,7 @@
 import { useRouter } from "expo-router";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
-import { ExerciseProps } from "../global";
-import { queryfy } from "../utils";
+import { ExerciseProps, querify } from "../global";
 
 export interface ExerciseListItemProps
   extends ListRenderItemInfo<ExerciseProps> {
@@ -14,7 +13,7 @@ const ExerciseListItem = (props: ExerciseListItemProps) => {
   const router = useRouter();
 
   const openExercise = () => {
-    const q = queryfy({ sessionId });
+    const q = querify({ sessionId });
     router.push(`/session/exercise/${item.id}?${q}`);
   };
 

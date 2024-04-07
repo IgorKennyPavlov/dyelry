@@ -7,10 +7,13 @@ import {
   Alert,
 } from "react-native";
 
-import { SetProps, FeelsReadable } from "../global";
+import {
+  SetProps,
+  FeelsReadable,
+  SESSIONS,
+  getIntervalSeconds,
+} from "../global";
 import { useStore } from "../store";
-import { SESSIONS } from "../store/constants";
-import { getIntervalSeconds } from "../utils";
 
 export interface SetListItemProps extends ListRenderItemInfo<SetProps> {
   sessionId: string;

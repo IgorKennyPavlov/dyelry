@@ -3,8 +3,8 @@ import { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Text, Button, View, StyleSheet, TextInput } from "react-native";
 
+import { querify } from "../../../global";
 import { useStore } from "../../../store";
-import { queryfy } from "../../../utils";
 
 interface ExerciseEditForm {
   title: string;
@@ -29,7 +29,7 @@ const NewExercise = () => {
 
     const id = Date.now().toString();
     addExercise(sessionId, { id, title, start: new Date() });
-    const q = queryfy({ sessionId });
+    const q = querify({ sessionId });
     router.push(`/session/exercise/${id}?${q}`);
   }, [addExercise, getValues, sessionId]);
 

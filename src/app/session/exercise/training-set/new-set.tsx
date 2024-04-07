@@ -12,10 +12,14 @@ import {
   ScrollView,
 } from "react-native";
 
-import { Feels, FeelsReadable } from "../../../../global";
+import {
+  Feels,
+  FeelsReadable,
+  SESSIONS,
+  getIntervalSeconds,
+  querify,
+} from "../../../../global";
 import { useStore } from "../../../../store";
-import { SESSIONS } from "../../../../store/constants";
-import { queryfy, getIntervalSeconds } from "../../../../utils";
 
 interface SetEditForm {
   weight: string;
@@ -70,7 +74,7 @@ const NewSet = () => {
     };
     editSet(sessionId, exerciseId, setId, updatedSet);
 
-    const q = queryfy({ sessionId });
+    const q = querify({ sessionId });
     router.push(`/session/exercise/${exerciseId}?${q}`);
   }, [editSet, exerciseId, getValues, sessionId, setId]);
 

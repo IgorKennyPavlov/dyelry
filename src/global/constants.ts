@@ -1,3 +1,5 @@
+export const SESSIONS = "sessions";
+
 export const enum Feels {
   LikeNothing = 1,
   Easy,

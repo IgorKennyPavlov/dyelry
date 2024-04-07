@@ -11,9 +11,8 @@ import {
 import ExerciseListItem, {
   ExerciseListItemProps,
 } from "../../components/ExerciseListItem";
+import { querify, SESSIONS } from "../../global";
 import { useStore } from "../../store";
-import { SESSIONS } from "../../store/constants";
-import { queryfy } from "../../utils";
 
 const Session = () => {
   const router = useRouter();
@@ -25,7 +24,7 @@ const Session = () => {
     <ExerciseListItem sessionId={sessionId} {...props} />
   );
 
-  const q = queryfy({ sessionId });
+  const q = querify({ sessionId });
 
   const addExercise = () => router.push(`/session/exercise/new-exercise?${q}`);
 

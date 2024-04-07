@@ -2,8 +2,8 @@ import { useLocalSearchParams, router } from "expo-router";
 import { useCallback, useState, useRef, useEffect } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
+import { getIntervalSeconds, querify } from "../../../../global";
 import { useStore } from "../../../../store";
-import { queryfy, getIntervalSeconds } from "../../../../utils";
 
 const NewSet = () => {
   const { addSet } = useStore();
@@ -34,7 +34,7 @@ const NewSet = () => {
       end: new Date(),
     });
 
-    const q = queryfy({ sessionId, exerciseId, setId: id });
+    const q = querify({ sessionId, exerciseId, setId: id });
 
     // @ts-ignore
     router.push(`/session/exercise/training-set/new-set?${q}`);
