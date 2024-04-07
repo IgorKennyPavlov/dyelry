@@ -29,11 +29,10 @@ const ensureStore = async (key: string) => {
   return storeURI;
 };
 
-const setItem = async (key: string, data: unknown) => {
+const setItem = async (key: string, data: string) => {
   try {
     const uri = await ensureStore(key);
-    const stringData = JSON.stringify(data);
-    await FileSystem.writeAsStringAsync(uri, stringData, options);
+    await FileSystem.writeAsStringAsync(uri, data, options);
   } catch (e) {
     console.error("FileSystem: Failed to save storage", e);
   }
@@ -42,8 +41,7 @@ const setItem = async (key: string, data: unknown) => {
 const getItem = async (key: string) => {
   try {
     const uri = await ensureStore(key);
-    const data = await FileSystem.readAsStringAsync(uri, options);
-    return JSON.parse(data);
+    return FileSystem.readAsStringAsync(uri, options);
   } catch (e) {
     console.error("FileSystem: Failed to load storage", e);
   }
@@ -83,10 +81,8 @@ export const importSessionsAsync = async () => {
       return;
     }
 
-    const fileContent = await FileSystem.readAsStringAsync(uri, options);
+    await setItem(SESSIONS, await FileSystem.readAsStringAsync(uri, options));
     await FileSystem.deleteAsync(uri);
-    const imported = JSON.parse(fileContent);
-    await setItem(SESSIONS, imported);
   } catch (err) {
     console.error(err);
   }

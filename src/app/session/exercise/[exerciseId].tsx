@@ -47,7 +47,7 @@ const Exercise = () => {
         }}
       />
       {exercise.sets?.length ? (
-        <View style={styles.list}>
+        <View style={exercise.end ? {} : styles.list}>
           <FlatList data={exercise.sets} renderItem={renderItem} />
         </View>
       ) : (

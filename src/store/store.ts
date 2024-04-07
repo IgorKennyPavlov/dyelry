@@ -127,9 +127,9 @@ export const useStore = create<SessionsStore>()(
         },
         replacer: (key, value) => {
           // TODO why value instanceof Date doesn't work?
-          // TODO does this stuff stringifies data by default so there is no need to stringify it again in file-system.ts?
-          // TODO check!
-          // { revivingType: "data", value: value.toISOString() }
+          // if (value instanceof Date) {
+          //   return { revivingType: "data", value: value.toISOString() };
+          // }
           if (["start", "end"].includes(key)) {
             return { revivingType: "data", value };
           }
