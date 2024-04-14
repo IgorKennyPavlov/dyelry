@@ -18,7 +18,7 @@ const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
       <Text>Start:</Text>
       <Text>{item.start.toLocaleString("ru-RU")}</Text>
       <Text>Duration:</Text>
-      <Text>{duration} minutes</Text>
+      <Text>{duration} min</Text>
     </Pressable>
   );
 };
