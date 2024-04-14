@@ -1,9 +1,10 @@
 import { useRouter } from "expo-router";
 import { useMemo } from "react";
-import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
+import { Text, ListRenderItemInfo, Pressable } from "react-native";
 
-import { getIntervalSeconds, SESSIONS } from "../global";
-import { useTargetStore, useSessionsStore } from "../store";
+import { listItemCommon } from "./list-item-common";
+import { getIntervalSeconds, SESSIONS } from "../../global";
+import { useTargetStore, useSessionsStore } from "../../store";
 
 const SessionListItem = (props: ListRenderItemInfo<string>) => {
   const { item: targetSessionId } = props;
@@ -28,7 +29,13 @@ const SessionListItem = (props: ListRenderItemInfo<string>) => {
   };
 
   return (
-    <Pressable style={styles.sessionPlaque} onPress={openSession}>
+    <Pressable
+      style={{
+        ...styles.plaque,
+        borderColor: targetSession.end ? "gray" : "orange",
+      }}
+      onPress={openSession}
+    >
       <Text>Start:</Text>
       <Text>{targetSession.start.toLocaleString("ru-RU")}</Text>
       {targetSession.end && (
@@ -41,20 +48,6 @@ const SessionListItem = (props: ListRenderItemInfo<string>) => {
   );
 };
 
-const styles = StyleSheet.create({
-  sessionPlaque: {
-    height: 44,
-    marginVertical: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#ccc",
-    borderRadius: 8,
-  },
-});
+const styles = listItemCommon;
 
 export default SessionListItem;

@@ -10,7 +10,7 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import ExerciseListItem from "../../components/ExerciseListItem";
+import ExerciseListItem from "../../components/list-items/exercise-list-item";
 import { SESSIONS } from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
 
@@ -24,6 +24,16 @@ const Session = () => {
     () => sessions.find((el) => el.id === targetSessionId),
     [sessions, targetSessionId],
   );
+
+  const showActionPanel = useMemo(() => {
+    const { end, exercises } = targetSession;
+
+    if (end) {
+      return false;
+    }
+
+    return !exercises || exercises.every((e) => e.end);
+  }, [targetSession]);
 
   const renderItem = (props: ListRenderItemInfo<string>) => (
     <ExerciseListItem {...props} />
@@ -56,7 +66,7 @@ const Session = () => {
         </View>
       )}
 
-      {!targetSession.end && (
+      {showActionPanel && (
         <>
           <View style={{ ...styles.btn, ...styles.btnLeft }}>
             <Button title="Add exercise" color="green" onPress={addExercise} />

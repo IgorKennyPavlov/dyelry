@@ -8,8 +8,9 @@ import {
   View,
 } from "react-native";
 
-import { FeelsReadable, SESSIONS } from "../global";
-import { useTargetStore, useSessionsStore } from "../store";
+import { listItemCommon } from "./list-item-common";
+import { FeelsReadable, SESSIONS } from "../../global";
+import { useTargetStore, useSessionsStore } from "../../store";
 
 const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
   const { item: targetExerciseId } = props;
@@ -45,7 +46,13 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
   };
 
   return (
-    <Pressable style={styles.sessionPlaque} onPress={openExercise}>
+    <Pressable
+      style={{
+        ...styles.plaque,
+        borderColor: targetExercise.end ? "gray" : "orange",
+      }}
+      onPress={openExercise}
+    >
       <Text>{targetExercise.title}</Text>
       <View style={styles.feels}>
         <Text>Feels:&nbsp;</Text>
@@ -56,19 +63,7 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
 };
 
 const styles = StyleSheet.create({
-  sessionPlaque: {
-    height: 44,
-    marginVertical: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#ccc",
-    borderRadius: 8,
-  },
+  ...listItemCommon,
   feels: { flexDirection: "row" },
 });
 

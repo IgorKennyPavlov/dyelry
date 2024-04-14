@@ -14,7 +14,7 @@ const Timer = () => {
     return sessions
       .find((s) => s.id === targetSessionId)
       .exercises.find((e) => e.id === targetExerciseId)
-      .sets.find((e) => e.id === targetSetId);
+      .sets?.find((e) => e.id === targetSetId);
   }, [sessions, targetExerciseId, targetSessionId, targetSetId]);
 
   const [start, setStart] = useState<Date | null>(targetSet?.start || null);

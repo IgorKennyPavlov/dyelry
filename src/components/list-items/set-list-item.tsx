@@ -8,8 +8,9 @@ import {
   Alert,
 } from "react-native";
 
-import { FeelsReadable, SESSIONS, getIntervalSeconds } from "../global";
-import { useSessionsStore, useTargetStore } from "../store";
+import { listItemCommon } from "./list-item-common";
+import { FeelsReadable, SESSIONS, getIntervalSeconds } from "../../global";
+import { useSessionsStore, useTargetStore } from "../../store";
 
 const SetListItem = (props: ListRenderItemInfo<string>) => {
   const { item: targetSetId } = props;
@@ -70,12 +71,13 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
   const openExerciseSet = useCallback(() => {
     setTargetSetId(targetSetId);
 
+    // TODO remove after the editor screen added
     if (!targetSet.reps) {
       router.push("/session/exercise/exercise-set/new-set");
       return;
     }
 
-    // TODO Open set editor?
+    // TODO open the editor screen here
     Alert.alert(
       "Set info",
       JSON.stringify(targetSet, null, 2),
@@ -91,7 +93,10 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
 
   return (
     <Pressable
-      style={styles.sessionPlaque}
+      style={{
+        ...styles.plaque,
+        borderColor: targetSet.end ? "gray" : "orange",
+      }}
       onPress={targetSet.end ? openExerciseSet : openTimer}
     >
       <Text>Reps:</Text>
@@ -107,19 +112,7 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
 };
 
 const styles = StyleSheet.create({
-  sessionPlaque: {
-    height: 44,
-    marginVertical: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#ccc",
-    borderRadius: 8,
-  },
+  ...listItemCommon,
   runningTimer: { color: "green" },
 });
 

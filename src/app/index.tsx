@@ -8,7 +8,7 @@ import {
   Text,
 } from "react-native";
 
-import SessionListItem from "../components/SessionListItem";
+import SessionListItem from "../components/list-items/session-list-item";
 import { useSessionsStore } from "../store";
 
 const SessionList = () => {

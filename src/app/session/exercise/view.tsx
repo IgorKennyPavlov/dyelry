@@ -10,7 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 
-import SetListItem from "../../../components/SetListItem";
+import SetListItem from "../../../components/list-items/set-list-item";
 import { SESSIONS } from "../../../global";
 import { useSessionsStore, useTargetStore } from "../../../store";
 
@@ -27,6 +27,16 @@ const Exercise = () => {
         .exercises.find((e) => e.id === targetExerciseId),
     [sessions, targetExerciseId, targetSessionId],
   );
+
+  const showActionPanel = useMemo(() => {
+    const { end, sets } = targetExercise;
+
+    if (end) {
+      return false;
+    }
+
+    return !sets || sets.every((s) => s.end);
+  }, [targetExercise]);
 
   const renderItem = (props: ListRenderItemInfo<string>) => (
     <SetListItem {...props} />
@@ -63,7 +73,7 @@ const Exercise = () => {
         </View>
       )}
 
-      {!targetExercise.end && (
+      {showActionPanel && (
         <>
           <View style={{ ...styles.btn, ...styles.btnLeft }}>
             <Button title="Add set" color="green" onPress={addSet} />
