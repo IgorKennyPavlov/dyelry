@@ -1,10 +1,15 @@
 import { useRouter } from "expo-router";
+import { useMemo } from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
-import { SessionProps } from "../global";
+import { SessionProps, getIntervalSeconds } from "../global";
 
 const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
   const router = useRouter();
+  const duration = useMemo(
+    () => Math.round(getIntervalSeconds(item.end, item.start) / 60),
+    [item.end, item.start],
+  );
 
   const openSession = () => router.push(`/session/${item.id}`);
 
@@ -12,8 +17,8 @@ const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
     <Pressable style={styles.sessionPlaque} onPress={openSession}>
       <Text>Start:</Text>
       <Text>{item.start.toLocaleString("ru-RU")}</Text>
-      <Text>End:</Text>
-      <Text>{item.end?.toLocaleString("ru-RU")}</Text>
+      <Text>Duration:</Text>
+      <Text>{duration} minutes</Text>
     </Pressable>
   );
 };

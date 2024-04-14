@@ -31,10 +31,7 @@ const AppLayout = () => {
       }}
     >
       <Tabs.Screen name="index" options={{ title: "Session List" }} />
-      <Tabs.Screen
-        name="session"
-        options={{ title: "New session", href: null }}
-      />
+      <Tabs.Screen name="session" options={{ title: "Session", href: null }} />
       <Tabs.Screen name="impex" options={{ title: "Impex" }} />
       <Tabs.Screen name="about" options={{ title: "About" }} />
     </Tabs>

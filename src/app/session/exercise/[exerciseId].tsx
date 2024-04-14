@@ -75,7 +75,7 @@ const Exercise = () => {
 };
 
 const styles = StyleSheet.create({
-  list: { paddingBottom: 40 },
+  list: { paddingBottom: 36 },
   emptyListMsgWrap: {
     height: 200,
     justifyContent: "center",

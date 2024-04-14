@@ -24,9 +24,11 @@ const SessionList = () => {
   return (
     <>
       {sessions?.length ? (
-        <FlatList data={sessions} renderItem={renderItem} />
+        <View style={styles.list}>
+          <FlatList data={sessions} renderItem={renderItem} />
+        </View>
       ) : (
-        <View style={styles.emptyListMsgWrap}>
+        <View style={styles.emptyList}>
           <Text>No sessions recorded</Text>
         </View>
       )}
@@ -39,7 +41,8 @@ const SessionList = () => {
 };
 
 const styles = StyleSheet.create({
-  emptyListMsgWrap: {
+  list: { paddingBottom: 36 },
+  emptyList: {
     height: 200,
     justifyContent: "center",
     alignItems: "center",
