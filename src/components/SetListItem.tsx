@@ -33,8 +33,8 @@ const SetListItem = (props: SetListItemProps) => {
 
   useEffect(() => {
     if (targetSet !== exercise.sets.at(-1)) {
-      const prevSetStart = exercise.sets[targetSetIdx + 1].start;
-      setRest(getIntervalSeconds(prevSetStart, targetSet.end));
+      const nextSetStart = exercise.sets[targetSetIdx + 1].start;
+      setRest(getIntervalSeconds(nextSetStart, targetSet.end));
       return;
     }
 
@@ -69,7 +69,7 @@ const SetListItem = (props: SetListItemProps) => {
       <Text>Feels:</Text>
       <Text>{FeelsReadable.get(item.feels)}</Text>
       <Text>Rest:</Text>
-      <Text>{rest}</Text>
+      <Text style={{}}>{rest}</Text>
     </Pressable>
   );
 };
