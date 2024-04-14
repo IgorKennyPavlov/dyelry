@@ -7,7 +7,6 @@ import {
   View,
   StyleSheet,
   TextInput,
-  Alert,
   ScrollView,
 } from "react-native";
 
@@ -87,18 +86,6 @@ const NewSet = () => {
     targetSetId,
     navigate,
   ]);
-
-  const finishExercise = useCallback(() => {
-    Alert.alert(
-      "Finishing set",
-      "Are you sure?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: editSetParams },
-      ],
-      { cancelable: true },
-    );
-  }, [editSetParams]);
 
   return (
     <>
@@ -184,7 +171,7 @@ const NewSet = () => {
       </ScrollView>
 
       <View style={styles.btn}>
-        <Button title="Save set" onPress={finishExercise} />
+        <Button title="Save set" onPress={editSetParams} />
       </View>
     </>
   );

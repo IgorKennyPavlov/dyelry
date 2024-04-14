@@ -76,7 +76,7 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
     setTargetSetId(targetSetId);
 
     // TODO remove after the editor screen added
-    if (!targetSet.reps) {
+    if (!targetSet.weight || !targetSet.reps) {
       navigate("/session/exercise/exercise-set/new-set");
       return;
     }
