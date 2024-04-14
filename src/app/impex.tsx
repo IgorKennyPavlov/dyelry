@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { View, Button, StyleSheet, Alert } from "react-native";
 
 import {
@@ -9,7 +10,7 @@ import {
 const Impex = () => {
   const { clearStore } = useSessionsStore();
 
-  const tryToClearStore = () => {
+  const tryToClearStore = useCallback(() => {
     Alert.alert(
       "Cleaning storage",
       "Are you REALLY sure?",
@@ -19,14 +20,14 @@ const Impex = () => {
       ],
       { cancelable: true },
     );
-  };
+  }, [clearStore]);
 
-  const importSessions = async () => {
+  const importSessions = useCallback(async () => {
     await importSessionsAsync();
     useSessionsStore.persist.rehydrate();
-  };
+  }, []);
 
-  const tryToImportSessions = () => {
+  const tryToImportSessions = useCallback(() => {
     Alert.alert(
       "Importing sessions",
       "Are you REALLY sure? Your sessions will be overridden!",
@@ -36,7 +37,7 @@ const Impex = () => {
       ],
       { cancelable: true },
     );
-  };
+  }, [importSessions]);
 
   return (
     <>

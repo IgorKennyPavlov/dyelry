@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import {
   Text,
   ListRenderItemInfo,
@@ -40,10 +40,10 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
     return Math.ceil(feelsSum / setsCount);
   }, [targetExercise.sets]);
 
-  const openExercise = () => {
+  const openExercise = useCallback(() => {
     setTargetExerciseId(targetExerciseId);
     router.push("/session/exercise/view");
-  };
+  }, [router, setTargetExerciseId, targetExerciseId]);
 
   return (
     <Pressable
@@ -53,6 +53,7 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
       }}
       onPress={openExercise}
     >
+      <Text>{targetExerciseId}</Text>
       <Text>{targetExercise.title}</Text>
       <View style={styles.feels}>
         <Text>Feels:&nbsp;</Text>

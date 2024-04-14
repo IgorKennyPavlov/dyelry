@@ -1,13 +1,14 @@
 import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { Text, Button, Pressable, View, StyleSheet } from "react-native";
 
 import { useSessionsStore, useTargetStore } from "../../store";
 
 const NewSession = () => {
+  const router = useRouter();
   const { addSession } = useSessionsStore();
   const { setTargetSessionId } = useTargetStore();
   const [date, setDate] = useState(new Date());
@@ -23,7 +24,7 @@ const NewSession = () => {
     addSession({ id, start: date });
     setTargetSessionId(id);
     router.push("/session/view");
-  }, [addSession, date, setTargetSessionId]);
+  }, [addSession, date, router, setTargetSessionId]);
 
   return (
     <>

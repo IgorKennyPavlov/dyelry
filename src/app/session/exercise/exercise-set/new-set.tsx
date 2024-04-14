@@ -1,5 +1,5 @@
 import { Picker } from "@react-native-picker/picker";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -28,6 +28,7 @@ interface SetEditForm {
 }
 
 const NewSet = () => {
+  const router = useRouter();
   const { [SESSIONS]: sessions, editSet } = useSessionsStore();
   const { targetSessionId, targetExerciseId, targetSetId } = useTargetStore();
 
@@ -78,7 +79,14 @@ const NewSet = () => {
     editSet(targetSessionId, targetExerciseId, targetSetId, updatedSet);
 
     router.push("/session/exercise/view");
-  }, [editSet, targetExerciseId, getValues, targetSessionId, targetSetId]);
+  }, [
+    getValues,
+    editSet,
+    targetSessionId,
+    targetExerciseId,
+    targetSetId,
+    router,
+  ]);
 
   const finishExercise = useCallback(() => {
     Alert.alert(

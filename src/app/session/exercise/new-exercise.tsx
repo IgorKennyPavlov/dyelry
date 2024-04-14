@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Text, Button, View, StyleSheet, TextInput } from "react-native";
@@ -10,6 +10,7 @@ interface ExerciseEditForm {
 }
 
 const NewExercise = () => {
+  const router = useRouter();
   const { addExercise } = useSessionsStore();
   const { targetSessionId, setTargetExerciseId } = useTargetStore();
 
@@ -31,7 +32,7 @@ const NewExercise = () => {
     setTargetExerciseId(id);
 
     router.push("/session/exercise/view");
-  }, [addExercise, getValues, setTargetExerciseId, targetSessionId]);
+  }, [addExercise, getValues, router, setTargetExerciseId, targetSessionId]);
 
   return (
     <>

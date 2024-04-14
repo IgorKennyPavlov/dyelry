@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
@@ -6,6 +6,7 @@ import { getIntervalSeconds, SESSIONS } from "../../../../global";
 import { useSessionsStore, useTargetStore } from "../../../../store";
 
 const Timer = () => {
+  const router = useRouter();
   const { [SESSIONS]: sessions, addSet, editSet } = useSessionsStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
@@ -46,7 +47,7 @@ const Timer = () => {
     const end = new Date();
     editSet(targetSessionId, targetExerciseId, targetSetId, { end });
     router.push("/session/exercise/exercise-set/new-set");
-  }, [editSet, targetSessionId, targetExerciseId, targetSetId]);
+  }, [editSet, targetSessionId, targetExerciseId, targetSetId, router]);
 
   const finishExerciseSet = useCallback(() => {
     Alert.alert(

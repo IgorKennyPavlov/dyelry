@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useCallback } from "react";
 import {
   FlatList,
   View,
@@ -18,7 +19,11 @@ const SessionList = () => {
   const renderItem = (props: ListRenderItemInfo<string>) => (
     <SessionListItem {...props} />
   );
-  const addSession = () => router.push(`/session/new-session`);
+
+  const addSession = useCallback(
+    () => router.push(`/session/new-session`),
+    [router],
+  );
 
   return (
     <>

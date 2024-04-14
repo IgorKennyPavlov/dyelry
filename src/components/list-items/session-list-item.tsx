@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, Pressable } from "react-native";
 
 import { listItemCommon } from "./list-item-common";
@@ -19,14 +19,18 @@ const SessionListItem = (props: ListRenderItemInfo<string>) => {
   );
 
   const duration = useMemo(() => {
+    if (!targetSession) {
+      return 0;
+    }
+
     const { start, end } = targetSession;
     return end ? Math.round(getIntervalSeconds(end, start) / 60) : 0;
   }, [targetSession]);
 
-  const openSession = () => {
+  const openSession = useCallback(() => {
     setTargetSessionId(targetSessionId);
     router.push("/session/view");
-  };
+  }, [router, setTargetSessionId, targetSessionId]);
 
   return (
     <Pressable

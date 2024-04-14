@@ -1,5 +1,5 @@
 import { Stack, useRouter } from "expo-router";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import {
   Text,
   View,
@@ -26,6 +26,10 @@ const Session = () => {
   );
 
   const showActionPanel = useMemo(() => {
+    if (!targetSession) {
+      return false;
+    }
+
     const { end, exercises } = targetSession;
 
     if (end) {
@@ -39,12 +43,15 @@ const Session = () => {
     <ExerciseListItem {...props} />
   );
 
-  const addExercise = () => router.push(`/session/exercise/new-exercise`);
+  const addExercise = useCallback(
+    () => router.push(`/session/exercise/new-exercise`),
+    [router],
+  );
 
-  const endSession = () => {
+  const endSession = useCallback(() => {
     editSession(targetSessionId, { end: new Date() });
     router.push(`/`);
-  };
+  }, [editSession, router, targetSessionId]);
 
   return (
     <>
