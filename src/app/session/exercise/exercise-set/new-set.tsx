@@ -19,7 +19,7 @@ import {
   getIntervalSeconds,
   querify,
 } from "../../../../global";
-import { useStore } from "../../../../store";
+import { useSessionsStore } from "../../../../store";
 
 interface SetEditForm {
   weight: string;
@@ -29,7 +29,7 @@ interface SetEditForm {
 }
 
 const NewSet = () => {
-  const { [SESSIONS]: sessions, editSet } = useStore();
+  const { [SESSIONS]: sessions, editSet } = useSessionsStore();
 
   // TODO separate textarea into a component?
   const [commentHeight, setCommentHeight] = useState(0);
@@ -174,7 +174,7 @@ const NewSet = () => {
       </ScrollView>
 
       <View style={styles.btn}>
-        <Button title="Finish rest, save set" onPress={finishExercise} />
+        <Button title="Save set" onPress={finishExercise} />
       </View>
     </>
   );

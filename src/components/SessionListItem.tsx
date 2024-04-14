@@ -7,7 +7,8 @@ import { SessionProps, getIntervalSeconds } from "../global";
 const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
   const router = useRouter();
   const duration = useMemo(
-    () => Math.round(getIntervalSeconds(item.end, item.start) / 60),
+    () =>
+      item.end ? Math.round(getIntervalSeconds(item.end, item.start) / 60) : 0,
     [item.end, item.start],
   );
 
@@ -17,8 +18,12 @@ const SessionListItem = ({ item }: ListRenderItemInfo<SessionProps>) => {
     <Pressable style={styles.sessionPlaque} onPress={openSession}>
       <Text>Start:</Text>
       <Text>{item.start.toLocaleString("ru-RU")}</Text>
-      <Text>Duration:</Text>
-      <Text>{duration} min</Text>
+      {item.end && (
+        <>
+          <Text>Duration:</Text>
+          <Text>{duration} min</Text>
+        </>
+      )}
     </Pressable>
   );
 };

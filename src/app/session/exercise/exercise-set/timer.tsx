@@ -3,11 +3,11 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
 import { getIntervalSeconds, querify } from "../../../../global";
-import { useStore } from "../../../../store";
+import { useSessionsStore } from "../../../../store";
 
 const NewSet = () => {
-  const { addSet } = useStore();
-  const [started, setStarted] = useState<Date | null>(null);
+  const { addSet } = useSessionsStore();
+  const [start, setStart] = useState<Date | null>(null);
 
   const [timer, setTimer] = useState(0);
   const intervalId = useRef(null);
@@ -15,32 +15,32 @@ const NewSet = () => {
   const sessionId = useLocalSearchParams().sessionId as string;
   const exerciseId = useLocalSearchParams().exerciseId as string;
 
-  const startSet = useCallback(() => setStarted(new Date()), []);
+  const startExerciseSet = useCallback(() => setStart(new Date()), []);
 
   useEffect(() => {
     intervalId.current = setInterval(() => {
-      setTimer(started ? getIntervalSeconds(new Date(), started) : 0);
+      setTimer(start ? getIntervalSeconds(new Date(), start) : 0);
     }, 1000);
 
     return () => clearInterval(intervalId.current);
-  }, [started]);
+  }, [start]);
 
   const addNewSet = useCallback(() => {
     const id = Date.now().toString();
 
     addSet(sessionId, exerciseId, {
       id,
-      start: started,
+      start,
       end: new Date(),
     });
 
     const q = querify({ sessionId, exerciseId, setId: id });
 
     // @ts-ignore
-    router.push(`/session/exercise/training-set/new-set?${q}`);
-  }, [addSet, exerciseId, sessionId, started]);
+    router.push(`/session/exercise/exercise-set/new-set?${q}`);
+  }, [addSet, exerciseId, sessionId, start]);
 
-  const finishSet = useCallback(() => {
+  const finishExerciseSet = useCallback(() => {
     Alert.alert(
       "Finishing set",
       "Are you sure?",
@@ -61,9 +61,9 @@ const NewSet = () => {
 
       <View style={styles.btn}>
         <Button
-          title={started ? "stop" : "start"}
-          color={started ? "orange" : "green"}
-          onPress={started ? finishSet : startSet}
+          title={start ? "stop" : "start"}
+          color={start ? "orange" : "green"}
+          onPress={start ? finishExerciseSet : startExerciseSet}
         />
       </View>
     </>

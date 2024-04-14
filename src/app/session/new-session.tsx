@@ -5,10 +5,10 @@ import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { Text, Button, Pressable, View, StyleSheet } from "react-native";
 
-import { useStore } from "../../store";
+import { useSessionsStore } from "../../store";
 
 const NewSession = () => {
-  const { addSession } = useStore();
+  const { addSession } = useSessionsStore();
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 

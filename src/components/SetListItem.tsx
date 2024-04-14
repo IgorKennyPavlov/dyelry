@@ -13,7 +13,7 @@ import {
   SESSIONS,
   getIntervalSeconds,
 } from "../global";
-import { useStore } from "../store";
+import { useSessionsStore } from "../store";
 
 export interface SetListItemProps extends ListRenderItemInfo<SetProps> {
   sessionId: string;
@@ -24,11 +24,10 @@ const SetListItem = (props: SetListItemProps) => {
   const intervalId = useRef(null);
   const [rest, setRest] = useState(0);
 
-  const { [SESSIONS]: sessions } = useStore();
-  const { item, sessionId, exerciseId } = props;
+  const { [SESSIONS]: sessions } = useSessionsStore();
+  const { item: targetSet, sessionId, exerciseId } = props;
   const session = sessions.find((s) => s.id === sessionId);
   const exercise = session.exercises.find((e) => e.id === exerciseId);
-  const targetSet = exercise.sets.find((s) => s.id === item.id);
   const targetSetIdx = exercise.sets.indexOf(targetSet);
 
   useEffect(() => {
@@ -63,13 +62,13 @@ const SetListItem = (props: SetListItemProps) => {
   return (
     <Pressable style={styles.sessionPlaque} onPress={openExercise}>
       <Text>Reps:</Text>
-      <Text>{item.reps}</Text>
+      <Text>{targetSet.reps}</Text>
       <Text>Weight:</Text>
-      <Text>{item.weight}</Text>
+      <Text>{targetSet.weight}</Text>
       <Text>Feels:</Text>
-      <Text>{FeelsReadable.get(item.feels)}</Text>
+      <Text>{FeelsReadable.get(targetSet.feels)}</Text>
       <Text>Rest:</Text>
-      <Text style={{}}>{rest}</Text>
+      <Text style={intervalId.current ? styles.runningTimer : {}}>{rest}</Text>
     </Pressable>
   );
 };
@@ -88,6 +87,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 8,
   },
+  runningTimer: { color: "green" },
 });
 
 export default SetListItem;

@@ -12,11 +12,11 @@ import ExerciseListItem, {
   ExerciseListItemProps,
 } from "../../components/ExerciseListItem";
 import { querify, SESSIONS } from "../../global";
-import { useStore } from "../../store";
+import { useSessionsStore } from "../../store";
 
 const Session = () => {
   const router = useRouter();
-  const { [SESSIONS]: sessions, editSession } = useStore();
+  const { [SESSIONS]: sessions, editSession } = useSessionsStore();
   const sessionId = useLocalSearchParams().sessionId as string;
   const session = sessions.find((el) => el.id === sessionId);
 

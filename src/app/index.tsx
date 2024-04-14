@@ -10,11 +10,11 @@ import {
 
 import SessionListItem from "../components/SessionListItem";
 import { SessionProps } from "../global";
-import { useStore } from "../store";
+import { useSessionsStore } from "../store";
 
 const SessionList = () => {
   const router = useRouter();
-  const { sessions } = useStore();
+  const { sessions } = useSessionsStore();
 
   const renderItem = (props: ListRenderItemInfo<SessionProps>) => (
     <SessionListItem {...props} />

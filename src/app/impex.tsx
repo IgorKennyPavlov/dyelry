@@ -1,9 +1,13 @@
 import { View, Button, StyleSheet, Alert } from "react-native";
 
-import { exportStoreAsync, importSessionsAsync, useStore } from "../store";
+import {
+  exportStoreAsync,
+  importSessionsAsync,
+  useSessionsStore,
+} from "../store";
 
 const Impex = () => {
-  const { clearStore } = useStore();
+  const { clearStore } = useSessionsStore();
 
   const tryToClearStore = () => {
     Alert.alert(
@@ -19,7 +23,7 @@ const Impex = () => {
 
   const importSessions = async () => {
     await importSessionsAsync();
-    useStore.persist.rehydrate();
+    useSessionsStore.persist.rehydrate();
   };
 
   const tryToImportSessions = () => {

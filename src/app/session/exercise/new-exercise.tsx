@@ -4,14 +4,14 @@ import { useForm, Controller } from "react-hook-form";
 import { Text, Button, View, StyleSheet, TextInput } from "react-native";
 
 import { querify } from "../../../global";
-import { useStore } from "../../../store";
+import { useSessionsStore } from "../../../store";
 
 interface ExerciseEditForm {
   title: string;
 }
 
 const NewExercise = () => {
-  const { addExercise } = useStore();
+  const { addExercise } = useSessionsStore();
   const sessionId = useLocalSearchParams().sessionId as string;
 
   const { getValues, control } = useForm<ExerciseEditForm>({

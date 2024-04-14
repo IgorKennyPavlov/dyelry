@@ -11,11 +11,11 @@ import {
 
 import SetListItem from "../../../components/SetListItem";
 import { SetProps, querify } from "../../../global";
-import { useStore } from "../../../store";
+import { useSessionsStore } from "../../../store";
 
 const Exercise = () => {
   const router = useRouter();
-  const { sessions, editExercise } = useStore();
+  const { sessions, editExercise } = useSessionsStore();
 
   const sessionId = useLocalSearchParams().sessionId as string;
   const exerciseId = useLocalSearchParams().exerciseId as string;
@@ -30,7 +30,7 @@ const Exercise = () => {
   const addSet = () => {
     const q = querify({ sessionId, exerciseId });
     // @ts-ignore
-    router.push(`/session/exercise/training-set/timer?${q}`);
+    router.push(`/session/exercise/exercise-set/timer?${q}`);
   };
 
   const endExercise = () => {
