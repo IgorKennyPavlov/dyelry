@@ -7,12 +7,13 @@ import {
   Alert,
 } from "react-native";
 
-import { listItemCommon } from "./list-item-common";
+import { listItemCommonStyles } from "./list-item-common-styles";
 import {
   FeelsReadable,
   SESSIONS,
   getIntervalSeconds,
   useNavigate,
+  FeelsColors,
 } from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
 
@@ -108,7 +109,9 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
       <Text>Weight:</Text>
       <Text>{targetSet.weight}</Text>
       <Text>Feels:</Text>
-      <Text>{FeelsReadable.get(targetSet.feels)}</Text>
+      <Text style={{ color: FeelsColors.get(targetSet.feels) }}>
+        {FeelsReadable.get(targetSet.feels)}
+      </Text>
       <Text>Rest:</Text>
       <Text style={intervalId.current ? styles.runningTimer : {}}>{rest}</Text>
     </Pressable>
@@ -116,7 +119,7 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
 };
 
 const styles = StyleSheet.create({
-  ...listItemCommon,
+  ...listItemCommonStyles,
   runningTimer: { color: "green" },
 });
 

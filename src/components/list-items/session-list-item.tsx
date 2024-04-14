@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, Pressable } from "react-native";
 
-import { listItemCommon } from "./list-item-common";
+import { listItemCommonStyles } from "./list-item-common-styles";
 import { getIntervalSeconds, SESSIONS, useNavigate } from "../../global";
 import { useTargetStore, useSessionsStore } from "../../store";
 
@@ -44,13 +44,13 @@ const SessionListItem = (props: ListRenderItemInfo<string>) => {
       {targetSession?.end && (
         <>
           <Text>Duration:</Text>
-          <Text>{duration} min</Text>
+          <Text>~{duration} min</Text>
         </>
       )}
     </Pressable>
   );
 };
 
-const styles = listItemCommon;
+const styles = listItemCommonStyles;
 
 export default SessionListItem;

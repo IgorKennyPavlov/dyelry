@@ -16,6 +16,7 @@ import {
   SESSIONS,
   getIntervalSeconds,
   useNavigate,
+  FeelsColors,
 } from "../../../../global";
 import { useSessionsStore, useTargetStore } from "../../../../store";
 
@@ -138,7 +139,12 @@ const NewSet = () => {
                 onBlur={onBlur}
               >
                 {[...FeelsReadable.entries()].map(([value, label]) => (
-                  <Picker.Item key={value} label={label} value={value} />
+                  <Picker.Item
+                    color={FeelsColors.get(value)}
+                    key={value}
+                    label={label}
+                    value={value}
+                  />
                 ))}
               </Picker>
             )}

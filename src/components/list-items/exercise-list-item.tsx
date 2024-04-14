@@ -7,8 +7,14 @@ import {
   View,
 } from "react-native";
 
-import { listItemCommon } from "./list-item-common";
-import { FeelsReadable, SESSIONS, useNavigate } from "../../global";
+import { listItemCommonStyles } from "./list-item-common-styles";
+import {
+  FeelsReadable,
+  SESSIONS,
+  useNavigate,
+  FeelsColors,
+  getIntervalSeconds,
+} from "../../global";
 import { useTargetStore, useSessionsStore } from "../../store";
 
 const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
@@ -25,6 +31,15 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
         .exercises.find((e) => e.id === targetExerciseId),
     [sessions, targetExerciseId, targetSessionId],
   );
+
+  const duration = useMemo(() => {
+    if (!targetExercise) {
+      return 0;
+    }
+
+    const { start, end } = targetExercise;
+    return end ? Math.round(getIntervalSeconds(end, start) / 60) : 0;
+  }, [targetExercise]);
 
   // TODO PAVLOV multiply the input by the fraction of the overall weight lifted?
   const averageFeel = useMemo(() => {
@@ -53,16 +68,24 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
       onPress={openExercise}
     >
       <Text>{targetExercise.title}</Text>
+      {targetExercise?.end && (
+        <>
+          <Text>Duration:</Text>
+          <Text>~{duration} min</Text>
+        </>
+      )}
       <View style={styles.feels}>
         <Text>Feels:&nbsp;</Text>
-        <Text>{FeelsReadable.get(averageFeel)}</Text>
+        <Text style={{ color: FeelsColors.get(averageFeel) }}>
+          {FeelsReadable.get(averageFeel)}
+        </Text>
       </View>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  ...listItemCommon,
+  ...listItemCommonStyles,
   feels: { flexDirection: "row" },
 });
 

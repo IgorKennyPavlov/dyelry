@@ -15,3 +15,11 @@ export const FeelsReadable = new Map<Feels, string>([
   [4, "Hard"],
   [5, "Failed"],
 ]);
+
+export const FeelsColors = new Map<Feels, string>([
+  [1, "gray"],
+  [2, "lightgreen"],
+  [3, "green"],
+  [4, "orange"],
+  [5, "red"],
+]);

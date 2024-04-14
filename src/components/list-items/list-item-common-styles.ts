@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-export const listItemCommon = StyleSheet.create({
+export const listItemCommonStyles = StyleSheet.create({
   plaque: {
     height: 44,
     marginVertical: 8,
