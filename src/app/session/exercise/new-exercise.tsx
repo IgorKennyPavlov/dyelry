@@ -1,10 +1,9 @@
-import { useLocalSearchParams, router } from "expo-router";
+import { router } from "expo-router";
 import { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Text, Button, View, StyleSheet, TextInput } from "react-native";
 
-import { querify } from "../../../global";
-import { useSessionsStore } from "../../../store";
+import { useSessionsStore, useTargetStore } from "../../../store";
 
 interface ExerciseEditForm {
   title: string;
@@ -12,7 +11,7 @@ interface ExerciseEditForm {
 
 const NewExercise = () => {
   const { addExercise } = useSessionsStore();
-  const sessionId = useLocalSearchParams().sessionId as string;
+  const { targetSessionId, setTargetExerciseId } = useTargetStore();
 
   const { getValues, control } = useForm<ExerciseEditForm>({
     defaultValues: { title: "" },
@@ -28,10 +27,11 @@ const NewExercise = () => {
     }
 
     const id = Date.now().toString();
-    addExercise(sessionId, { id, title, start: new Date() });
-    const q = querify({ sessionId });
-    router.push(`/session/exercise/${id}?${q}`);
-  }, [addExercise, getValues, sessionId]);
+    addExercise(targetSessionId, { id, title, start: new Date() });
+    setTargetExerciseId(id);
+
+    router.push("/session/exercise/view");
+  }, [addExercise, getValues, setTargetExerciseId, targetSessionId]);
 
   return (
     <>

@@ -1,4 +1,5 @@
-import { useLocalSearchParams, Stack, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
+import { useMemo } from "react";
 import {
   Text,
   View,
@@ -6,30 +7,32 @@ import {
   FlatList,
   StyleSheet,
   Dimensions,
+  ListRenderItemInfo,
 } from "react-native";
 
-import ExerciseListItem, {
-  ExerciseListItemProps,
-} from "../../components/ExerciseListItem";
-import { querify, SESSIONS } from "../../global";
-import { useSessionsStore } from "../../store";
+import ExerciseListItem from "../../components/ExerciseListItem";
+import { SESSIONS } from "../../global";
+import { useSessionsStore, useTargetStore } from "../../store";
 
 const Session = () => {
   const router = useRouter();
-  const { [SESSIONS]: sessions, editSession } = useSessionsStore();
-  const sessionId = useLocalSearchParams().sessionId as string;
-  const session = sessions.find((el) => el.id === sessionId);
 
-  const renderItem = (props: ExerciseListItemProps) => (
-    <ExerciseListItem sessionId={sessionId} {...props} />
+  const { [SESSIONS]: sessions, editSession } = useSessionsStore();
+  const { targetSessionId } = useTargetStore();
+
+  const targetSession = useMemo(
+    () => sessions.find((el) => el.id === targetSessionId),
+    [sessions, targetSessionId],
   );
 
-  const q = querify({ sessionId });
+  const renderItem = (props: ListRenderItemInfo<string>) => (
+    <ExerciseListItem {...props} />
+  );
 
-  const addExercise = () => router.push(`/session/exercise/new-exercise?${q}`);
+  const addExercise = () => router.push(`/session/exercise/new-exercise`);
 
   const endSession = () => {
-    editSession(sessionId, { end: new Date() });
+    editSession(targetSessionId, { end: new Date() });
     router.push(`/`);
   };
 
@@ -37,12 +40,15 @@ const Session = () => {
     <>
       <Stack.Screen
         options={{
-          title: `Session ${session.start.toLocaleDateString("ru-RU")}`,
+          title: `Session ${targetSession.start.toLocaleDateString("ru-RU")}`,
         }}
       />
-      {session.exercises?.length ? (
-        <View style={session.end ? {} : styles.list}>
-          <FlatList data={session.exercises} renderItem={renderItem} />
+      {targetSession.exercises?.length ? (
+        <View style={targetSession.end ? {} : styles.list}>
+          <FlatList
+            data={targetSession.exercises.map((e) => e.id)}
+            renderItem={renderItem}
+          />
         </View>
       ) : (
         <View style={styles.emptyList}>
@@ -50,7 +56,7 @@ const Session = () => {
         </View>
       )}
 
-      {!session.end && (
+      {!targetSession.end && (
         <>
           <View style={{ ...styles.btn, ...styles.btnLeft }}>
             <Button title="Add exercise" color="green" onPress={addExercise} />

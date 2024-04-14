@@ -13,13 +13,12 @@ export interface ExerciseProps {
   start: Date;
   end?: Date;
   sets?: SetProps[];
-  rest?: number;
 }
 
 export interface SetProps {
   id: string;
   start: Date;
-  end: Date;
+  end?: Date;
   weight?: number;
   reps?: number;
   feels?: Feels;

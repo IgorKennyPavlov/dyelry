@@ -48,23 +48,10 @@ const AppLayout = () => {
       <Tabs.Screen
         name="impex"
         options={{
-          title: "Impex",
+          title: "ImpEx",
           tabBarIcon: ({ focused }) => (
             <MaterialIcons
               name="import-export"
-              size={32}
-              color={focused ? "#2196F3" : "#ccc"}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="about"
-        options={{
-          title: "About",
-          tabBarIcon: ({ focused }) => (
-            <Ionicons
-              name="information"
               size={32}
               color={focused ? "#2196F3" : "#ccc"}
             />

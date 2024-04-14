@@ -9,14 +9,13 @@ import {
 } from "react-native";
 
 import SessionListItem from "../components/SessionListItem";
-import { SessionProps } from "../global";
 import { useSessionsStore } from "../store";
 
 const SessionList = () => {
   const router = useRouter();
   const { sessions } = useSessionsStore();
 
-  const renderItem = (props: ListRenderItemInfo<SessionProps>) => (
+  const renderItem = (props: ListRenderItemInfo<string>) => (
     <SessionListItem {...props} />
   );
   const addSession = () => router.push(`/session/new-session`);
@@ -25,7 +24,7 @@ const SessionList = () => {
     <>
       {sessions?.length ? (
         <View style={styles.list}>
-          <FlatList data={sessions} renderItem={renderItem} />
+          <FlatList data={sessions.map((s) => s.id)} renderItem={renderItem} />
         </View>
       ) : (
         <View style={styles.emptyList}>

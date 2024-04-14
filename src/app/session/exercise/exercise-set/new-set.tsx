@@ -1,6 +1,6 @@
 import { Picker } from "@react-native-picker/picker";
-import { useLocalSearchParams, router } from "expo-router";
-import { useCallback, useState, useRef, useEffect } from "react";
+import { router } from "expo-router";
+import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Text,
@@ -17,9 +17,8 @@ import {
   FeelsReadable,
   SESSIONS,
   getIntervalSeconds,
-  querify,
 } from "../../../../global";
-import { useSessionsStore } from "../../../../store";
+import { useSessionsStore, useTargetStore } from "../../../../store";
 
 interface SetEditForm {
   weight: string;
@@ -30,29 +29,35 @@ interface SetEditForm {
 
 const NewSet = () => {
   const { [SESSIONS]: sessions, editSet } = useSessionsStore();
+  const { targetSessionId, targetExerciseId, targetSetId } = useTargetStore();
 
   // TODO separate textarea into a component?
   const [commentHeight, setCommentHeight] = useState(0);
   const [timer, setTimer] = useState(0);
   const intervalId = useRef(null);
 
-  const params = useLocalSearchParams() as Record<string, string>;
-  const { sessionId, exerciseId, setId } = params;
-  const session = sessions.find((s) => s.id === sessionId);
-  const exercise = session.exercises.find((e) => e.id === exerciseId);
-  const targetSet = exercise.sets.find((s) => s.id === setId);
+  const targetSet = useMemo(() => {
+    return sessions
+      .find((s) => s.id === targetSessionId)
+      .exercises.find((e) => e.id === targetExerciseId)
+      .sets.find((e) => e.id === targetSetId);
+  }, [sessions, targetExerciseId, targetSessionId, targetSetId]);
 
   const defaultValues: SetEditForm = { weight: "", reps: "", feels: Feels.Ok };
   const config = { defaultValues };
   const { getValues, control } = useForm<SetEditForm>(config);
 
   useEffect(() => {
+    if (!targetSet?.end) {
+      return;
+    }
+
     intervalId.current = setInterval(() => {
       setTimer(getIntervalSeconds(new Date(), targetSet.end));
     }, 1000);
 
     return () => clearInterval(intervalId.current);
-  }, [targetSet.end]);
+  }, [targetSet?.end]);
 
   const editSetParams = useCallback(() => {
     // TODO rename fields to transform data easier?
@@ -64,19 +69,16 @@ const NewSet = () => {
       return;
     }
 
-    // TODO remove rest field after the migration
     const updatedSet = {
       weight: +weight,
       reps: +reps,
       feels,
       comment,
-      rest: 0,
     };
-    editSet(sessionId, exerciseId, setId, updatedSet);
+    editSet(targetSessionId, targetExerciseId, targetSetId, updatedSet);
 
-    const q = querify({ sessionId });
-    router.push(`/session/exercise/${exerciseId}?${q}`);
-  }, [editSet, exerciseId, getValues, sessionId, setId]);
+    router.push("/session/exercise/view");
+  }, [editSet, targetExerciseId, getValues, targetSessionId, targetSetId]);
 
   const finishExercise = useCallback(() => {
     Alert.alert(

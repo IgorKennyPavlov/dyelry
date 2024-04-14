@@ -1,4 +1,5 @@
-import { useLocalSearchParams, useRouter, Stack } from "expo-router";
+import { useRouter, Stack } from "expo-router";
+import { useMemo } from "react";
 import {
   Text,
   StyleSheet,
@@ -10,32 +11,35 @@ import {
 } from "react-native";
 
 import SetListItem from "../../../components/SetListItem";
-import { SetProps, querify } from "../../../global";
-import { useSessionsStore } from "../../../store";
+import { SESSIONS } from "../../../global";
+import { useSessionsStore, useTargetStore } from "../../../store";
 
 const Exercise = () => {
   const router = useRouter();
-  const { sessions, editExercise } = useSessionsStore();
+  const { [SESSIONS]: sessions, editExercise } = useSessionsStore();
+  const { targetSessionId, targetExerciseId, setTargetSetId } =
+    useTargetStore();
 
-  const sessionId = useLocalSearchParams().sessionId as string;
-  const exerciseId = useLocalSearchParams().exerciseId as string;
+  const targetExercise = useMemo(
+    () =>
+      sessions
+        .find((s) => s.id === targetSessionId)
+        .exercises.find((e) => e.id === targetExerciseId),
+    [sessions, targetExerciseId, targetSessionId],
+  );
 
-  const session = sessions.find((el) => el.id === sessionId);
-  const exercise = session.exercises.find((el) => el.id === exerciseId);
-
-  const renderItem = (props: ListRenderItemInfo<SetProps>) => (
-    <SetListItem sessionId={sessionId} exerciseId={exerciseId} {...props} />
+  const renderItem = (props: ListRenderItemInfo<string>) => (
+    <SetListItem {...props} />
   );
 
   const addSet = () => {
-    const q = querify({ sessionId, exerciseId });
-    // @ts-ignore
-    router.push(`/session/exercise/exercise-set/timer?${q}`);
+    setTargetSetId(null);
+    router.push("/session/exercise/exercise-set/timer");
   };
 
   const endExercise = () => {
-    editExercise(sessionId, exerciseId, { end: new Date() });
-    router.push(`/session/${sessionId}`);
+    editExercise(targetSessionId, targetExerciseId, { end: new Date() });
+    router.push("/session/view");
   };
 
   return (
@@ -43,12 +47,15 @@ const Exercise = () => {
       <Stack.Screen
         options={{
           headerShown: true,
-          title: exercise.title,
+          title: targetExercise.title,
         }}
       />
-      {exercise.sets?.length ? (
-        <View style={exercise.end ? {} : styles.list}>
-          <FlatList data={exercise.sets} renderItem={renderItem} />
+      {targetExercise.sets?.length ? (
+        <View style={targetExercise.end ? {} : styles.list}>
+          <FlatList
+            data={targetExercise.sets.map((s) => s.id)}
+            renderItem={renderItem}
+          />
         </View>
       ) : (
         <View style={styles.emptyListMsgWrap}>
@@ -56,7 +63,7 @@ const Exercise = () => {
         </View>
       )}
 
-      {!exercise.end && (
+      {!targetExercise.end && (
         <>
           <View style={{ ...styles.btn, ...styles.btnLeft }}>
             <Button title="Add set" color="green" onPress={addSet} />

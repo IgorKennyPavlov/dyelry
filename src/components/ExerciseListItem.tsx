@@ -8,36 +8,45 @@ import {
   View,
 } from "react-native";
 
-import { ExerciseProps, querify, FeelsReadable } from "../global";
+import { FeelsReadable, SESSIONS } from "../global";
+import { useTargetStore, useSessionsStore } from "../store";
 
-export interface ExerciseListItemProps
-  extends ListRenderItemInfo<ExerciseProps> {
-  sessionId: string;
-}
+const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
+  const { item: targetExerciseId } = props;
 
-const ExerciseListItem = (props: ExerciseListItemProps) => {
-  const { item, sessionId } = props;
   const router = useRouter();
+  const { [SESSIONS]: sessions } = useSessionsStore();
+  const { targetSessionId, setTargetExerciseId } = useTargetStore();
+
+  const targetExercise = useMemo(
+    () =>
+      sessions
+        .find((s) => s.id === targetSessionId)
+        .exercises.find((e) => e.id === targetExerciseId),
+    [sessions, targetExerciseId, targetSessionId],
+  );
 
   // TODO PAVLOV multiply the input by the fraction of the overall weight lifted?
   const averageFeel = useMemo(() => {
-    if (!item.sets) {
+    if (!targetExercise.sets) {
       return 0;
     }
 
-    const feelsSum = item.sets.map((s) => s.feels).reduce((a, b) => a + b, 0);
-    const setsCount = item.sets.length || 1;
+    const feelsSum = targetExercise.sets
+      .map((s) => s.feels)
+      .reduce((a, b) => a + b, 0);
+    const setsCount = targetExercise.sets.length || 1;
     return Math.ceil(feelsSum / setsCount);
-  }, [item.sets]);
+  }, [targetExercise.sets]);
 
   const openExercise = () => {
-    const q = querify({ sessionId });
-    router.push(`/session/exercise/${item.id}?${q}`);
+    setTargetExerciseId(targetExerciseId);
+    router.push("/session/exercise/view");
   };
 
   return (
     <Pressable style={styles.sessionPlaque} onPress={openExercise}>
-      <Text>{item.title}</Text>
+      <Text>{targetExercise.title}</Text>
       <View style={styles.feels}>
         <Text>Feels:&nbsp;</Text>
         <Text>{FeelsReadable.get(averageFeel)}</Text>

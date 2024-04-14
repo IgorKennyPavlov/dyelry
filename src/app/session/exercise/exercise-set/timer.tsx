@@ -1,44 +1,52 @@
-import { useLocalSearchParams, router } from "expo-router";
-import { useCallback, useState, useRef, useEffect } from "react";
+import { router } from "expo-router";
+import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
-import { getIntervalSeconds, querify } from "../../../../global";
-import { useSessionsStore } from "../../../../store";
+import { getIntervalSeconds, SESSIONS } from "../../../../global";
+import { useSessionsStore, useTargetStore } from "../../../../store";
 
-const NewSet = () => {
-  const { addSet } = useSessionsStore();
-  const [start, setStart] = useState<Date | null>(null);
+const Timer = () => {
+  const { [SESSIONS]: sessions, addSet, editSet } = useSessionsStore();
+  const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
+    useTargetStore();
 
+  const targetSet = useMemo(() => {
+    return sessions
+      .find((s) => s.id === targetSessionId)
+      .exercises.find((e) => e.id === targetExerciseId)
+      .sets.find((e) => e.id === targetSetId);
+  }, [sessions, targetExerciseId, targetSessionId, targetSetId]);
+
+  const [start, setStart] = useState<Date | null>(targetSet?.start || null);
   const [timer, setTimer] = useState(0);
   const intervalId = useRef(null);
 
-  const sessionId = useLocalSearchParams().sessionId as string;
-  const exerciseId = useLocalSearchParams().exerciseId as string;
-
-  const startExerciseSet = useCallback(() => setStart(new Date()), []);
-
   useEffect(() => {
+    if (!start) {
+      return;
+    }
+
     intervalId.current = setInterval(() => {
-      setTimer(start ? getIntervalSeconds(new Date(), start) : 0);
+      setTimer(getIntervalSeconds(new Date(), start));
     }, 1000);
 
     return () => clearInterval(intervalId.current);
   }, [start]);
 
-  const addNewSet = useCallback(() => {
+  const startExerciseSet = useCallback(() => {
     const id = Date.now().toString();
+    const start = new Date();
 
-    addSet(sessionId, exerciseId, {
-      id,
-      start,
-      end: new Date(),
-    });
+    addSet(targetSessionId, targetExerciseId, { id, start });
+    setTargetSetId(id);
+    setStart(start);
+  }, [addSet, setTargetSetId, targetExerciseId, targetSessionId]);
 
-    const q = querify({ sessionId, exerciseId, setId: id });
-
-    // @ts-ignore
-    router.push(`/session/exercise/exercise-set/new-set?${q}`);
-  }, [addSet, exerciseId, sessionId, start]);
+  const endExerciseSet = useCallback(() => {
+    const end = new Date();
+    editSet(targetSessionId, targetExerciseId, targetSetId, { end });
+    router.push("/session/exercise/exercise-set/new-set");
+  }, [editSet, targetSessionId, targetExerciseId, targetSetId]);
 
   const finishExerciseSet = useCallback(() => {
     Alert.alert(
@@ -46,11 +54,11 @@ const NewSet = () => {
       "Are you sure?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: addNewSet },
+        { text: "Confirm", style: "default", onPress: endExerciseSet },
       ],
       { cancelable: true },
     );
-  }, [addNewSet]);
+  }, [endExerciseSet]);
 
   return (
     <>
@@ -76,4 +84,4 @@ const styles = StyleSheet.create({
   btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 
-export default NewSet;
+export default Timer;

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "expo-router";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import {
   Text,
   ListRenderItemInfo,
@@ -7,38 +8,49 @@ import {
   Alert,
 } from "react-native";
 
-import {
-  SetProps,
-  FeelsReadable,
-  SESSIONS,
-  getIntervalSeconds,
-} from "../global";
-import { useSessionsStore } from "../store";
+import { FeelsReadable, SESSIONS, getIntervalSeconds } from "../global";
+import { useSessionsStore, useTargetStore } from "../store";
 
-export interface SetListItemProps extends ListRenderItemInfo<SetProps> {
-  sessionId: string;
-  exerciseId: string;
-}
+const SetListItem = (props: ListRenderItemInfo<string>) => {
+  const { item: targetSetId } = props;
 
-const SetListItem = (props: SetListItemProps) => {
+  const router = useRouter();
+  const { [SESSIONS]: sessions } = useSessionsStore();
+  const { targetSessionId, targetExerciseId, setTargetSetId } =
+    useTargetStore();
+
   const intervalId = useRef(null);
   const [rest, setRest] = useState(0);
 
-  const { [SESSIONS]: sessions } = useSessionsStore();
-  const { item: targetSet, sessionId, exerciseId } = props;
-  const session = sessions.find((s) => s.id === sessionId);
-  const exercise = session.exercises.find((e) => e.id === exerciseId);
-  const targetSetIdx = exercise.sets.indexOf(targetSet);
+  const targetExercise = useMemo(
+    () =>
+      sessions
+        .find((s) => s.id === targetSessionId)
+        .exercises.find((e) => e.id === targetExerciseId),
+    [sessions, targetExerciseId, targetSessionId],
+  );
+  const targetSet = useMemo(
+    () => targetExercise.sets.find((e) => e.id === targetSetId),
+    [targetExercise.sets, targetSetId],
+  );
+  const targetSetIdx = useMemo(
+    () => targetExercise.sets.indexOf(targetSet),
+    [targetExercise.sets, targetSet],
+  );
 
   useEffect(() => {
-    if (targetSet !== exercise.sets.at(-1)) {
-      const nextSetStart = exercise.sets[targetSetIdx + 1].start;
+    if (targetSet !== targetExercise.sets.at(-1)) {
+      const nextSetStart = targetExercise.sets[targetSetIdx + 1].start;
       setRest(getIntervalSeconds(nextSetStart, targetSet.end));
       return;
     }
 
-    if (exercise.end) {
-      setRest(getIntervalSeconds(exercise.end, targetSet.end));
+    if (targetExercise.end) {
+      setRest(getIntervalSeconds(targetExercise.end, targetSet.end));
+      return;
+    }
+
+    if (!targetSet.end) {
       return;
     }
 
@@ -47,20 +59,41 @@ const SetListItem = (props: SetListItemProps) => {
     }, 1000);
 
     return () => clearInterval(intervalId.current);
-  }, [exercise.end, exercise.sets, targetSet, targetSet.end, targetSetIdx]);
+  }, [
+    targetExercise.end,
+    targetExercise.sets,
+    targetSet,
+    targetSet.end,
+    targetSetIdx,
+  ]);
 
-  // TODO Open set editor?
-  const openExercise = () => {
+  const openExerciseSet = useCallback(() => {
+    setTargetSetId(targetSetId);
+
+    if (!targetSet.reps) {
+      router.push("/session/exercise/exercise-set/new-set");
+      return;
+    }
+
+    // TODO Open set editor?
     Alert.alert(
       "Set info",
       JSON.stringify(targetSet, null, 2),
       [{ text: "OK", style: "cancel" }],
       { cancelable: true },
     );
-  };
+  }, [router, setTargetSetId, targetSet, targetSetId]);
+
+  const openTimer = useCallback(() => {
+    setTargetSetId(targetSetId);
+    router.push("/session/exercise/exercise-set/timer");
+  }, [router, setTargetSetId, targetSetId]);
 
   return (
-    <Pressable style={styles.sessionPlaque} onPress={openExercise}>
+    <Pressable
+      style={styles.sessionPlaque}
+      onPress={targetSet.end ? openExerciseSet : openTimer}
+    >
       <Text>Reps:</Text>
       <Text>{targetSet.reps}</Text>
       <Text>Weight:</Text>

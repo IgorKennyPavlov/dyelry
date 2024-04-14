@@ -5,10 +5,11 @@ import { router } from "expo-router";
 import { useCallback, useState } from "react";
 import { Text, Button, Pressable, View, StyleSheet } from "react-native";
 
-import { useSessionsStore } from "../../store";
+import { useSessionsStore, useTargetStore } from "../../store";
 
 const NewSession = () => {
   const { addSession } = useSessionsStore();
+  const { setTargetSessionId } = useTargetStore();
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -20,17 +21,22 @@ const NewSession = () => {
   const createNewSession = useCallback(() => {
     const id = Date.now().toString();
     addSession({ id, start: date });
-    router.push(`/session/${id}`);
-  }, [addSession, date]);
+    setTargetSessionId(id);
+    router.push("/session/view");
+  }, [addSession, date, setTargetSessionId]);
 
   return (
     <>
-      <Pressable
-        style={styles.selectedDate}
-        onPress={() => setShowDatePicker(true)}
-      >
-        <Text style={styles.dateText}>{date.toLocaleDateString("ru-RU")}</Text>
-      </Pressable>
+      <View style={styles.selectedDate}>
+        <Pressable
+          style={styles.dateTextWrap}
+          onPress={() => setShowDatePicker(true)}
+        >
+          <Text style={styles.dateText}>
+            {date.toLocaleDateString("ru-RU")}
+          </Text>
+        </Pressable>
+      </View>
       {showDatePicker && (
         <RNDateTimePicker value={date} locale="ru-RU" onChange={selectDate} />
       )}
@@ -43,7 +49,17 @@ const NewSession = () => {
 
 const styles = StyleSheet.create({
   selectedDate: { flex: 1, justifyContent: "center", alignItems: "center" },
-  dateText: { height: 44, fontSize: 20 },
+  dateTextWrap: {
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 8,
+    padding: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dateText: {
+    fontSize: 20,
+  },
   confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 
