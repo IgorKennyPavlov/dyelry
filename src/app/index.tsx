@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import {
   FlatList,
@@ -10,19 +9,20 @@ import {
 } from "react-native";
 
 import SessionListItem from "../components/list-items/session-list-item";
+import { useNavigate } from "../global";
 import { useSessionsStore } from "../store";
 
 const SessionList = () => {
-  const router = useRouter();
   const { sessions } = useSessionsStore();
+  const { navigate } = useNavigate();
 
   const renderItem = (props: ListRenderItemInfo<string>) => (
     <SessionListItem {...props} />
   );
 
   const addSession = useCallback(
-    () => router.push(`/session/new-session`),
-    [router],
+    () => navigate(`/session/new-session`),
+    [navigate],
   );
 
   return (

@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import {
   Text,
@@ -9,13 +8,18 @@ import {
 } from "react-native";
 
 import { listItemCommon } from "./list-item-common";
-import { FeelsReadable, SESSIONS, getIntervalSeconds } from "../../global";
+import {
+  FeelsReadable,
+  SESSIONS,
+  getIntervalSeconds,
+  useNavigate,
+} from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
 
 const SetListItem = (props: ListRenderItemInfo<string>) => {
   const { item: targetSetId } = props;
 
-  const router = useRouter();
+  const { navigate } = useNavigate();
   const { [SESSIONS]: sessions } = useSessionsStore();
   const { targetSessionId, targetExerciseId, setTargetSetId } =
     useTargetStore();
@@ -73,7 +77,7 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
 
     // TODO remove after the editor screen added
     if (!targetSet.reps) {
-      router.push("/session/exercise/exercise-set/new-set");
+      navigate("/session/exercise/exercise-set/new-set");
       return;
     }
 
@@ -84,12 +88,12 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
       [{ text: "OK", style: "cancel" }],
       { cancelable: true },
     );
-  }, [router, setTargetSetId, targetSet, targetSetId]);
+  }, [navigate, setTargetSetId, targetSet, targetSetId]);
 
   const openTimer = useCallback(() => {
     setTargetSetId(targetSetId);
-    router.push("/session/exercise/exercise-set/timer");
-  }, [router, setTargetSetId, targetSetId]);
+    navigate("/session/exercise/exercise-set/timer");
+  }, [navigate, setTargetSetId, targetSetId]);
 
   return (
     <Pressable

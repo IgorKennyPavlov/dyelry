@@ -1,4 +1,4 @@
-import { Stack, useRouter } from "expo-router";
+import { Stack } from "expo-router";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -11,12 +11,11 @@ import {
 } from "react-native";
 
 import ExerciseListItem from "../../components/list-items/exercise-list-item";
-import { SESSIONS } from "../../global";
+import { SESSIONS, useNavigate } from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
 
 const Session = () => {
-  const router = useRouter();
-
+  const { navigate } = useNavigate();
   const { [SESSIONS]: sessions, editSession } = useSessionsStore();
   const { targetSessionId } = useTargetStore();
 
@@ -44,23 +43,23 @@ const Session = () => {
   );
 
   const addExercise = useCallback(
-    () => router.push(`/session/exercise/new-exercise`),
-    [router],
+    () => navigate(`/session/exercise/new-exercise`),
+    [navigate],
   );
 
   const endSession = useCallback(() => {
     editSession(targetSessionId, { end: new Date() });
-    router.push(`/`);
-  }, [editSession, router, targetSessionId]);
+    navigate(`/`);
+  }, [editSession, navigate, targetSessionId]);
 
   return (
     <>
       <Stack.Screen
         options={{
-          title: `Session ${targetSession.start.toLocaleDateString("ru-RU")}`,
+          title: `Session ${targetSession?.start.toLocaleDateString("ru-RU")}`,
         }}
       />
-      {targetSession.exercises?.length ? (
+      {targetSession?.exercises?.length ? (
         <View style={targetSession.end ? {} : styles.list}>
           <FlatList
             data={targetSession.exercises.map((e) => e.id)}

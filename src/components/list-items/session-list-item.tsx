@@ -1,15 +1,14 @@
-import { useRouter } from "expo-router";
 import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, Pressable } from "react-native";
 
 import { listItemCommon } from "./list-item-common";
-import { getIntervalSeconds, SESSIONS } from "../../global";
+import { getIntervalSeconds, SESSIONS, useNavigate } from "../../global";
 import { useTargetStore, useSessionsStore } from "../../store";
 
 const SessionListItem = (props: ListRenderItemInfo<string>) => {
   const { item: targetSessionId } = props;
 
-  const router = useRouter();
+  const { navigate } = useNavigate();
   const { [SESSIONS]: sessions } = useSessionsStore();
   const { setTargetSessionId } = useTargetStore();
 
@@ -29,20 +28,20 @@ const SessionListItem = (props: ListRenderItemInfo<string>) => {
 
   const openSession = useCallback(() => {
     setTargetSessionId(targetSessionId);
-    router.push("/session/view");
-  }, [router, setTargetSessionId, targetSessionId]);
+    navigate("/session/view");
+  }, [navigate, setTargetSessionId, targetSessionId]);
 
   return (
     <Pressable
       style={{
         ...styles.plaque,
-        borderColor: targetSession.end ? "gray" : "orange",
+        borderColor: targetSession?.end ? "gray" : "orange",
       }}
       onPress={openSession}
     >
       <Text>Start:</Text>
-      <Text>{targetSession.start.toLocaleString("ru-RU")}</Text>
-      {targetSession.end && (
+      <Text>{targetSession?.start.toLocaleString("ru-RU")}</Text>
+      {targetSession?.end && (
         <>
           <Text>Duration:</Text>
           <Text>{duration} min</Text>

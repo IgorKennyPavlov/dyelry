@@ -1,4 +1,4 @@
-import { useRouter, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -11,11 +11,11 @@ import {
 } from "react-native";
 
 import SetListItem from "../../../components/list-items/set-list-item";
-import { SESSIONS } from "../../../global";
+import { SESSIONS, useNavigate } from "../../../global";
 import { useSessionsStore, useTargetStore } from "../../../store";
 
 const Exercise = () => {
-  const router = useRouter();
+  const { navigate } = useNavigate();
   const { [SESSIONS]: sessions, editExercise } = useSessionsStore();
   const { targetSessionId, targetExerciseId, setTargetSetId } =
     useTargetStore();
@@ -48,13 +48,13 @@ const Exercise = () => {
 
   const addSet = useCallback(() => {
     setTargetSetId(null);
-    router.push("/session/exercise/exercise-set/timer");
-  }, [router, setTargetSetId]);
+    navigate("/session/exercise/exercise-set/timer");
+  }, [navigate, setTargetSetId]);
 
   const endExercise = useCallback(() => {
     editExercise(targetSessionId, targetExerciseId, { end: new Date() });
-    router.push("/session/view");
-  }, [editExercise, router, targetExerciseId, targetSessionId]);
+    navigate("/session/view");
+  }, [editExercise, navigate, targetExerciseId, targetSessionId]);
 
   return (
     <>

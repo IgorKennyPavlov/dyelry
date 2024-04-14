@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -9,13 +8,13 @@ import {
 } from "react-native";
 
 import { listItemCommon } from "./list-item-common";
-import { FeelsReadable, SESSIONS } from "../../global";
+import { FeelsReadable, SESSIONS, useNavigate } from "../../global";
 import { useTargetStore, useSessionsStore } from "../../store";
 
 const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
   const { item: targetExerciseId } = props;
 
-  const router = useRouter();
+  const { navigate } = useNavigate();
   const { [SESSIONS]: sessions } = useSessionsStore();
   const { targetSessionId, setTargetExerciseId } = useTargetStore();
 
@@ -42,8 +41,8 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
 
   const openExercise = useCallback(() => {
     setTargetExerciseId(targetExerciseId);
-    router.push("/session/exercise/view");
-  }, [router, setTargetExerciseId, targetExerciseId]);
+    navigate("/session/exercise/view");
+  }, [navigate, setTargetExerciseId, targetExerciseId]);
 
   return (
     <Pressable
@@ -53,7 +52,6 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
       }}
       onPress={openExercise}
     >
-      <Text>{targetExerciseId}</Text>
       <Text>{targetExercise.title}</Text>
       <View style={styles.feels}>
         <Text>Feels:&nbsp;</Text>
