@@ -4,13 +4,16 @@ import RNDateTimePicker, {
 import { useCallback, useState } from "react";
 import { Text, Button, Pressable, View, StyleSheet } from "react-native";
 
-import { useNavigate } from "../../global";
+import { useNavigate, SessionProps } from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
+import { useTarget } from "../../store/useTarget";
 
-const NewSession = () => {
+const SessionEditor = () => {
   const { navigate } = useNavigate();
-  const { addSession } = useSessionsStore();
-  const { setTargetSessionId } = useTargetStore();
+  const { addSession, editSession } = useSessionsStore();
+  const { targetSessionId } = useTargetStore();
+  const { targetSession } = useTarget();
+
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -22,12 +25,22 @@ const NewSession = () => {
     setShowDatePicker(false);
   }, []);
 
-  const createNewSession = useCallback(() => {
-    const id = Date.now().toString();
-    addSession({ id, start: date });
-    setTargetSessionId(id);
+  const saveSession = useCallback(() => {
+    if (!targetSessionId) {
+      return;
+    }
+
+    const sessionData: SessionProps = { id: targetSessionId, start: date };
+
+    if (targetSession) {
+      editSession(targetSessionId, sessionData);
+      navigate("/");
+      return;
+    }
+
+    addSession(sessionData);
     navigate("/session/view");
-  }, [addSession, date, navigate, setTargetSessionId]);
+  }, [addSession, date, editSession, navigate, targetSession, targetSessionId]);
 
   return (
     <>
@@ -45,7 +58,10 @@ const NewSession = () => {
         <RNDateTimePicker value={date} locale="ru-RU" onChange={selectDate} />
       )}
       <View style={styles.confirmBtn}>
-        <Button title="Create session" onPress={createNewSession} />
+        <Button
+          title={`${targetSession ? "Update" : "Add"} session`}
+          onPress={saveSession}
+        />
       </View>
     </>
   );
@@ -67,4 +83,4 @@ const styles = StyleSheet.create({
   confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 
-export default NewSession;
+export default SessionEditor;

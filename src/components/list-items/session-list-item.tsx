@@ -1,3 +1,4 @@
+import MCI from "@expo/vector-icons/MaterialCommunityIcons";
 import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, Pressable } from "react-native";
 
@@ -31,6 +32,11 @@ const SessionListItem = (props: ListRenderItemInfo<string>) => {
     navigate("/session/view");
   }, [navigate, setTargetSessionId, targetSessionId]);
 
+  const editSession = useCallback(() => {
+    setTargetSessionId(targetSessionId);
+    navigate("/session/session-editor");
+  }, [navigate, setTargetSessionId, targetSessionId]);
+
   return (
     <Pressable
       style={{
@@ -47,6 +53,10 @@ const SessionListItem = (props: ListRenderItemInfo<string>) => {
           <Text>~{duration} min</Text>
         </>
       )}
+
+      <Pressable onPress={editSession}>
+        <MCI name="pencil-circle-outline" size={32} color="#444" />
+      </Pressable>
     </Pressable>
   );
 };

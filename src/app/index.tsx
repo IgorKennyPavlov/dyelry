@@ -9,21 +9,22 @@ import {
 } from "react-native";
 
 import SessionListItem from "../components/list-items/session-list-item";
-import { useNavigate } from "../global";
-import { useSessionsStore } from "../store";
+import { useNavigate, SESSIONS } from "../global";
+import { useSessionsStore, useTargetStore } from "../store";
 
 const SessionList = () => {
-  const { sessions } = useSessionsStore();
+  const { [SESSIONS]: sessions } = useSessionsStore();
+  const { setTargetSessionId } = useTargetStore();
   const { navigate } = useNavigate();
 
   const renderItem = (props: ListRenderItemInfo<string>) => (
     <SessionListItem {...props} />
   );
 
-  const addSession = useCallback(
-    () => navigate(`/session/new-session`),
-    [navigate],
-  );
+  const addSession = useCallback(() => {
+    setTargetSessionId(String(Date.now()));
+    navigate(`/session/session-editor`);
+  }, [navigate, setTargetSessionId]);
 
   return (
     <>
