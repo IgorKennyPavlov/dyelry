@@ -29,7 +29,10 @@ const SessionList = () => {
     <>
       {sessions?.length ? (
         <View style={styles.list}>
-          <FlatList data={sessions.map((s) => s.id)} renderItem={renderItem} />
+          <FlatList
+            data={sessions.map((s) => s.id).reverse()}
+            renderItem={renderItem}
+          />
         </View>
       ) : (
         <View style={styles.emptyList}>
