@@ -1,6 +1,7 @@
 import { produce } from "immer";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { StateStorage } from "zustand/middleware/persist";
 
 import { fileSystemStorage } from "./file-system";
 import { SessionProps, ExerciseProps, SetProps, SESSIONS } from "../global";
@@ -31,18 +32,22 @@ interface SessionsStore {
 export const useSessionsStore = create<SessionsStore>()(
   persist(
     (set) => ({
-      [SESSIONS]: [],
+      [SESSIONS]: [] as SessionProps[],
       addSession: (newSession: SessionProps) =>
         set(
           produce((state: SessionsStore) => {
             state[SESSIONS].push(newSession);
           }),
         ),
-      editSession: (sessionId: string, editedSession: SessionProps) =>
+      editSession: (sessionId: string, editedSession: Partial<SessionProps>) =>
         set(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
+
+            if (!session) {
+              return;
+            }
 
             Object.assign(session, editedSession);
           }),
@@ -52,6 +57,10 @@ export const useSessionsStore = create<SessionsStore>()(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
+
+            if (!session) {
+              return;
+            }
 
             if (!session.exercises) {
               session.exercises = [];
@@ -69,7 +78,18 @@ export const useSessionsStore = create<SessionsStore>()(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
-            const exercise = session.exercises.find((e) => e.id === exerciseId);
+
+            if (!session) {
+              return;
+            }
+
+            const exercise = session.exercises?.find(
+              (e) => e.id === exerciseId,
+            );
+
+            if (!exercise) {
+              return;
+            }
 
             Object.assign(exercise, editedExercise);
           }),
@@ -80,7 +100,18 @@ export const useSessionsStore = create<SessionsStore>()(
             // TODO duplicate. How to make getters?
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
-            const exercise = session.exercises.find((e) => e.id === exerciseId);
+
+            if (!session) {
+              return;
+            }
+
+            const exercise = session.exercises?.find(
+              (e) => e.id === exerciseId,
+            );
+
+            if (!exercise) {
+              return;
+            }
 
             if (!exercise.sets) {
               exercise.sets = [];
@@ -99,8 +130,25 @@ export const useSessionsStore = create<SessionsStore>()(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
-            const exercise = session.exercises.find((e) => e.id === exerciseId);
-            const targetSet = exercise.sets.find((s) => s.id === setId);
+
+            if (!session) {
+              return;
+            }
+
+            const exercise = session.exercises?.find(
+              (e) => e.id === exerciseId,
+            );
+
+            if (!exercise) {
+              return;
+            }
+
+            const targetSet = exercise.sets?.find((s) => s.id === setId);
+
+            if (!targetSet) {
+              return;
+            }
+
             Object.assign(targetSet, updatedSet);
           }),
         ),
@@ -113,9 +161,10 @@ export const useSessionsStore = create<SessionsStore>()(
     }),
     {
       name: SESSIONS,
-      storage: createJSONStorage(() => fileSystemStorage, {
+      storage: createJSONStorage(() => fileSystemStorage as StateStorage, {
         reviver: (key, value) => {
           if (
+            value &&
             typeof value === "object" &&
             "revivingType" in value &&
             "value" in value &&

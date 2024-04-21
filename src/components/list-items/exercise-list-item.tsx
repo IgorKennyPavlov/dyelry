@@ -11,26 +11,28 @@ import {
 import { listItemCommonStyles } from "./list-item-common-styles";
 import {
   FeelsReadable,
-  SESSIONS,
   useNavigate,
   FeelsColors,
   getIntervalSeconds,
+  ExerciseProps,
 } from "../../global";
-import { useTargetStore, useSessionsStore } from "../../store";
+import { useTargetStore } from "../../store";
+import { useTarget } from "../../store/useTarget";
 
 const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
   const { item: targetExerciseId } = props;
 
   const { navigate } = useNavigate();
-  const { [SESSIONS]: sessions } = useSessionsStore();
-  const { targetSessionId, setTargetExerciseId } = useTargetStore();
+  const { setTargetExerciseId } = useTargetStore();
+
+  const { targetSession } = useTarget();
 
   const targetExercise = useMemo(
     () =>
-      sessions
-        .find((s) => s.id === targetSessionId)
-        .exercises.find((e) => e.id === targetExerciseId),
-    [sessions, targetExerciseId, targetSessionId],
+      targetSession?.exercises?.find(
+        (e) => e.id === targetExerciseId,
+      ) as ExerciseProps,
+    [targetExerciseId, targetSession?.exercises],
   );
 
   const duration = useMemo(() => {
@@ -50,7 +52,7 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
 
     const feelsSum = targetExercise.sets
       .map((s) => s.feels)
-      .reduce((a, b) => a + b, 0);
+      .reduce((a, b) => a + (b || 0), 0);
     const setsCount = targetExercise.sets.length || 1;
     return Math.ceil(feelsSum / setsCount);
   }, [targetExercise.sets]);

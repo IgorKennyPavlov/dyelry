@@ -1,40 +1,46 @@
 import { Stack } from "expo-router";
-import { useCallback, useState, useRef, useEffect, useMemo } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  MutableRefObject,
+} from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
-import { getIntervalSeconds, SESSIONS, useNavigate } from "../../../../global";
+import { getIntervalSeconds, useNavigate } from "../../../../global";
 import { useSessionsStore, useTargetStore } from "../../../../store";
+import { useTarget } from "../../../../store/useTarget";
 
 const Timer = () => {
   const { navigate } = useNavigate();
-  const { [SESSIONS]: sessions, addSet, editSet } = useSessionsStore();
+  const { addSet, editSet } = useSessionsStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
 
-  const targetSet = useMemo(() => {
-    return sessions
-      .find((s) => s.id === targetSessionId)
-      .exercises.find((e) => e.id === targetExerciseId)
-      .sets?.find((e) => e.id === targetSetId);
-  }, [sessions, targetExerciseId, targetSessionId, targetSetId]);
+  const { targetSet } = useTarget();
 
   const [start, setStart] = useState<Date | null>(targetSet?.start || null);
   const [timer, setTimer] = useState(0);
-  const intervalId = useRef(null);
+  const intervalId: MutableRefObject<number | null> = useRef(null);
 
   useEffect(() => {
     if (!start) {
       return;
     }
 
-    intervalId.current = setInterval(() => {
+    intervalId.current = window.setInterval(() => {
       setTimer(getIntervalSeconds(new Date(), start));
     }, 1000);
 
-    return () => clearInterval(intervalId.current);
+    return () => clearInterval(intervalId.current as number);
   }, [start]);
 
   const startExerciseSet = useCallback(() => {
+    if (!targetSessionId || !targetExerciseId) {
+      return;
+    }
+
     const id = Date.now().toString();
     const start = new Date();
 
@@ -44,6 +50,10 @@ const Timer = () => {
   }, [addSet, setTargetSetId, targetExerciseId, targetSessionId]);
 
   const endExerciseSet = useCallback(() => {
+    if (!targetSessionId || !targetExerciseId || !targetSetId) {
+      return;
+    }
+
     const end = new Date();
     editSet(targetSessionId, targetExerciseId, targetSetId, { end });
     navigate("/session/exercise/exercise-set/set-editor");

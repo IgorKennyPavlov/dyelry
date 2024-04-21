@@ -10,18 +10,16 @@ import {
 } from "react-native";
 
 import ExerciseListItem from "../../components/list-items/exercise-list-item";
-import { SESSIONS, useNavigate } from "../../global";
+import { useNavigate } from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
+import { useTarget } from "../../store/useTarget";
 
 const Session = () => {
   const { navigate } = useNavigate();
-  const { [SESSIONS]: sessions, editSession } = useSessionsStore();
+  const { editSession } = useSessionsStore();
   const { targetSessionId, setTargetExerciseId } = useTargetStore();
 
-  const targetSession = useMemo(
-    () => sessions.find((el) => el.id === targetSessionId),
-    [sessions, targetSessionId],
-  );
+  const { targetSession } = useTarget();
 
   const showActionPanel = useMemo(() => {
     if (!targetSession) {
@@ -47,6 +45,10 @@ const Session = () => {
   }, [navigate, setTargetExerciseId]);
 
   const endSession = useCallback(() => {
+    if (!targetSessionId) {
+      return;
+    }
+
     editSession(targetSessionId, { end: new Date() });
     navigate(`/`);
   }, [editSession, navigate, targetSessionId]);

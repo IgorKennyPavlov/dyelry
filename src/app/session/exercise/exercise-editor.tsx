@@ -1,10 +1,11 @@
 import { Stack } from "expo-router";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button, View, StyleSheet, TextInput } from "react-native";
 
-import { useNavigate, SESSIONS } from "../../../global";
+import { useNavigate, ExerciseProps } from "../../../global";
 import { useSessionsStore, useTargetStore } from "../../../store";
+import { useTarget } from "../../../store/useTarget";
 
 interface ExerciseEditForm {
   title: string;
@@ -12,26 +13,20 @@ interface ExerciseEditForm {
 
 const ExerciseEditor = () => {
   const { navigate } = useNavigate();
-  const {
-    [SESSIONS]: sessions,
-    addExercise,
-    editExercise,
-  } = useSessionsStore();
+  const { addExercise, editExercise } = useSessionsStore();
   const { targetSessionId, targetExerciseId } = useTargetStore();
 
-  const targetExercise = useMemo(
-    () =>
-      sessions
-        .find((s) => s.id === targetSessionId)
-        .exercises?.find((e) => e.id === targetExerciseId),
-    [sessions, targetExerciseId, targetSessionId],
-  );
+  const { targetExercise } = useTarget();
 
   const { getValues, control } = useForm<ExerciseEditForm>({
     defaultValues: { title: targetExercise?.title || "" },
   });
 
   const saveExercise = useCallback(() => {
+    if (!targetSessionId || !targetExerciseId) {
+      return;
+    }
+
     const title = getValues().title;
 
     // TODO replace with proper validation
@@ -40,12 +35,19 @@ const ExerciseEditor = () => {
       return;
     }
 
-    const exerciseData = { id: targetExerciseId, title, start: new Date() };
+    const exerciseData: ExerciseProps = {
+      id: targetExerciseId,
+      title,
+      start: new Date(),
+    };
 
-    targetExercise
-      ? editExercise(targetSessionId, targetExerciseId, exerciseData)
-      : addExercise(targetSessionId, exerciseData);
+    if (targetExercise) {
+      editExercise(targetSessionId, targetExerciseId, exerciseData);
+      navigate("/session/view");
+      return;
+    }
 
+    addExercise(targetSessionId, exerciseData);
     navigate("/session/exercise/view");
   }, [
     addExercise,

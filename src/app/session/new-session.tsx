@@ -14,8 +14,11 @@ const NewSession = () => {
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const selectDate = useCallback((_: DateTimePickerEvent, date: Date) => {
-    setDate(date);
+  const selectDate = useCallback((_: DateTimePickerEvent, date?: Date) => {
+    if (date) {
+      setDate(date);
+    }
+
     setShowDatePicker(false);
   }, []);
 

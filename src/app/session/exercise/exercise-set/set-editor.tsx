@@ -1,6 +1,12 @@
 import { Picker } from "@react-native-picker/picker";
 import { Stack } from "expo-router";
-import { useCallback, useState, useRef, useEffect, useMemo } from "react";
+import {
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  MutableRefObject,
+} from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Text,
@@ -14,12 +20,12 @@ import {
 import {
   Feels,
   FeelsReadable,
-  SESSIONS,
   getIntervalSeconds,
   useNavigate,
   FeelsColors,
 } from "../../../../global";
 import { useSessionsStore, useTargetStore } from "../../../../store";
+import { useTarget } from "../../../../store/useTarget";
 
 interface SetEditForm {
   weight: string;
@@ -30,30 +36,25 @@ interface SetEditForm {
 
 const SetEditor = () => {
   const { navigate } = useNavigate();
-  const { [SESSIONS]: sessions, editSet } = useSessionsStore();
+  const { editSet } = useSessionsStore();
   const { targetSessionId, targetExerciseId, targetSetId } = useTargetStore();
 
   // TODO separate textarea into a component?
   const [commentHeight, setCommentHeight] = useState(0);
   const [timer, setTimer] = useState(0);
-  const intervalId = useRef(null);
+  const intervalId: MutableRefObject<number | null> = useRef(null);
 
-  const targetSet = useMemo(() => {
-    return sessions
-      .find((s) => s.id === targetSessionId)
-      .exercises.find((e) => e.id === targetExerciseId)
-      .sets.find((e) => e.id === targetSetId);
-  }, [sessions, targetExerciseId, targetSessionId, targetSetId]);
+  const { targetSet } = useTarget();
 
   const isEditing =
-    targetSet.weight !== undefined && targetSet.reps !== undefined;
+    targetSet?.weight !== undefined && targetSet.reps !== undefined;
 
   const { getValues, control } = useForm<SetEditForm>({
     defaultValues: {
-      weight: String(targetSet.weight || ""),
-      reps: String(targetSet.reps || ""),
-      feels: targetSet.feels || Feels.Ok,
-      comment: String(targetSet.comment || ""),
+      weight: String(targetSet?.weight || ""),
+      reps: String(targetSet?.reps || ""),
+      feels: targetSet?.feels || Feels.Ok,
+      comment: String(targetSet?.comment || ""),
     },
   });
 
@@ -62,14 +63,18 @@ const SetEditor = () => {
       return;
     }
 
-    intervalId.current = setInterval(() => {
-      setTimer(getIntervalSeconds(new Date(), targetSet.end));
+    intervalId.current = window.setInterval(() => {
+      setTimer(getIntervalSeconds(new Date(), targetSet.end as Date));
     }, 1000);
 
-    return () => clearInterval(intervalId.current);
-  }, [isEditing, targetSet.end]);
+    return () => clearInterval(intervalId.current as number);
+  }, [isEditing, targetSet?.end]);
 
   const editSetParams = useCallback(() => {
+    if (!targetSessionId || !targetExerciseId || !targetSetId) {
+      return;
+    }
+
     const { weight, reps, feels, comment } = getValues();
 
     // TODO replace with proper validation

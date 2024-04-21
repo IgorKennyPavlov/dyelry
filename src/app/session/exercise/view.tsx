@@ -11,22 +11,17 @@ import {
 } from "react-native";
 
 import SetListItem from "../../../components/list-items/set-list-item";
-import { SESSIONS, useNavigate } from "../../../global";
+import { useNavigate } from "../../../global";
 import { useSessionsStore, useTargetStore } from "../../../store";
+import { useTarget } from "../../../store/useTarget";
 
 const Exercise = () => {
   const { navigate } = useNavigate();
-  const { [SESSIONS]: sessions, editExercise } = useSessionsStore();
+  const { editExercise } = useSessionsStore();
   const { targetSessionId, targetExerciseId, setTargetSetId } =
     useTargetStore();
 
-  const targetExercise = useMemo(
-    () =>
-      sessions
-        .find((s) => s.id === targetSessionId)
-        .exercises.find((e) => e.id === targetExerciseId),
-    [sessions, targetExerciseId, targetSessionId],
-  );
+  const { targetExercise } = useTarget();
 
   const showActionPanel = useMemo(() => {
     if (!targetExercise) {
@@ -52,6 +47,10 @@ const Exercise = () => {
   }, [navigate, setTargetSetId]);
 
   const endExercise = useCallback(() => {
+    if (!targetSessionId || !targetExerciseId) {
+      return;
+    }
+
     editExercise(targetSessionId, targetExerciseId, { end: new Date() });
     navigate("/session/view");
   }, [editExercise, navigate, targetExerciseId, targetSessionId]);
@@ -61,14 +60,14 @@ const Exercise = () => {
       <Stack.Screen
         options={{
           headerShown: true,
-          title: targetExercise.title,
+          title: targetExercise?.title,
         }}
       />
 
-      {targetExercise.sets?.length ? (
-        <View style={targetExercise.end ? {} : styles.list}>
+      {targetExercise?.sets?.length ? (
+        <View style={targetExercise?.end ? {} : styles.list}>
           <FlatList
-            data={targetExercise.sets.map((s) => s.id)}
+            data={targetExercise?.sets.map((s) => s.id)}
             renderItem={renderItem}
           />
         </View>

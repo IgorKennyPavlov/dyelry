@@ -1,16 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { Text, Button } from "react-native";
 
-import { SESSIONS } from "../global";
-import { useSessionsStore, useHydrated, useTargetStore } from "../store";
+import { useSessionsStore, useHydrated } from "../store";
+import { useTarget } from "../store/useTarget";
 
 const AppLayout = () => {
-  const { [SESSIONS]: sessions } = useSessionsStore();
-  const { targetSessionId } = useTargetStore();
-
   useEffect(() => {
     useSessionsStore.persist.rehydrate();
   }, []);
@@ -18,10 +15,7 @@ const AppLayout = () => {
   const { clearStore } = useSessionsStore();
   const hydrated = useHydrated();
 
-  const targetSession = useMemo(
-    () => sessions.find((el) => el.id === targetSessionId),
-    [sessions, targetSessionId],
-  );
+  const { targetSession } = useTarget();
 
   if (!hydrated) {
     return (
