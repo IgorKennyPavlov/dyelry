@@ -1,4 +1,3 @@
-import { Stack } from "expo-router";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -54,11 +53,6 @@ const Session = () => {
 
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: `Session ${targetSession?.start.toLocaleDateString("ru-RU")}`,
-        }}
-      />
       {targetSession?.exercises?.length ? (
         <View style={targetSession.end ? {} : styles.list}>
           <FlatList

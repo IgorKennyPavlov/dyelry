@@ -1,4 +1,5 @@
 import { Picker } from "@react-native-picker/picker";
+import { Stack } from "expo-router";
 import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -27,7 +28,7 @@ interface SetEditForm {
   comment?: string;
 }
 
-const NewSet = () => {
+const SetEditor = () => {
   const { navigate } = useNavigate();
   const { [SESSIONS]: sessions, editSet } = useSessionsStore();
   const { targetSessionId, targetExerciseId, targetSetId } = useTargetStore();
@@ -44,12 +45,20 @@ const NewSet = () => {
       .sets.find((e) => e.id === targetSetId);
   }, [sessions, targetExerciseId, targetSessionId, targetSetId]);
 
-  const defaultValues: SetEditForm = { weight: "", reps: "", feels: Feels.Ok };
-  const config = { defaultValues };
-  const { getValues, control } = useForm<SetEditForm>(config);
+  const isEditing =
+    targetSet.weight !== undefined && targetSet.reps !== undefined;
+
+  const { getValues, control } = useForm<SetEditForm>({
+    defaultValues: {
+      weight: String(targetSet.weight || ""),
+      reps: String(targetSet.reps || ""),
+      feels: targetSet.feels || Feels.Ok,
+      comment: String(targetSet.comment || ""),
+    },
+  });
 
   useEffect(() => {
-    if (!targetSet?.end) {
+    if (isEditing || !targetSet?.end) {
       return;
     }
 
@@ -58,10 +67,9 @@ const NewSet = () => {
     }, 1000);
 
     return () => clearInterval(intervalId.current);
-  }, [targetSet?.end]);
+  }, [isEditing, targetSet.end]);
 
   const editSetParams = useCallback(() => {
-    // TODO rename fields to transform data easier?
     const { weight, reps, feels, comment } = getValues();
 
     // TODO replace with proper validation
@@ -90,6 +98,13 @@ const NewSet = () => {
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          title: isEditing ? "Edit set" : "Input set params",
+          headerBackVisible: false,
+        }}
+      />
+
       <ScrollView style={styles.formWrap}>
         <View style={styles.fieldWrap}>
           <Text>Weight:</Text>
@@ -172,8 +187,12 @@ const NewSet = () => {
           />
         </View>
 
-        <Text>Rest timer:</Text>
-        <Text style={styles.timer}>{timer.toString()}</Text>
+        {!isEditing && (
+          <>
+            <Text>Rest timer:</Text>
+            <Text style={styles.timer}>{timer.toString()}</Text>
+          </>
+        )}
       </ScrollView>
 
       <View style={styles.btn}>
@@ -185,7 +204,7 @@ const NewSet = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  fieldWrap: { marginBottom: 20 },
+  fieldWrap: { marginTop: 20 },
   textField: {
     minHeight: 44,
     fontSize: 20,
@@ -201,4 +220,4 @@ const styles = StyleSheet.create({
   btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 
-export default NewSet;
+export default SetEditor;

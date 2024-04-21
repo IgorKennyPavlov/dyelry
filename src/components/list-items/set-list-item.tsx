@@ -75,21 +75,8 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
 
   const openExerciseSet = useCallback(() => {
     setTargetSetId(targetSetId);
-
-    // TODO remove after the editor screen added
-    if (!targetSet.weight || !targetSet.reps) {
-      navigate("/session/exercise/exercise-set/new-set");
-      return;
-    }
-
-    // TODO open the editor screen here
-    Alert.alert(
-      "Set info",
-      JSON.stringify(targetSet, null, 2),
-      [{ text: "OK", style: "cancel" }],
-      { cancelable: true },
-    );
-  }, [navigate, setTargetSetId, targetSet, targetSetId]);
+    navigate("/session/exercise/exercise-set/set-editor");
+  }, [navigate, setTargetSetId, targetSetId]);
 
   const openTimer = useCallback(() => {
     setTargetSetId(targetSetId);

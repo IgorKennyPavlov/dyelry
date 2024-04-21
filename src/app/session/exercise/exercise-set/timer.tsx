@@ -1,3 +1,4 @@
+import { Stack } from "expo-router";
 import { useCallback, useState, useRef, useEffect, useMemo } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
@@ -45,7 +46,7 @@ const Timer = () => {
   const endExerciseSet = useCallback(() => {
     const end = new Date();
     editSet(targetSessionId, targetExerciseId, targetSetId, { end });
-    navigate("/session/exercise/exercise-set/new-set");
+    navigate("/session/exercise/exercise-set/set-editor");
   }, [editSet, targetSessionId, targetExerciseId, targetSetId, navigate]);
 
   const finishExerciseSet = useCallback(() => {
@@ -62,8 +63,14 @@ const Timer = () => {
 
   return (
     <>
+      <Stack.Screen
+        options={{
+          title: "Activity timer",
+          headerBackVisible: false,
+        }}
+      />
+
       <View style={styles.formWrap}>
-        <Text>Activity timer:</Text>
         <Text style={styles.timer}>{timer.toString()}</Text>
       </View>
 
