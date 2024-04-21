@@ -16,7 +16,7 @@ import { useSessionsStore, useTargetStore } from "../../store";
 const Session = () => {
   const { navigate } = useNavigate();
   const { [SESSIONS]: sessions, editSession } = useSessionsStore();
-  const { targetSessionId } = useTargetStore();
+  const { targetSessionId, setTargetExerciseId } = useTargetStore();
 
   const targetSession = useMemo(
     () => sessions.find((el) => el.id === targetSessionId),
@@ -41,10 +41,10 @@ const Session = () => {
     <ExerciseListItem {...props} />
   );
 
-  const addExercise = useCallback(
-    () => navigate(`/session/exercise/new-exercise`),
-    [navigate],
-  );
+  const addExercise = useCallback(() => {
+    setTargetExerciseId(String(Date.now()));
+    navigate(`/session/exercise/exercise-editor`);
+  }, [navigate, setTargetExerciseId]);
 
   const endSession = useCallback(() => {
     editSession(targetSessionId, { end: new Date() });

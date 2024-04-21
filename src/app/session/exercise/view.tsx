@@ -64,6 +64,7 @@ const Exercise = () => {
           title: targetExercise.title,
         }}
       />
+
       {targetExercise.sets?.length ? (
         <View style={targetExercise.end ? {} : styles.list}>
           <FlatList

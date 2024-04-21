@@ -1,3 +1,4 @@
+import MCI from "@expo/vector-icons/MaterialCommunityIcons";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -59,6 +60,11 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
     navigate("/session/exercise/view");
   }, [navigate, setTargetExerciseId, targetExerciseId]);
 
+  const editExercise = useCallback(() => {
+    setTargetExerciseId(targetExerciseId);
+    navigate("/session/exercise/exercise-editor");
+  }, [navigate, setTargetExerciseId, targetExerciseId]);
+
   return (
     <Pressable
       style={{
@@ -80,6 +86,10 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
           {FeelsReadable.get(averageFeel)}
         </Text>
       </View>
+
+      <Pressable onPress={editExercise}>
+        <MCI name="pencil-circle-outline" size={32} color="#444" />
+      </Pressable>
     </Pressable>
   );
 };

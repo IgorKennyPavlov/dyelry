@@ -13,6 +13,7 @@
       ],
       "rules": {
         "no-useless-escape": "warn",
+        "no-unused-expressions": "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn"
       }
