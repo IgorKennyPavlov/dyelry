@@ -1,21 +1,9 @@
 import MCI from "@expo/vector-icons/MaterialCommunityIcons";
 import { useMemo, useCallback } from "react";
-import {
-  Text,
-  ListRenderItemInfo,
-  StyleSheet,
-  Pressable,
-  View,
-} from "react-native";
+import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import {
-  FeelsReadable,
-  useNavigate,
-  FeelsColors,
-  getIntervalSeconds,
-  ExerciseProps,
-} from "../../global";
+import { useNavigate, getIntervalSeconds, ExerciseProps } from "../../global";
 import { useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
@@ -44,19 +32,6 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
     return end ? Math.round(getIntervalSeconds(end, start) / 60) : 0;
   }, [targetExercise]);
 
-  // TODO PAVLOV multiply the input by the fraction of the overall weight lifted?
-  const averageFeel = useMemo(() => {
-    if (!targetExercise.sets) {
-      return 0;
-    }
-
-    const feelsSum = targetExercise.sets
-      .map((s) => s.feels)
-      .reduce((a, b) => a + (b || 0), 0);
-    const setsCount = targetExercise.sets.length || 1;
-    return Math.ceil(feelsSum / setsCount);
-  }, [targetExercise.sets]);
-
   const openExercise = useCallback(() => {
     setTargetExerciseId(targetExerciseId);
     navigate("/session/exercise/view");
@@ -82,12 +57,6 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
           <Text>~{duration} min</Text>
         </>
       )}
-      <View style={styles.feels}>
-        <Text>Feels:&nbsp;</Text>
-        <Text style={{ color: FeelsColors.get(averageFeel) }}>
-          {FeelsReadable.get(averageFeel)}
-        </Text>
-      </View>
 
       <Pressable onPress={editExercise}>
         <MCI name="pencil-circle-outline" size={32} color="#444" />
