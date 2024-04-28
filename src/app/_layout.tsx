@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { Text, Button } from "react-native";
 
 import { usePersistentStore, useHydrated } from "../store";
-import { useTarget } from "../store/useTarget";
 
 /**
  * DO NOT REMOVE! Check if helps with unwanted routing to session-editor
@@ -20,8 +19,6 @@ const AppLayout = () => {
 
   const { clearStore } = usePersistentStore();
   const hydrated = useHydrated();
-
-  const { targetSession } = useTarget();
 
   if (!hydrated) {
     return (
@@ -67,10 +64,7 @@ const AppLayout = () => {
       />
       <Tabs.Screen
         name="session"
-        options={{
-          title: "Session " + targetSession?.start.toLocaleDateString("ru-RU"),
-          href: null,
-        }}
+        options={{ headerShown: false, href: null }}
       />
     </Tabs>
   );

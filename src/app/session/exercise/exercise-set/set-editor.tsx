@@ -6,6 +6,7 @@ import {
   useRef,
   useEffect,
   MutableRefObject,
+  useMemo,
 } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -46,7 +47,7 @@ const SetEditor = () => {
   const [timer, setTimer] = useState(0);
   const intervalId: MutableRefObject<number | null> = useRef(null);
 
-  const { targetSet } = useTarget();
+  const { targetExercise, targetSet } = useTarget();
 
   const isEditing =
     targetSet?.weight !== undefined && targetSet.reps !== undefined;
@@ -134,14 +135,19 @@ const SetEditor = () => {
     targetSetId,
   ]);
 
+  const title = useMemo(() => {
+    let res = isEditing ? "Edit set" : "Input set params";
+
+    if (targetExercise?.title) {
+      res += ` (${targetExercise.title})`;
+    }
+
+    return res;
+  }, [isEditing, targetExercise?.title]);
+
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: isEditing ? "Edit set" : "Input set params",
-          headerBackVisible: false,
-        }}
-      />
+      <Stack.Screen options={{ title }} />
 
       <ScrollView style={styles.formWrap}>
         <View style={styles.fieldWrap}>

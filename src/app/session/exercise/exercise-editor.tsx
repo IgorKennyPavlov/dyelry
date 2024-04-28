@@ -93,11 +93,7 @@ const ExerciseEditor = () => {
   return (
     <>
       <Stack.Screen
-        options={{
-          headerShown: true,
-          title: "Exercise name",
-          headerBackVisible: false,
-        }}
+        options={{ title: "Exercise name", headerBackVisible: false }}
       />
 
       <View style={styles.formWrap}>

@@ -5,6 +5,7 @@ import {
   useRef,
   useEffect,
   MutableRefObject,
+  useMemo,
 } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
@@ -18,7 +19,7 @@ const Timer = () => {
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
 
-  const { targetSet } = useTarget();
+  const { targetExercise, targetSet } = useTarget();
 
   const [start, setStart] = useState<Date | null>(targetSet?.start || null);
   const [timer, setTimer] = useState(0);
@@ -71,14 +72,14 @@ const Timer = () => {
     );
   }, [endExerciseSet]);
 
+  const title = useMemo(
+    () => `Activity timer (${targetExercise?.title})`,
+    [targetExercise?.title],
+  );
+
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: "Activity timer",
-          headerBackVisible: false,
-        }}
-      />
+      <Stack.Screen options={{ title }} />
 
       <View style={styles.formWrap}>
         <Text style={styles.timer}>{timer.toString()}</Text>
