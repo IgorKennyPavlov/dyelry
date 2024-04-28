@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import SetListItem from "../../../components/list-items/set-list-item";
-import { useNavigate } from "../../../global";
+import { useNavigate, SetProps } from "../../../global";
 import { useSessionsStore, useTargetStore } from "../../../store";
 import { useTarget } from "../../../store/useTarget";
 
@@ -37,10 +37,6 @@ const Exercise = () => {
     return !sets || sets.every((s) => s.end);
   }, [targetExercise]);
 
-  const renderItem = (props: ListRenderItemInfo<string>) => (
-    <SetListItem {...props} />
-  );
-
   const addSet = useCallback(() => {
     setTargetSetId(null);
     navigate("/session/exercise/exercise-set/timer");
@@ -65,10 +61,12 @@ const Exercise = () => {
       />
 
       {targetExercise?.sets?.length ? (
-        <View style={targetExercise?.end ? {} : styles.list}>
+        <View style={targetExercise.end ? {} : styles.list}>
           <FlatList
-            data={targetExercise?.sets.map((s) => s.id)}
-            renderItem={renderItem}
+            data={targetExercise.sets}
+            renderItem={(props: ListRenderItemInfo<SetProps>) => (
+              <SetListItem {...props} />
+            )}
           />
         </View>
       ) : (

@@ -20,8 +20,8 @@ import {
 import { useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
-const SetListItem = (props: ListRenderItemInfo<string>) => {
-  const { item: targetSetId } = props;
+const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
+  const { item: targetSet } = props;
 
   const { navigate } = useNavigate();
   const { setTargetSetId } = useTargetStore();
@@ -30,18 +30,13 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
   const [rest, setRest] = useState(0);
 
   const { targetExercise } = useTarget();
-
-  const targetSet = useMemo(
-    () => targetExercise?.sets?.find((e) => e.id === targetSetId) as SetProps,
-    [targetExercise?.sets, targetSetId],
-  );
   const targetSetIdx = useMemo(
     () => targetExercise?.sets?.indexOf(targetSet) as number,
     [targetExercise?.sets, targetSet],
   );
 
   useEffect(() => {
-    if (!targetExercise?.sets) {
+    if (!targetExercise?.sets?.length) {
       return;
     }
 
@@ -74,14 +69,14 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
   ]);
 
   const openExerciseSet = useCallback(() => {
-    setTargetSetId(targetSetId);
+    setTargetSetId(targetSet.id);
     navigate("/session/exercise/exercise-set/set-editor");
-  }, [navigate, setTargetSetId, targetSetId]);
+  }, [navigate, setTargetSetId, targetSet.id]);
 
   const openTimer = useCallback(() => {
-    setTargetSetId(targetSetId);
+    setTargetSetId(targetSet.id);
     navigate("/session/exercise/exercise-set/timer");
-  }, [navigate, setTargetSetId, targetSetId]);
+  }, [navigate, setTargetSetId, targetSet.id]);
 
   return (
     <Pressable
@@ -91,10 +86,10 @@ const SetListItem = (props: ListRenderItemInfo<string>) => {
       }}
       onPress={targetSet.end ? openExerciseSet : openTimer}
     >
-      <Text>Reps:</Text>
-      <Text>{targetSet.reps}</Text>
       <Text>Weight:</Text>
       <Text>{targetSet.weight}</Text>
+      <Text>Reps:</Text>
+      <Text>{targetSet.reps}</Text>
       <Text>Feels:</Text>
       <Text style={{ color: FeelsColors.get(targetSet.feels as Feels) }}>
         {FeelsReadable.get(targetSet.feels as Feels)}

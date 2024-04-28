@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Button, View, StyleSheet, TextInput } from "react-native";
+import { Button, View, StyleSheet, TextInput, Alert } from "react-native";
 
 import { useNavigate, ExerciseProps } from "../../../global";
 import { useSessionsStore, useTargetStore } from "../../../store";
@@ -13,8 +13,9 @@ interface ExerciseEditForm {
 
 const ExerciseEditor = () => {
   const { navigate } = useNavigate();
-  const { addExercise, editExercise } = useSessionsStore();
-  const { targetSessionId, targetExerciseId } = useTargetStore();
+  const { addExercise, editExercise, deleteExercise } = useSessionsStore();
+  const { targetSessionId, targetExerciseId, setTargetExerciseId } =
+    useTargetStore();
 
   const { targetExercise } = useTarget();
 
@@ -59,6 +60,36 @@ const ExerciseEditor = () => {
     targetSessionId,
   ]);
 
+  const confirmDelete = useCallback(() => {
+    if (!targetSessionId || !targetExerciseId) {
+      return;
+    }
+
+    Alert.alert(
+      "Deleting exercise",
+      "Are you sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          style: "default",
+          onPress: () => {
+            navigate("/session/view");
+            deleteExercise(targetSessionId, targetExerciseId);
+            setTargetExerciseId(null);
+          },
+        },
+      ],
+      { cancelable: true },
+    );
+  }, [
+    deleteExercise,
+    navigate,
+    setTargetExerciseId,
+    targetExerciseId,
+    targetSessionId,
+  ]);
+
   return (
     <>
       <Stack.Screen
@@ -84,7 +115,14 @@ const ExerciseEditor = () => {
           rules={{ required: true }}
         />
       </View>
-      <View style={styles.confirmBtn}>
+
+      {targetExercise && (
+        <View style={{ ...styles.btn, bottom: 40 }}>
+          <Button title="Delete exercise" color="red" onPress={confirmDelete} />
+        </View>
+      )}
+
+      <View style={styles.btn}>
         <Button
           title={`${targetExercise ? "Update" : "Add"} exercise`}
           onPress={saveExercise}
@@ -97,7 +135,7 @@ const ExerciseEditor = () => {
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
   titleField: { height: 44, fontSize: 20, borderWidth: 1, borderColor: "#000" },
-  confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 
 export default ExerciseEditor;

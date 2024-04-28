@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   FlatList,
   View,
@@ -9,7 +9,7 @@ import {
 } from "react-native";
 
 import SessionListItem from "../components/list-items/session-list-item";
-import { useNavigate, SESSIONS } from "../global";
+import { useNavigate, SESSIONS, SessionProps } from "../global";
 import { useSessionsStore, useTargetStore } from "../store";
 
 const SessionList = () => {
@@ -17,9 +17,7 @@ const SessionList = () => {
   const { setTargetSessionId } = useTargetStore();
   const { navigate } = useNavigate();
 
-  const renderItem = (props: ListRenderItemInfo<string>) => (
-    <SessionListItem {...props} />
-  );
+  const reversedSessions = useMemo(() => [...sessions].reverse(), [sessions]);
 
   const addSession = useCallback(() => {
     setTargetSessionId(String(Date.now()));
@@ -31,8 +29,10 @@ const SessionList = () => {
       {sessions?.length ? (
         <View style={styles.list}>
           <FlatList
-            data={sessions.map((s) => s.id).reverse()}
-            renderItem={renderItem}
+            data={reversedSessions}
+            renderItem={(props: ListRenderItemInfo<SessionProps>) => (
+              <SessionListItem {...props} />
+            )}
           />
         </View>
       ) : (

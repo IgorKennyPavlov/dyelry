@@ -5,23 +5,12 @@ import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 import { listItemCommonStyles } from "./list-item-common-styles";
 import { useNavigate, getIntervalSeconds, ExerciseProps } from "../../global";
 import { useTargetStore } from "../../store";
-import { useTarget } from "../../store/useTarget";
 
-const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
-  const { item: targetExerciseId } = props;
+const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
+  const { item: targetExercise } = props;
 
   const { navigate } = useNavigate();
   const { setTargetExerciseId } = useTargetStore();
-
-  const { targetSession } = useTarget();
-
-  const targetExercise = useMemo(
-    () =>
-      targetSession?.exercises?.find(
-        (e) => e.id === targetExerciseId,
-      ) as ExerciseProps,
-    [targetExerciseId, targetSession?.exercises],
-  );
 
   const duration = useMemo(() => {
     if (!targetExercise) {
@@ -33,14 +22,14 @@ const ExerciseListItem = (props: ListRenderItemInfo<string>) => {
   }, [targetExercise]);
 
   const openExercise = useCallback(() => {
-    setTargetExerciseId(targetExerciseId);
+    setTargetExerciseId(targetExercise.id);
     navigate("/session/exercise/view");
-  }, [navigate, setTargetExerciseId, targetExerciseId]);
+  }, [navigate, setTargetExerciseId, targetExercise.id]);
 
   const editExercise = useCallback(() => {
-    setTargetExerciseId(targetExerciseId);
+    setTargetExerciseId(targetExercise.id);
     navigate("/session/exercise/exercise-editor");
-  }, [navigate, setTargetExerciseId, targetExerciseId]);
+  }, [navigate, setTargetExerciseId, targetExercise.id]);
 
   return (
     <Pressable

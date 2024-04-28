@@ -2,7 +2,7 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useCallback, useState } from "react";
-import { Text, Button, Pressable, View, StyleSheet } from "react-native";
+import { Text, Button, Pressable, View, StyleSheet, Alert } from "react-native";
 
 import { useNavigate, SessionProps } from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
@@ -10,11 +10,11 @@ import { useTarget } from "../../store/useTarget";
 
 const SessionEditor = () => {
   const { navigate } = useNavigate();
-  const { addSession, editSession } = useSessionsStore();
-  const { targetSessionId } = useTargetStore();
+  const { addSession, editSession, deleteSession } = useSessionsStore();
+  const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTarget();
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(targetSession?.start || new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const selectDate = useCallback((_: DateTimePickerEvent, date?: Date) => {
@@ -42,6 +42,30 @@ const SessionEditor = () => {
     navigate("/session/view");
   }, [addSession, date, editSession, navigate, targetSession, targetSessionId]);
 
+  const confirmDelete = useCallback(() => {
+    if (!targetSessionId) {
+      return;
+    }
+
+    Alert.alert(
+      "Deleting session",
+      "Are you sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          style: "default",
+          onPress: () => {
+            navigate("/");
+            deleteSession(targetSessionId);
+            setTargetSessionId(null);
+          },
+        },
+      ],
+      { cancelable: true },
+    );
+  }, [deleteSession, navigate, setTargetSessionId, targetSessionId]);
+
   return (
     <>
       <View style={styles.selectedDate}>
@@ -57,7 +81,14 @@ const SessionEditor = () => {
       {showDatePicker && (
         <RNDateTimePicker value={date} locale="ru-RU" onChange={selectDate} />
       )}
-      <View style={styles.confirmBtn}>
+
+      {targetSession && (
+        <View style={{ ...styles.btn, bottom: 40 }}>
+          <Button title="Delete session" color="red" onPress={confirmDelete} />
+        </View>
+      )}
+
+      <View style={styles.btn}>
         <Button
           title={`${targetSession ? "Update" : "Add"} session`}
           onPress={saveSession}
@@ -77,10 +108,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  dateText: {
-    fontSize: 20,
-  },
-  confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  dateText: { fontSize: 20 },
+  btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 
 export default SessionEditor;

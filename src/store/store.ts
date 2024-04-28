@@ -13,12 +13,14 @@ interface SessionsStore {
     sessionId: string,
     editedSession: Partial<SessionProps>,
   ) => void;
+  deleteSession: (sessionId: string) => void;
   addExercise: (sessionId: string, newExercise: ExerciseProps) => void;
   editExercise: (
     sessionId: string,
     exerciseId: string,
     editedExercise: Partial<ExerciseProps>,
   ) => void;
+  deleteExercise: (sessionId: string, exerciseId: string) => void;
   addSet: (sessionId: string, exerciseId: string, newSet: SetProps) => void;
   editSet: (
     sessionId: string,
@@ -26,6 +28,7 @@ interface SessionsStore {
     setId: string,
     updatedSet: Partial<SetProps>,
   ) => void;
+  deleteSet: (sessionId: string, exerciseId: string, setId: string) => void;
   clearStore: () => void;
 }
 
@@ -50,6 +53,12 @@ export const useSessionsStore = create<SessionsStore>()(
             }
 
             Object.assign(session, editedSession);
+          }),
+        ),
+      deleteSession: (sessionId: string) =>
+        set(
+          produce((state: SessionsStore) => {
+            state[SESSIONS] = state[SESSIONS].filter((s) => s.id !== sessionId);
           }),
         ),
       addExercise: (sessionId: string, newExercise: ExerciseProps) =>
@@ -78,12 +87,7 @@ export const useSessionsStore = create<SessionsStore>()(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
-
-            if (!session) {
-              return;
-            }
-
-            const exercise = session.exercises?.find(
+            const exercise = session?.exercises?.find(
               (e) => e.id === exerciseId,
             );
 
@@ -94,10 +98,9 @@ export const useSessionsStore = create<SessionsStore>()(
             Object.assign(exercise, editedExercise);
           }),
         ),
-      addSet: (sessionId: string, exerciseId: string, newSet: SetProps) =>
+      deleteExercise: (sessionId: string, exerciseId: string) =>
         set(
           produce((state: SessionsStore) => {
-            // TODO duplicate. How to make getters?
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
 
@@ -105,7 +108,18 @@ export const useSessionsStore = create<SessionsStore>()(
               return;
             }
 
-            const exercise = session.exercises?.find(
+            session.exercises = session.exercises?.filter(
+              (e) => e.id !== exerciseId,
+            );
+          }),
+        ),
+      addSet: (sessionId: string, exerciseId: string, newSet: SetProps) =>
+        set(
+          produce((state: SessionsStore) => {
+            // TODO duplicate. How to make getters?
+            const sessions = state[SESSIONS];
+            const session = sessions.find((s) => s.id === sessionId);
+            const exercise = session?.exercises?.find(
               (e) => e.id === exerciseId,
             );
 
@@ -130,12 +144,24 @@ export const useSessionsStore = create<SessionsStore>()(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
+            const exercise = session?.exercises?.find(
+              (e) => e.id === exerciseId,
+            );
+            const targetSet = exercise?.sets?.find((s) => s.id === setId);
 
-            if (!session) {
+            if (!targetSet) {
               return;
             }
 
-            const exercise = session.exercises?.find(
+            Object.assign(targetSet, updatedSet);
+          }),
+        ),
+      deleteSet: (sessionId: string, exerciseId: string, setId: string) =>
+        set(
+          produce((state: SessionsStore) => {
+            const sessions = state[SESSIONS];
+            const session = sessions.find((s) => s.id === sessionId);
+            const exercise = session?.exercises?.find(
               (e) => e.id === exerciseId,
             );
 
@@ -143,13 +169,7 @@ export const useSessionsStore = create<SessionsStore>()(
               return;
             }
 
-            const targetSet = exercise.sets?.find((s) => s.id === setId);
-
-            if (!targetSet) {
-              return;
-            }
-
-            Object.assign(targetSet, updatedSet);
+            exercise.sets = exercise.sets?.filter((s) => s.id !== setId);
           }),
         ),
       clearStore: () =>

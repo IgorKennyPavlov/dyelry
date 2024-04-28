@@ -9,17 +9,17 @@ export const useTarget = () => {
   const { targetSessionId, targetExerciseId, targetSetId } = useTargetStore();
 
   const targetSession: SessionProps | undefined = useMemo(
-    () => sessions.find((el) => el.id === targetSessionId),
+    () => sessions.find((s) => s.id === targetSessionId),
     [sessions, targetSessionId],
   );
 
   const targetExercise: ExerciseProps | undefined = useMemo(
     () => targetSession?.exercises?.find((e) => e.id === targetExerciseId),
-    [targetExerciseId, targetSession?.exercises],
+    [targetSession?.exercises, targetExerciseId],
   );
 
   const targetSet: SetProps | undefined = useMemo(
-    () => targetExercise?.sets?.find((e) => e.id === targetSetId),
+    () => targetExercise?.sets?.find((s) => s.id === targetSetId),
     [targetExercise?.sets, targetSetId],
   );
 

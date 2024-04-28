@@ -15,6 +15,7 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 
 import {
@@ -36,8 +37,9 @@ interface SetEditForm {
 
 const SetEditor = () => {
   const { navigate } = useNavigate();
-  const { editSet } = useSessionsStore();
-  const { targetSessionId, targetExerciseId, targetSetId } = useTargetStore();
+  const { editSet, deleteSet } = useSessionsStore();
+  const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
+    useTargetStore();
 
   // TODO separate textarea into a component?
   const [commentHeight, setCommentHeight] = useState(0);
@@ -99,6 +101,37 @@ const SetEditor = () => {
     targetExerciseId,
     targetSetId,
     navigate,
+  ]);
+
+  const confirmDelete = useCallback(() => {
+    if (!targetSessionId || !targetExerciseId || !targetSetId) {
+      return;
+    }
+
+    Alert.alert(
+      "Deleting set",
+      "Are you sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Confirm",
+          style: "default",
+          onPress: () => {
+            navigate("/session/exercise/view");
+            deleteSet(targetSessionId, targetExerciseId, targetSetId);
+            setTargetSetId(null);
+          },
+        },
+      ],
+      { cancelable: true },
+    );
+  }, [
+    deleteSet,
+    navigate,
+    setTargetSetId,
+    targetExerciseId,
+    targetSessionId,
+    targetSetId,
   ]);
 
   return (
@@ -199,6 +232,12 @@ const SetEditor = () => {
           </>
         )}
       </ScrollView>
+
+      {isEditing && (
+        <View style={{ ...styles.btn, bottom: 40 }}>
+          <Button title="Delete set" color="red" onPress={confirmDelete} />
+        </View>
+      )}
 
       <View style={styles.btn}>
         <Button title="Save set" onPress={editSetParams} />

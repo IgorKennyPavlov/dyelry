@@ -10,7 +10,7 @@ import {
 } from "react-native";
 
 import ExerciseListItem from "../../components/list-items/exercise-list-item";
-import { useNavigate } from "../../global";
+import { useNavigate, ExerciseProps } from "../../global";
 import { useSessionsStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
@@ -35,10 +35,6 @@ const Session = () => {
     return !exercises || exercises.every((e) => e.end);
   }, [targetSession]);
 
-  const renderItem = (props: ListRenderItemInfo<string>) => (
-    <ExerciseListItem {...props} />
-  );
-
   const addExercise = useCallback(() => {
     setTargetExerciseId(String(Date.now()));
     navigate(`/session/exercise/exercise-editor`);
@@ -58,8 +54,10 @@ const Session = () => {
       {targetSession?.exercises?.length ? (
         <View style={targetSession.end ? {} : styles.list}>
           <FlatList
-            data={targetSession.exercises.map((e) => e.id)}
-            renderItem={renderItem}
+            data={targetSession.exercises}
+            renderItem={(props: ListRenderItemInfo<ExerciseProps>) => (
+              <ExerciseListItem {...props} />
+            )}
           />
         </View>
       ) : (
