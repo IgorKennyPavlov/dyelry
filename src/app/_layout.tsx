@@ -34,6 +34,7 @@ const AppLayout = () => {
       screenOptions={{
         headerStyle: { backgroundColor: "#1c357f" },
         headerTintColor: "#fff",
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen

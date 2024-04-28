@@ -25,6 +25,7 @@ import {
   getIntervalSeconds,
   useNavigate,
   FeelsColors,
+  useKeyboard,
 } from "../../../../global";
 import { usePersistentStore, useTargetStore } from "../../../../store";
 import { useTarget } from "../../../../store/useTarget";
@@ -38,6 +39,7 @@ interface SetEditForm {
 
 const SetEditor = () => {
   const { navigate } = useNavigate();
+  const { isKeyboardVisible } = useKeyboard();
   const { editSet, deleteSet } = usePersistentStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
@@ -245,15 +247,19 @@ const SetEditor = () => {
         )}
       </ScrollView>
 
-      {isEditing && (
-        <View style={{ ...styles.btn, bottom: 40 }}>
-          <Button title="Delete set" color="red" onPress={confirmDelete} />
-        </View>
-      )}
+      {!isKeyboardVisible && (
+        <>
+          {isEditing && (
+            <View style={{ ...styles.btn, bottom: 40 }}>
+              <Button title="Delete set" color="red" onPress={confirmDelete} />
+            </View>
+          )}
 
-      <View style={styles.btn}>
-        <Button title="Save set" onPress={editSetParams} />
-      </View>
+          <View style={styles.btn}>
+            <Button title="Save set" onPress={editSetParams} />
+          </View>
+        </>
+      )}
     </>
   );
 };

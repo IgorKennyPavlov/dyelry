@@ -13,7 +13,7 @@ import {
   TextInput,
 } from "react-native";
 
-import { useNavigate, SessionProps } from "../../global";
+import { useNavigate, SessionProps, useKeyboard } from "../../global";
 import { usePersistentStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
@@ -24,6 +24,7 @@ interface SessionEditForm {
 
 const SessionEditor = () => {
   const { navigate } = useNavigate();
+  const { isKeyboardVisible } = useKeyboard();
   const { addSession, editSession, deleteSession } = usePersistentStore();
   const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTarget();
@@ -145,18 +146,26 @@ const SessionEditor = () => {
         <RNDateTimePicker value={date} locale="ru-RU" onChange={selectDate} />
       )}
 
-      {targetSession && (
-        <View style={{ ...styles.btn, bottom: 40 }}>
-          <Button title="Delete session" color="red" onPress={confirmDelete} />
-        </View>
-      )}
+      {!isKeyboardVisible && (
+        <>
+          {targetSession && (
+            <View style={{ ...styles.btn, bottom: 40 }}>
+              <Button
+                title="Delete session"
+                color="red"
+                onPress={confirmDelete}
+              />
+            </View>
+          )}
 
-      <View style={styles.btn}>
-        <Button
-          title={`${targetSession ? "Update" : "Add"} session`}
-          onPress={saveSession}
-        />
-      </View>
+          <View style={styles.btn}>
+            <Button
+              title={`${targetSession ? "Update" : "Add"} session`}
+              onPress={saveSession}
+            />
+          </View>
+        </>
+      )}
     </>
   );
 };

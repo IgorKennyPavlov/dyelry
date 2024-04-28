@@ -3,7 +3,7 @@ import { useCallback, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button, View, StyleSheet, TextInput, Alert, Text } from "react-native";
 
-import { useNavigate, ExerciseProps } from "../../../global";
+import { useNavigate, ExerciseProps, useKeyboard } from "../../../global";
 import { usePersistentStore, useTargetStore } from "../../../store";
 import { useTarget } from "../../../store/useTarget";
 
@@ -14,6 +14,7 @@ interface ExerciseEditForm {
 
 const ExerciseEditor = () => {
   const { navigate } = useNavigate();
+  const { isKeyboardVisible } = useKeyboard();
   const { addExercise, editExercise, deleteExercise } = usePersistentStore();
   const { targetSessionId, targetExerciseId, setTargetExerciseId } =
     useTargetStore();
@@ -141,18 +142,26 @@ const ExerciseEditor = () => {
         />
       </View>
 
-      {targetExercise && (
-        <View style={{ ...styles.btn, bottom: 40 }}>
-          <Button title="Delete exercise" color="red" onPress={confirmDelete} />
-        </View>
-      )}
+      {!isKeyboardVisible && (
+        <>
+          {targetExercise && (
+            <View style={{ ...styles.btn, bottom: 40 }}>
+              <Button
+                title="Delete exercise"
+                color="red"
+                onPress={confirmDelete}
+              />
+            </View>
+          )}
 
-      <View style={styles.btn}>
-        <Button
-          title={`${targetExercise ? "Update" : "Add"} exercise`}
-          onPress={saveExercise}
-        />
-      </View>
+          <View style={styles.btn}>
+            <Button
+              title={`${targetExercise ? "Update" : "Add"} exercise`}
+              onPress={saveExercise}
+            />
+          </View>
+        </>
+      )}
     </>
   );
 };
