@@ -86,11 +86,7 @@ const Session = () => {
 
 const styles = StyleSheet.create({
   list: { paddingBottom: 36 },
-  emptyList: {
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   btn: {
     position: "absolute",
     bottom: 0,
