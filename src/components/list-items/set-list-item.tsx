@@ -35,6 +35,15 @@ const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
     [targetExercise?.sets, targetSet],
   );
 
+  const duration = useMemo(() => {
+    if (!targetSet) {
+      return 0;
+    }
+
+    const { start, end } = targetSet;
+    return end ? Math.round(getIntervalSeconds(end, start)) : 0;
+  }, [targetSet]);
+
   useEffect(() => {
     if (!targetExercise?.sets?.length) {
       return;
@@ -88,14 +97,24 @@ const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
     >
       <Text>Weight:</Text>
       <Text>{targetSet.weight}</Text>
+
       <Text>Reps:</Text>
       <Text>{targetSet.reps}</Text>
+
+      {targetSet?.end && (
+        <>
+          <Text>Duration:</Text>
+          <Text>{duration}s</Text>
+        </>
+      )}
+
       <Text>Feels:</Text>
       <Text style={{ color: FeelsColors.get(targetSet.feels as Feels) }}>
         {FeelsReadable.get(targetSet.feels as Feels)}
       </Text>
+
       <Text>Rest:</Text>
-      <Text style={intervalId.current ? styles.runningTimer : {}}>{rest}</Text>
+      <Text style={intervalId.current ? styles.runningTimer : {}}>{rest}s</Text>
     </Pressable>
   );
 };
