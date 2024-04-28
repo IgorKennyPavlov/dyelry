@@ -2,17 +2,38 @@ import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { useCallback, useState } from "react";
-import { Text, Button, Pressable, View, StyleSheet, Alert } from "react-native";
+import { Controller, useForm } from "react-hook-form";
+import {
+  Text,
+  Button,
+  Pressable,
+  View,
+  StyleSheet,
+  Alert,
+  TextInput,
+} from "react-native";
 
 import { useNavigate, SessionProps } from "../../global";
 import { usePersistentStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
+
+interface SessionEditForm {
+  title: string;
+  comment: string;
+}
 
 const SessionEditor = () => {
   const { navigate } = useNavigate();
   const { addSession, editSession, deleteSession } = usePersistentStore();
   const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTarget();
+
+  const { getValues, control } = useForm<SessionEditForm>({
+    defaultValues: {
+      title: targetSession?.title || "",
+      comment: targetSession?.comment || "",
+    },
+  });
 
   const [date, setDate] = useState(targetSession?.start || new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -30,7 +51,11 @@ const SessionEditor = () => {
       return;
     }
 
-    const sessionData: SessionProps = { id: targetSessionId, start: date };
+    const sessionData: SessionProps = {
+      id: targetSessionId,
+      start: date,
+      ...getValues(),
+    };
 
     if (targetSession) {
       editSession(targetSessionId, sessionData);
@@ -40,7 +65,15 @@ const SessionEditor = () => {
 
     addSession(sessionData);
     navigate("/session/view");
-  }, [addSession, date, editSession, navigate, targetSession, targetSessionId]);
+  }, [
+    addSession,
+    date,
+    editSession,
+    getValues,
+    navigate,
+    targetSession,
+    targetSessionId,
+  ]);
 
   const confirmDelete = useCallback(() => {
     if (!targetSessionId) {
@@ -68,16 +101,46 @@ const SessionEditor = () => {
 
   return (
     <>
-      <View style={styles.selectedDate}>
+      <View style={styles.formWrap}>
+        <Text>Title:</Text>
+        <Controller
+          control={control}
+          render={({ field: { value, onChange, onBlur } }) => (
+            <TextInput
+              style={styles.textField}
+              value={value}
+              onChangeText={(value) => onChange(value)}
+              onBlur={onBlur}
+            />
+          )}
+          name="title"
+        />
+
+        <Text>Date:</Text>
         <Pressable
-          style={styles.dateTextWrap}
+          style={styles.textField}
           onPress={() => setShowDatePicker(true)}
         >
           <Text style={styles.dateText}>
             {date.toLocaleDateString("ru-RU")}
           </Text>
         </Pressable>
+
+        <Text>Comment:</Text>
+        <Controller
+          control={control}
+          render={({ field: { value, onChange, onBlur } }) => (
+            <TextInput
+              style={styles.textField}
+              value={value}
+              onChangeText={(value) => onChange(value)}
+              onBlur={onBlur}
+            />
+          )}
+          name="comment"
+        />
       </View>
+
       {showDatePicker && (
         <RNDateTimePicker value={date} locale="ru-RU" onChange={selectDate} />
       )}
@@ -99,6 +162,14 @@ const SessionEditor = () => {
 };
 
 const styles = StyleSheet.create({
+  formWrap: { flex: 1 },
+  textField: {
+    height: 44,
+    fontSize: 20,
+    borderWidth: 1,
+    borderColor: "#000",
+    justifyContent: "center",
+  },
   selectedDate: { flex: 1, justifyContent: "center", alignItems: "center" },
   dateTextWrap: {
     borderWidth: 1,

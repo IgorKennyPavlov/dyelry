@@ -13,8 +13,12 @@ const SessionLayout = () => {
       res += ` ${targetSession.start.toLocaleDateString("ru-RU")}`;
     }
 
+    if (targetSession?.title) {
+      res += ` (${targetSession.title})`;
+    }
+
     return res;
-  }, [targetSession?.start]);
+  }, [targetSession]);
 
   return (
     <Stack screenOptions={{ title }}>

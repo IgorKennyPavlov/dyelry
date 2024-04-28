@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Button, View, StyleSheet, TextInput, Alert } from "react-native";
+import { Button, View, StyleSheet, TextInput, Alert, Text } from "react-native";
 
 import { useNavigate, ExerciseProps } from "../../../global";
 import { usePersistentStore, useTargetStore } from "../../../store";
@@ -9,6 +9,7 @@ import { useTarget } from "../../../store/useTarget";
 
 interface ExerciseEditForm {
   title: string;
+  comment: string;
 }
 
 const ExerciseEditor = () => {
@@ -18,9 +19,13 @@ const ExerciseEditor = () => {
     useTargetStore();
 
   const { targetExercise } = useTarget();
+  const isEditing = targetExercise?.title !== undefined;
 
   const { getValues, control } = useForm<ExerciseEditForm>({
-    defaultValues: { title: targetExercise?.title || "" },
+    defaultValues: {
+      title: targetExercise?.title || "",
+      comment: targetExercise?.comment || "",
+    },
   });
 
   const saveExercise = useCallback(() => {
@@ -28,18 +33,16 @@ const ExerciseEditor = () => {
       return;
     }
 
-    const title = getValues().title;
-
     // TODO replace with proper validation
-    if (title === "") {
+    if (getValues().title === "") {
       alert("Fill the title field!");
       return;
     }
 
     const exerciseData: ExerciseProps = {
       id: targetExerciseId,
-      title,
       start: new Date(),
+      ...getValues(),
     };
 
     if (targetExercise) {
@@ -90,18 +93,30 @@ const ExerciseEditor = () => {
     targetSessionId,
   ]);
 
+  const title = useMemo(() => {
+    let res = isEditing ? "Edit exercise" : "Create exercise";
+
+    if (targetExercise?.title) {
+      res += ` (${targetExercise.title})`;
+    }
+
+    return res;
+  }, [isEditing, targetExercise?.title]);
+
   return (
     <>
-      <Stack.Screen
-        options={{ title: "Exercise name", headerBackVisible: false }}
-      />
+      <Stack.Screen options={{ title, headerBackVisible: false }} />
 
+      <Text>
+        <Text style={{ color: "red" }}>* </Text>
+        Title:
+      </Text>
       <View style={styles.formWrap}>
         <Controller
           control={control}
           render={({ field: { value, onChange, onBlur } }) => (
             <TextInput
-              style={styles.titleField}
+              style={styles.textField}
               value={value}
               onChangeText={(value) => onChange(value)}
               onBlur={onBlur}
@@ -109,6 +124,20 @@ const ExerciseEditor = () => {
           )}
           name="title"
           rules={{ required: true }}
+        />
+
+        <Text>Comment:</Text>
+        <Controller
+          control={control}
+          render={({ field: { value, onChange, onBlur } }) => (
+            <TextInput
+              style={styles.textField}
+              value={value}
+              onChangeText={(value) => onChange(value)}
+              onBlur={onBlur}
+            />
+          )}
+          name="comment"
         />
       </View>
 
@@ -130,7 +159,13 @@ const ExerciseEditor = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  titleField: { height: 44, fontSize: 20, borderWidth: 1, borderColor: "#000" },
+  textField: {
+    height: 44,
+    fontSize: 20,
+    borderWidth: 1,
+    borderColor: "#000",
+    justifyContent: "center",
+  },
   btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 

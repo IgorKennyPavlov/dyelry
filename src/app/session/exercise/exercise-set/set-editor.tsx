@@ -151,7 +151,10 @@ const SetEditor = () => {
 
       <ScrollView style={styles.formWrap}>
         <View style={styles.fieldWrap}>
-          <Text>Weight:</Text>
+          <Text>
+            <Text style={{ color: "red" }}>* </Text>
+            Weight:
+          </Text>
           <Controller
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
@@ -169,7 +172,10 @@ const SetEditor = () => {
         </View>
 
         <View style={styles.fieldWrap}>
-          <Text>Reps:</Text>
+          <Text>
+            <Text style={{ color: "red" }}>* </Text>
+            Reps:
+          </Text>
           <Controller
             control={control}
             render={({ field: { value, onChange, onBlur } }) => (
@@ -256,10 +262,11 @@ const styles = StyleSheet.create({
   formWrap: { flex: 1 },
   fieldWrap: { marginTop: 20 },
   textField: {
-    minHeight: 44,
+    height: 44,
     fontSize: 20,
     borderWidth: 1,
     borderColor: "#000",
+    justifyContent: "center",
   },
   selectField: {
     minHeight: 44,
