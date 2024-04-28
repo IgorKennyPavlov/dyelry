@@ -9,12 +9,12 @@ import {
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
 import { getIntervalSeconds, useNavigate } from "../../../../global";
-import { useSessionsStore, useTargetStore } from "../../../../store";
+import { usePersistentStore, useTargetStore } from "../../../../store";
 import { useTarget } from "../../../../store/useTarget";
 
 const Timer = () => {
   const { navigate } = useNavigate();
-  const { addSet, editSet } = useSessionsStore();
+  const { addSet, editSet } = usePersistentStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
 

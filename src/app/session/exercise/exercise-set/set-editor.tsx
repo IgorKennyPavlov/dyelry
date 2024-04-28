@@ -25,7 +25,7 @@ import {
   useNavigate,
   FeelsColors,
 } from "../../../../global";
-import { useSessionsStore, useTargetStore } from "../../../../store";
+import { usePersistentStore, useTargetStore } from "../../../../store";
 import { useTarget } from "../../../../store/useTarget";
 
 interface SetEditForm {
@@ -37,7 +37,7 @@ interface SetEditForm {
 
 const SetEditor = () => {
   const { navigate } = useNavigate();
-  const { editSet, deleteSet } = useSessionsStore();
+  const { editSet, deleteSet } = usePersistentStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
 

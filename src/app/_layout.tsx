@@ -4,15 +4,15 @@ import { Tabs } from "expo-router";
 import { useEffect } from "react";
 import { Text, Button } from "react-native";
 
-import { useSessionsStore, useHydrated } from "../store";
+import { usePersistentStore, useHydrated } from "../store";
 import { useTarget } from "../store/useTarget";
 
 const AppLayout = () => {
   useEffect(() => {
-    useSessionsStore.persist.rehydrate();
+    usePersistentStore.persist.rehydrate();
   }, []);
 
-  const { clearStore } = useSessionsStore();
+  const { clearStore } = usePersistentStore();
   const hydrated = useHydrated();
 
   const { targetSession } = useTarget();

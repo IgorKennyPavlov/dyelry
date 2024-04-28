@@ -32,7 +32,7 @@ interface SessionsStore {
   clearStore: () => void;
 }
 
-export const useSessionsStore = create<SessionsStore>()(
+export const usePersistentStore = create<SessionsStore>()(
   persist(
     (set) => ({
       [SESSIONS]: [] as SessionProps[],

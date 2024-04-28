@@ -10,10 +10,10 @@ import {
 
 import SessionListItem from "../components/list-items/session-list-item";
 import { useNavigate, SESSIONS, SessionProps } from "../global";
-import { useSessionsStore, useTargetStore } from "../store";
+import { usePersistentStore, useTargetStore } from "../store";
 
 const SessionList = () => {
-  const { [SESSIONS]: sessions } = useSessionsStore();
+  const { [SESSIONS]: sessions } = usePersistentStore();
   const { setTargetSessionId } = useTargetStore();
   const { navigate } = useNavigate();
 

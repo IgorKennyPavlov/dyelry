@@ -5,12 +5,12 @@ import { useCallback, useState } from "react";
 import { Text, Button, Pressable, View, StyleSheet, Alert } from "react-native";
 
 import { useNavigate, SessionProps } from "../../global";
-import { useSessionsStore, useTargetStore } from "../../store";
+import { usePersistentStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
 const SessionEditor = () => {
   const { navigate } = useNavigate();
-  const { addSession, editSession, deleteSession } = useSessionsStore();
+  const { addSession, editSession, deleteSession } = usePersistentStore();
   const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTarget();
 

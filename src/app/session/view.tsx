@@ -11,12 +11,12 @@ import {
 
 import ExerciseListItem from "../../components/list-items/exercise-list-item";
 import { useNavigate, ExerciseProps } from "../../global";
-import { useSessionsStore, useTargetStore } from "../../store";
+import { usePersistentStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
 const Session = () => {
   const { navigate } = useNavigate();
-  const { editSession } = useSessionsStore();
+  const { editSession } = usePersistentStore();
   const { targetSessionId, setTargetExerciseId } = useTargetStore();
 
   const { targetSession } = useTarget();

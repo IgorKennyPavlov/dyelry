@@ -12,12 +12,12 @@ import {
 
 import SetListItem from "../../../components/list-items/set-list-item";
 import { useNavigate, SetProps } from "../../../global";
-import { useSessionsStore, useTargetStore } from "../../../store";
+import { usePersistentStore, useTargetStore } from "../../../store";
 import { useTarget } from "../../../store/useTarget";
 
 const Exercise = () => {
   const { navigate } = useNavigate();
-  const { editExercise } = useSessionsStore();
+  const { editExercise } = usePersistentStore();
   const { targetSessionId, targetExerciseId, setTargetSetId } =
     useTargetStore();
 

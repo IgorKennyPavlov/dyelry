@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Button, View, StyleSheet, TextInput, Alert } from "react-native";
 
 import { useNavigate, ExerciseProps } from "../../../global";
-import { useSessionsStore, useTargetStore } from "../../../store";
+import { usePersistentStore, useTargetStore } from "../../../store";
 import { useTarget } from "../../../store/useTarget";
 
 interface ExerciseEditForm {
@@ -13,7 +13,7 @@ interface ExerciseEditForm {
 
 const ExerciseEditor = () => {
   const { navigate } = useNavigate();
-  const { addExercise, editExercise, deleteExercise } = useSessionsStore();
+  const { addExercise, editExercise, deleteExercise } = usePersistentStore();
   const { targetSessionId, targetExerciseId, setTargetExerciseId } =
     useTargetStore();
 

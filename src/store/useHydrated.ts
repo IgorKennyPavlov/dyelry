@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 
-import { useSessionsStore } from "./store";
+import { usePersistentStore } from "./store";
 
 export const useHydrated = () => {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const unsubFinishHydration = useSessionsStore.persist.onFinishHydration(
+    const unsubFinishHydration = usePersistentStore.persist.onFinishHydration(
       () => setHydrated(true),
     );
 
-    setHydrated(useSessionsStore.persist.hasHydrated());
+    setHydrated(usePersistentStore.persist.hasHydrated());
 
     return () => unsubFinishHydration();
   }, []);

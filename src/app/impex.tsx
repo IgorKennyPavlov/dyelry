@@ -4,11 +4,11 @@ import { View, Button, StyleSheet, Alert } from "react-native";
 import {
   exportStoreAsync,
   importSessionsAsync,
-  useSessionsStore,
+  usePersistentStore,
 } from "../store";
 
 const Impex = () => {
-  const { clearStore } = useSessionsStore();
+  const { clearStore } = usePersistentStore();
 
   const tryToClearStore = useCallback(() => {
     Alert.alert(
@@ -24,7 +24,7 @@ const Impex = () => {
 
   const importSessions = useCallback(async () => {
     await importSessionsAsync();
-    useSessionsStore.persist.rehydrate();
+    usePersistentStore.persist.rehydrate();
   }, []);
 
   const tryToImportSessions = useCallback(() => {
