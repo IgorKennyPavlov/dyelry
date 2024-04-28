@@ -39,14 +39,13 @@ const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
       }}
       onPress={openSession}
     >
-      <Text>Start:</Text>
-      <Text>{targetSession?.start.toLocaleString("ru-RU")}</Text>
-      {targetSession?.end && (
-        <>
-          <Text>Duration:</Text>
-          <Text>~{duration} min</Text>
-        </>
-      )}
+      <Text style={{ width: "20%" }}>
+        {targetSession?.start.toLocaleDateString("ru-RU")}
+      </Text>
+      <Text style={{ width: "50%" }}>{targetSession?.title}</Text>
+      <Text style={{ width: "20%" }}>
+        {targetSession?.end ? `~${duration} min` : "--"}
+      </Text>
 
       <Pressable onPress={editSession}>
         <MCI name="pencil-circle-outline" size={32} color="#444" />

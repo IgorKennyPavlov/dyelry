@@ -1,6 +1,14 @@
 import { StyleSheet } from "react-native";
 
 export const listItemCommonStyles = StyleSheet.create({
+  header: {
+    width: "100%",
+    flexDirection: "row",
+    paddingTop: 12,
+    paddingHorizontal: 12,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   plaque: {
     height: 44,
     marginVertical: 8,

@@ -8,6 +8,7 @@ import {
   Text,
 } from "react-native";
 
+import { listItemCommonStyles } from "../components/list-items/list-item-common-styles";
 import SessionListItem from "../components/list-items/session-list-item";
 import { useNavigate, SESSIONS, SessionProps } from "../global";
 import { usePersistentStore, useTargetStore } from "../store";
@@ -28,6 +29,13 @@ const SessionList = () => {
     <>
       {sessions?.length ? (
         <View style={styles.list}>
+          <View style={listItemCommonStyles.header}>
+            <Text style={{ width: "20%" }}>Date</Text>
+            <Text style={{ width: "50%" }}>Title</Text>
+            <Text style={{ width: "20%" }}>Duration</Text>
+            <Text style={{ width: "10%" }}>Edit</Text>
+          </View>
+
           <FlatList
             data={reversedSessions}
             renderItem={(props: ListRenderItemInfo<SessionProps>) => (

@@ -39,15 +39,12 @@ const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
       }}
       onPress={openExercise}
     >
-      <Text>{targetExercise.title}</Text>
-      {targetExercise?.end && (
-        <>
-          <Text>Duration:</Text>
-          <Text>~{duration} min</Text>
-        </>
-      )}
+      <Text style={{ width: "50%" }}>{targetExercise.title}</Text>
+      <Text style={{ width: "40%" }}>
+        {targetExercise?.end ? `~${duration} min` : "--"}
+      </Text>
 
-      <Pressable onPress={editExercise}>
+      <Pressable style={{ width: "10%" }} onPress={editExercise}>
         <MCI name="pencil-circle-outline" size={32} color="#444" />
       </Pressable>
     </Pressable>

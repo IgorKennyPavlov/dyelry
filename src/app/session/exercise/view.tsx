@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 
+import { listItemCommonStyles } from "../../../components/list-items/list-item-common-styles";
 import SetListItem from "../../../components/list-items/set-list-item";
 import { useNavigate, SetProps } from "../../../global";
 import { usePersistentStore, useTargetStore } from "../../../store";
@@ -62,6 +63,14 @@ const Exercise = () => {
 
       {targetExercise?.sets?.length ? (
         <View style={targetExercise.end ? {} : styles.list}>
+          <View style={listItemCommonStyles.header}>
+            <Text style={{ width: "15%" }}>Weight</Text>
+            <Text style={{ width: "15%" }}>Reps</Text>
+            <Text style={{ width: "30%" }}>Duration</Text>
+            <Text style={{ width: "30%" }}>Feels</Text>
+            <Text style={{ width: "10%" }}>Rest</Text>
+          </View>
+
           <FlatList
             data={targetExercise.sets}
             renderItem={(props: ListRenderItemInfo<SetProps>) => (

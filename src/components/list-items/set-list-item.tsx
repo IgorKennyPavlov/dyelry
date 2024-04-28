@@ -95,26 +95,29 @@ const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
       }}
       onPress={targetSet.end ? openExerciseSet : openTimer}
     >
-      <Text>Weight:</Text>
-      <Text>{targetSet.weight}</Text>
+      <Text style={{ width: "15%" }}>{targetSet.weight}</Text>
+      <Text style={{ width: "15%" }}>{targetSet.reps}</Text>
+      <Text style={{ width: "30%" }}>
+        {targetSet?.end ? `${duration}s` : "--"}
+      </Text>
 
-      <Text>Reps:</Text>
-      <Text>{targetSet.reps}</Text>
-
-      {targetSet?.end && (
-        <>
-          <Text>Duration:</Text>
-          <Text>{duration}s</Text>
-        </>
-      )}
-
-      <Text>Feels:</Text>
-      <Text style={{ color: FeelsColors.get(targetSet.feels as Feels) }}>
+      <Text
+        style={{
+          width: "30%",
+          color: FeelsColors.get(targetSet.feels as Feels),
+        }}
+      >
         {FeelsReadable.get(targetSet.feels as Feels)}
       </Text>
 
-      <Text>Rest:</Text>
-      <Text style={intervalId.current ? styles.runningTimer : {}}>{rest}s</Text>
+      <Text
+        style={{
+          width: "10%",
+          ...(intervalId.current ? styles.runningTimer : {}),
+        }}
+      >
+        {rest}s
+      </Text>
     </Pressable>
   );
 };

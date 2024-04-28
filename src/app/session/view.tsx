@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import ExerciseListItem from "../../components/list-items/exercise-list-item";
+import { listItemCommonStyles } from "../../components/list-items/list-item-common-styles";
 import { useNavigate, ExerciseProps } from "../../global";
 import { usePersistentStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
@@ -53,6 +54,12 @@ const Session = () => {
     <>
       {targetSession?.exercises?.length ? (
         <View style={targetSession.end ? {} : styles.list}>
+          <View style={listItemCommonStyles.header}>
+            <Text style={{ width: "40%" }}>Title</Text>
+            <Text style={{ width: "50%" }}>Duration</Text>
+            <Text style={{ width: "10%" }}>Edit</Text>
+          </View>
+
           <FlatList
             data={targetSession.exercises}
             renderItem={(props: ListRenderItemInfo<ExerciseProps>) => (
