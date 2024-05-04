@@ -10,8 +10,7 @@ import {
   Dimensions,
 } from "react-native";
 
-import { listItemCommonStyles } from "../../../components/list-items/list-item-common-styles";
-import SetListItem from "../../../components/list-items/set-list-item";
+import { SetListItem, listItemCommonStyles } from "../../../components";
 import { useNavigate, SetProps } from "../../../global";
 import { usePersistentStore, useTargetStore } from "../../../store";
 import { useTarget } from "../../../store/useTarget";

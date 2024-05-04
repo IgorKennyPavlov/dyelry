@@ -6,7 +6,7 @@ import { listItemCommonStyles } from "./list-item-common-styles";
 import { getIntervalSeconds, useNavigate, SessionProps } from "../../global";
 import { useTargetStore } from "../../store";
 
-const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
+export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
   const { item: targetSession } = props;
 
   const { navigate } = useNavigate();
@@ -55,5 +55,3 @@ const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
 };
 
 const styles = listItemCommonStyles;
-
-export default SessionListItem;

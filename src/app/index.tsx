@@ -8,8 +8,7 @@ import {
   Text,
 } from "react-native";
 
-import { listItemCommonStyles } from "../components/list-items/list-item-common-styles";
-import SessionListItem from "../components/list-items/session-list-item";
+import { SessionListItem, listItemCommonStyles } from "../components";
 import { useNavigate, SESSIONS, SessionProps } from "../global";
 import { usePersistentStore, useTargetStore } from "../store";
 

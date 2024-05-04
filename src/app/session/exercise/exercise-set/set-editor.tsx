@@ -1,4 +1,3 @@
-import { Picker } from "@react-native-picker/picker";
 import { Stack } from "expo-router";
 import {
   useCallback,
@@ -8,24 +7,24 @@ import {
   MutableRefObject,
   useMemo,
 } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   Text,
   Button,
   View,
   StyleSheet,
-  TextInput,
   ScrollView,
   Alert,
 } from "react-native";
 
+import { Input, Select } from "../../../../components";
 import {
   Feels,
-  FeelsReadable,
   getIntervalSeconds,
   useNavigate,
-  FeelsColors,
   useKeyboard,
+  FeelsReadable,
+  FeelsColors,
 } from "../../../../global";
 import { usePersistentStore, useTargetStore } from "../../../../store";
 import { useTarget } from "../../../../store/useTarget";
@@ -43,13 +42,10 @@ const SetEditor = () => {
   const { editSet, deleteSet } = usePersistentStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
+  const { targetExercise, targetSet } = useTarget();
 
-  // TODO separate textarea into a component?
-  const [commentHeight, setCommentHeight] = useState(0);
   const [timer, setTimer] = useState(0);
   const intervalId: MutableRefObject<number | null> = useRef(null);
-
-  const { targetExercise, targetSet } = useTarget();
 
   const isEditing =
     targetSet?.weight !== undefined && targetSet.reps !== undefined;
@@ -147,97 +143,23 @@ const SetEditor = () => {
     return res;
   }, [isEditing, targetExercise?.title]);
 
+  const options = useMemo(
+    () =>
+      [...FeelsReadable.entries()].map(([value, label]) => {
+        return { label, value, style: { color: FeelsColors.get(value) } };
+      }),
+    [],
+  );
+
   return (
     <>
       <Stack.Screen options={{ title }} />
 
       <ScrollView style={styles.formWrap}>
-        <View style={styles.fieldWrap}>
-          <Text>
-            <Text style={{ color: "red" }}>* </Text>
-            Weight:
-          </Text>
-          <Controller
-            control={control}
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextInput
-                inputMode="numeric"
-                style={styles.textField}
-                value={value}
-                onChangeText={(value) => onChange(value)}
-                onBlur={onBlur}
-              />
-            )}
-            rules={{ required: true }}
-            name="weight"
-          />
-        </View>
-
-        <View style={styles.fieldWrap}>
-          <Text>
-            <Text style={{ color: "red" }}>* </Text>
-            Reps:
-          </Text>
-          <Controller
-            control={control}
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextInput
-                inputMode="numeric"
-                style={styles.textField}
-                value={value}
-                onChangeText={(value) => onChange(value)}
-                onBlur={onBlur}
-              />
-            )}
-            rules={{ required: true }}
-            name="reps"
-          />
-        </View>
-
-        <View style={styles.fieldWrap}>
-          <Text>Feels:</Text>
-          <Controller
-            control={control}
-            render={({ field: { value, onChange, onBlur } }) => (
-              <Picker
-                style={styles.selectField}
-                selectedValue={value}
-                onValueChange={onChange}
-                onBlur={onBlur}
-              >
-                {[...FeelsReadable.entries()].map(([value, label]) => (
-                  <Picker.Item
-                    color={FeelsColors.get(value)}
-                    key={value}
-                    label={label}
-                    value={value}
-                  />
-                ))}
-              </Picker>
-            )}
-            name="feels"
-          />
-        </View>
-
-        <View style={styles.fieldWrap}>
-          <Text>Comment:</Text>
-          <Controller
-            control={control}
-            render={({ field: { value, onChange, onBlur } }) => (
-              <TextInput
-                multiline
-                style={{ ...styles.textField, height: commentHeight }}
-                value={value}
-                onChangeText={(value) => onChange(value)}
-                onBlur={onBlur}
-                onContentSizeChange={(e) =>
-                  setCommentHeight(e.nativeEvent.contentSize.height + 24)
-                }
-              />
-            )}
-            name="comment"
-          />
-        </View>
+        <Input control={control} name="weight" inputMode="numeric" required />
+        <Input control={control} name="reps" inputMode="numeric" required />
+        <Select control={control} name="feels" options={options} />
+        <Input control={control} name="comment" multiline />
 
         {!isEditing && (
           <>
@@ -266,19 +188,6 @@ const SetEditor = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  fieldWrap: { marginTop: 20 },
-  textField: {
-    height: 44,
-    fontSize: 20,
-    borderWidth: 1,
-    borderColor: "#000",
-    justifyContent: "center",
-  },
-  selectField: {
-    minHeight: 44,
-    fontSize: 20,
-    textAlign: "left",
-  },
   timer: { fontSize: 44, color: "green" },
   btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });

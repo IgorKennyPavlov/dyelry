@@ -9,8 +9,7 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import ExerciseListItem from "../../components/list-items/exercise-list-item";
-import { listItemCommonStyles } from "../../components/list-items/list-item-common-styles";
+import { ExerciseListItem, listItemCommonStyles } from "../../components";
 import { useNavigate, ExerciseProps } from "../../global";
 import { usePersistentStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";

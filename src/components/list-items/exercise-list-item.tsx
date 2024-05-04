@@ -6,7 +6,7 @@ import { listItemCommonStyles } from "./list-item-common-styles";
 import { useNavigate, getIntervalSeconds, ExerciseProps } from "../../global";
 import { useTargetStore } from "../../store";
 
-const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
+export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
   const { item: targetExercise } = props;
 
   const { navigate } = useNavigate();
@@ -55,5 +55,3 @@ const styles = StyleSheet.create({
   ...listItemCommonStyles,
   feels: { flexDirection: "row" },
 });
-
-export default ExerciseListItem;

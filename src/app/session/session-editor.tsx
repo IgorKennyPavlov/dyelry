@@ -1,24 +1,16 @@
-import RNDateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
-import { useCallback, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import {
-  Text,
-  Button,
-  Pressable,
-  View,
-  StyleSheet,
-  Alert,
-  TextInput,
-} from "react-native";
+import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { Button, View, StyleSheet, Alert } from "react-native";
 
+import { Input, DatePicker } from "../../components";
 import { useNavigate, SessionProps, useKeyboard } from "../../global";
 import { usePersistentStore, useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
 interface SessionEditForm {
   title: string;
+  date: Date;
   comment: string;
 }
 
@@ -29,23 +21,18 @@ const SessionEditor = () => {
   const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTarget();
 
-  const { getValues, control } = useForm<SessionEditForm>({
+  const { getValues, control, setValue } = useForm<SessionEditForm>({
     defaultValues: {
       title: targetSession?.title || "",
+      date: targetSession?.start || new Date(),
       comment: targetSession?.comment || "",
     },
   });
 
-  const [date, setDate] = useState(targetSession?.start || new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
-  const selectDate = useCallback((_: DateTimePickerEvent, date?: Date) => {
-    if (date) {
-      setDate(date);
-    }
-
-    setShowDatePicker(false);
-  }, []);
+  const selectDate = useCallback(
+    (_: DateTimePickerEvent, date?: Date) => date && setValue("date", date),
+    [setValue],
+  );
 
   const saveSession = useCallback(() => {
     if (!targetSessionId) {
@@ -54,7 +41,7 @@ const SessionEditor = () => {
 
     const sessionData: SessionProps = {
       id: targetSessionId,
-      start: date,
+      start: getValues().date,
       ...getValues(),
     };
 
@@ -68,7 +55,6 @@ const SessionEditor = () => {
     navigate("/session/view");
   }, [
     addSession,
-    date,
     editSession,
     getValues,
     navigate,
@@ -103,48 +89,10 @@ const SessionEditor = () => {
   return (
     <>
       <View style={styles.formWrap}>
-        <Text>Title:</Text>
-        <Controller
-          control={control}
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextInput
-              style={styles.textField}
-              value={value}
-              onChangeText={(value) => onChange(value)}
-              onBlur={onBlur}
-            />
-          )}
-          name="title"
-        />
-
-        <Text>Date:</Text>
-        <Pressable
-          style={styles.textField}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text style={styles.dateText}>
-            {date.toLocaleDateString("ru-RU")}
-          </Text>
-        </Pressable>
-
-        <Text>Comment:</Text>
-        <Controller
-          control={control}
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextInput
-              style={styles.textField}
-              value={value}
-              onChangeText={(value) => onChange(value)}
-              onBlur={onBlur}
-            />
-          )}
-          name="comment"
-        />
+        <Input control={control} name="title" />
+        <DatePicker name="date" control={control} onChange={selectDate} />
+        <Input control={control} name="comment" />
       </View>
-
-      {showDatePicker && (
-        <RNDateTimePicker value={date} locale="ru-RU" onChange={selectDate} />
-      )}
 
       {!isKeyboardVisible && (
         <>
@@ -172,23 +120,6 @@ const SessionEditor = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  textField: {
-    height: 44,
-    fontSize: 20,
-    borderWidth: 1,
-    borderColor: "#000",
-    justifyContent: "center",
-  },
-  selectedDate: { flex: 1, justifyContent: "center", alignItems: "center" },
-  dateTextWrap: {
-    borderWidth: 1,
-    borderColor: "#000",
-    borderRadius: 8,
-    padding: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dateText: { fontSize: 20 },
   btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 

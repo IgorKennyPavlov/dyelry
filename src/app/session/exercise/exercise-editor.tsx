@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
 import { useCallback, useMemo } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { Button, View, StyleSheet, TextInput, Alert, Text } from "react-native";
+import { useForm } from "react-hook-form";
+import { Button, View, StyleSheet, Alert } from "react-native";
 
+import { Input } from "../../../components";
 import { useNavigate, ExerciseProps, useKeyboard } from "../../../global";
 import { usePersistentStore, useTargetStore } from "../../../store";
 import { useTarget } from "../../../store/useTarget";
@@ -108,38 +109,9 @@ const ExerciseEditor = () => {
     <>
       <Stack.Screen options={{ title, headerBackVisible: false }} />
 
-      <Text>
-        <Text style={{ color: "red" }}>* </Text>
-        Title:
-      </Text>
       <View style={styles.formWrap}>
-        <Controller
-          control={control}
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextInput
-              style={styles.textField}
-              value={value}
-              onChangeText={(value) => onChange(value)}
-              onBlur={onBlur}
-            />
-          )}
-          name="title"
-          rules={{ required: true }}
-        />
-
-        <Text>Comment:</Text>
-        <Controller
-          control={control}
-          render={({ field: { value, onChange, onBlur } }) => (
-            <TextInput
-              style={styles.textField}
-              value={value}
-              onChangeText={(value) => onChange(value)}
-              onBlur={onBlur}
-            />
-          )}
-          name="comment"
-        />
+        <Input control={control} name="title" required />
+        <Input control={control} name="comment" />
       </View>
 
       {!isKeyboardVisible && (
@@ -168,13 +140,6 @@ const ExerciseEditor = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  textField: {
-    height: 44,
-    fontSize: 20,
-    borderWidth: 1,
-    borderColor: "#000",
-    justifyContent: "center",
-  },
   btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 

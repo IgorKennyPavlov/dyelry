@@ -20,7 +20,7 @@ import {
 import { useTargetStore } from "../../store";
 import { useTarget } from "../../store/useTarget";
 
-const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
+export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   const { item: targetSet } = props;
 
   const { navigate } = useNavigate();
@@ -126,5 +126,3 @@ const styles = StyleSheet.create({
   ...listItemCommonStyles,
   runningTimer: { color: "green" },
 });
-
-export default SetListItem;
