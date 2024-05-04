@@ -30,8 +30,8 @@ const SessionList = () => {
       {sessions?.length ? (
         <View style={styles.list}>
           <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "20%" }}>Date</Text>
-            <Text style={{ width: "50%" }}>Title</Text>
+            <Text style={{ width: "25%" }}>Date</Text>
+            <Text style={{ width: "45%" }}>Title</Text>
             <Text style={{ width: "20%" }}>Duration</Text>
             <Text style={{ width: "10%" }}>Edit</Text>
           </View>
@@ -57,7 +57,7 @@ const SessionList = () => {
 };
 
 const styles = StyleSheet.create({
-  list: { paddingBottom: 36 },
+  list: { paddingBottom: 76 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });

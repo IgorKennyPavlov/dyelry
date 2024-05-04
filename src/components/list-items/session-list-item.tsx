@@ -39,10 +39,10 @@ const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
       }}
       onPress={openSession}
     >
-      <Text style={{ width: "20%" }}>
+      <Text style={{ width: "25%" }}>
         {targetSession?.start.toLocaleDateString("ru-RU")}
       </Text>
-      <Text style={{ width: "50%" }}>{targetSession?.title}</Text>
+      <Text style={{ width: "45%" }}>{targetSession?.title}</Text>
       <Text style={{ width: "20%" }}>
         {targetSession?.end ? `~${duration} min` : "--"}
       </Text>

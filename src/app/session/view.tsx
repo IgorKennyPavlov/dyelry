@@ -55,8 +55,8 @@ const Session = () => {
       {targetSession?.exercises?.length ? (
         <View style={targetSession.end ? {} : styles.list}>
           <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "40%" }}>Title</Text>
-            <Text style={{ width: "50%" }}>Duration</Text>
+            <Text style={{ width: "50%" }}>Title</Text>
+            <Text style={{ width: "40%" }}>Duration</Text>
             <Text style={{ width: "10%" }}>Edit</Text>
           </View>
 
@@ -92,7 +92,7 @@ const Session = () => {
 };
 
 const styles = StyleSheet.create({
-  list: { paddingBottom: 36 },
+  list: { paddingBottom: 76 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   btn: {
     position: "absolute",

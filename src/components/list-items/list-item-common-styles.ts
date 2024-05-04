@@ -4,10 +4,12 @@ export const listItemCommonStyles = StyleSheet.create({
   header: {
     width: "100%",
     flexDirection: "row",
-    paddingTop: 12,
+    height: 40,
     paddingHorizontal: 12,
     justifyContent: "space-between",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
   plaque: {
     height: 44,
