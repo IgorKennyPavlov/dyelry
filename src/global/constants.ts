@@ -23,3 +23,5 @@ export const FeelsColors = new Map<Feels, string>([
   [4, "orange"],
   [5, "red"],
 ]);
+
+export const PAGE_SIZE = 5;

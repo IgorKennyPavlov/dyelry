@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   FlatList,
   View,
@@ -9,7 +9,13 @@ import {
 } from "react-native";
 
 import { SessionListItem, listItemCommonStyles } from "../components";
-import { useNavigate, SESSIONS, SessionProps } from "../global";
+import {
+  useNavigate,
+  SESSIONS,
+  SessionProps,
+  getPage,
+  PAGE_SIZE,
+} from "../global";
 import { usePersistentStore, useTargetStore } from "../store";
 
 const SessionList = () => {
@@ -17,7 +23,21 @@ const SessionList = () => {
   const { setTargetSessionId } = useTargetStore();
   const { navigate } = useNavigate();
 
+  const [pageNumber, setPageNumber] = useState(0);
   const reversedSessions = useMemo(() => [...sessions].reverse(), [sessions]);
+  const page = useMemo(
+    () => getPage(reversedSessions, pageNumber),
+    [pageNumber, reversedSessions],
+  );
+
+  const toPage = useCallback(
+    (pageNumber: number) => {
+      const maxPage = Math.ceil(sessions.length / PAGE_SIZE) - 1;
+      const targetPage = Math.max(0, Math.min(pageNumber, maxPage));
+      setPageNumber(targetPage);
+    },
+    [sessions.length],
+  );
 
   const addSession = useCallback(() => {
     setTargetSessionId(String(Date.now()));
@@ -36,7 +56,7 @@ const SessionList = () => {
           </View>
 
           <FlatList
-            data={reversedSessions}
+            data={page}
             renderItem={(props: ListRenderItemInfo<SessionProps>) => (
               <SessionListItem {...props} />
             )}
@@ -48,6 +68,12 @@ const SessionList = () => {
         </View>
       )}
 
+      {sessions.length > PAGE_SIZE && (
+        <View style={styles.paginationPanel}>
+          <Button title="<= Prev page" onPress={() => toPage(pageNumber - 1)} />
+          <Button title="Next page =>" onPress={() => toPage(pageNumber + 1)} />
+        </View>
+      )}
       <View style={styles.confirmBtn}>
         <Button title="Add session" onPress={addSession} />
       </View>
@@ -58,6 +84,7 @@ const SessionList = () => {
 const styles = StyleSheet.create({
   list: { paddingBottom: 76 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
+  paginationPanel: { position: "absolute", bottom: 40, flexDirection: "row" },
   confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
 });
 
