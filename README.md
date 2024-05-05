@@ -6,7 +6,7 @@
 
 `npx expo start --go -a`
 
-If live-reload doesn't work - press `r`. Should help.
+When environment is loaded, press `r` in console to rebuild the app one more time - works better.
 
 # BUILD
 

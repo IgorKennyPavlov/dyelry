@@ -1,6 +1,7 @@
 import MCI from "@expo/vector-icons/MaterialCommunityIcons";
 import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
+import { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
 import { useNavigate, getIntervalSeconds, ExerciseProps } from "../../global";
@@ -26,10 +27,14 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
     navigate("/session/exercise/view");
   }, [navigate, setTargetExerciseId, targetExercise.id]);
 
-  const editExercise = useCallback(() => {
-    setTargetExerciseId(targetExercise.id);
-    navigate("/session/exercise/exercise-editor");
-  }, [navigate, setTargetExerciseId, targetExercise.id]);
+  const editExercise = useCallback(
+    (event: GestureResponderEvent) => {
+      event.stopPropagation();
+      setTargetExerciseId(targetExercise.id);
+      navigate("/session/exercise/exercise-editor");
+    },
+    [navigate, setTargetExerciseId, targetExercise.id],
+  );
 
   return (
     <Pressable

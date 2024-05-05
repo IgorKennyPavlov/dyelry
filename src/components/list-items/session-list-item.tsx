@@ -1,6 +1,7 @@
 import MCI from "@expo/vector-icons/MaterialCommunityIcons";
 import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, Pressable } from "react-native";
+import { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
 import { getIntervalSeconds, useNavigate, SessionProps } from "../../global";
@@ -26,10 +27,14 @@ export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
     navigate("/session/view");
   }, [navigate, setTargetSessionId, targetSession.id]);
 
-  const editSession = useCallback(() => {
-    setTargetSessionId(targetSession.id);
-    navigate("/session/session-editor");
-  }, [navigate, setTargetSessionId, targetSession.id]);
+  const editSession = useCallback(
+    (event: GestureResponderEvent) => {
+      event.stopPropagation();
+      setTargetSessionId(targetSession.id);
+      navigate("/session/session-editor");
+    },
+    [navigate, setTargetSessionId, targetSession.id],
+  );
 
   return (
     <Pressable
