@@ -7,19 +7,23 @@ import {
   StyleSheet,
   TextInputContentSizeChangeEventData,
   NativeSyntheticEvent,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
 import { InputModeOptions } from "react-native/Libraries/Components/TextInput/TextInput";
 
 interface InputProps {
   control: Control<any>;
   name: string;
+  label?: string;
+  style?: StyleProp<ViewStyle>;
   inputMode?: InputModeOptions;
   multiline?: boolean;
   required?: boolean;
 }
 
 export const Input = (props: InputProps) => {
-  const { control, name, inputMode, multiline, required } = props;
+  const { control, name, label, style, inputMode, multiline, required } = props;
 
   const [commentHeight, setCommentHeight] = useState(0);
 
@@ -33,10 +37,10 @@ export const Input = (props: InputProps) => {
   );
 
   return (
-    <View style={styles.fieldWrap}>
+    <View style={style}>
       <Text style={styles.label}>
         {required && <Text style={styles.required}>* </Text>}
-        {name}
+        {label || name}
       </Text>
 
       <Controller
@@ -63,7 +67,6 @@ export const Input = (props: InputProps) => {
 };
 
 const styles = StyleSheet.create({
-  fieldWrap: { marginTop: 20 },
   label: { textTransform: "capitalize" },
   required: { color: "red" },
   textField: {

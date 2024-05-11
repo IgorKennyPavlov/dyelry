@@ -3,17 +3,26 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { useState, useCallback } from "react";
 import { Control, useController } from "react-hook-form";
-import { StyleSheet, View, Text, Pressable } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  ViewStyle,
+  StyleProp,
+} from "react-native";
 
 interface DatePickerProps {
   name: string;
   control: Control<any>;
   onChange: (event: DateTimePickerEvent, date?: Date) => void;
+  label?: string;
+  style?: StyleProp<ViewStyle>;
   required?: boolean;
 }
 
 export const DatePicker = (props: DatePickerProps) => {
-  const { name, control, required, onChange } = props;
+  const { name, label, style, control, required, onChange } = props;
   const { field } = useController({ name, control });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -26,10 +35,10 @@ export const DatePicker = (props: DatePickerProps) => {
   );
 
   return (
-    <View style={styles.fieldWrap}>
+    <View style={style}>
       <Text style={styles.label}>
         {required && <Text style={styles.required}>* </Text>}
-        {name}
+        {label || name}
       </Text>
 
       <Pressable style={styles.dateBtn} onPress={() => setShowDatePicker(true)}>
@@ -50,7 +59,6 @@ export const DatePicker = (props: DatePickerProps) => {
 };
 
 const styles = StyleSheet.create({
-  fieldWrap: { marginTop: 20 },
   label: { textTransform: "capitalize" },
   required: { color: "red" },
   dateBtn: {

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   type StyleProp,
   type TextStyle,
+  ViewStyle,
 } from "react-native";
 
 interface SelectOption {
@@ -18,17 +19,19 @@ interface SelectProps {
   control: Control<any>;
   name: string;
   options: SelectOption[];
+  label?: string;
+  style?: StyleProp<ViewStyle>;
   required?: boolean;
 }
 
 export const Select = (props: SelectProps) => {
-  const { control, name, options, required } = props;
+  const { control, name, label, style, options, required } = props;
 
   return (
-    <View style={styles.fieldWrap}>
+    <View style={style}>
       <Text style={styles.label}>
         {required && <Text style={styles.required}>* </Text>}
-        {name}
+        {label || name}
       </Text>
 
       <Controller
@@ -57,7 +60,6 @@ export const Select = (props: SelectProps) => {
 };
 
 const styles = StyleSheet.create({
-  fieldWrap: { marginTop: 20 },
   label: { textTransform: "capitalize" },
   required: { color: "red" },
   selectField: { minHeight: 44, fontSize: 20, textAlign: "left" },
