@@ -25,8 +25,11 @@ import {
   FeelsReadable,
   FeelsColors,
 } from "../../../../global";
-import { usePersistentStore, useTargetStore } from "../../../../store";
-import { useTarget } from "../../../../store/useTarget";
+import {
+  usePersistentStore,
+  useTargetStore,
+  useTarget,
+} from "../../../../store";
 
 interface SetEditForm {
   weight: string;

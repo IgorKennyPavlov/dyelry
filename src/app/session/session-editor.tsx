@@ -5,8 +5,7 @@ import { Button, View, StyleSheet, Alert } from "react-native";
 
 import { Input, DatePicker } from "../../components";
 import { useNavigate, SessionProps, useKeyboard } from "../../global";
-import { usePersistentStore, useTargetStore } from "../../store";
-import { useTarget } from "../../store/useTarget";
+import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 interface SessionEditForm {
   title: string;

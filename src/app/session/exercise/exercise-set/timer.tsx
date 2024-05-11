@@ -9,10 +9,15 @@ import {
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
 import { getIntervalSeconds, useNavigate } from "../../../../global";
-import { usePersistentStore, useTargetStore } from "../../../../store";
-import { useTarget } from "../../../../store/useTarget";
+import {
+  usePersistentStore,
+  useTargetStore,
+  useHideTabBar,
+  useTarget,
+} from "../../../../store";
 
 const Timer = () => {
+  useHideTabBar();
   const { navigate } = useNavigate();
   const { addSet, editSet } = usePersistentStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =

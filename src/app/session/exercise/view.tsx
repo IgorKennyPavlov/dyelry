@@ -12,8 +12,7 @@ import {
 
 import { SetListItem, listItemCommonStyles } from "../../../components";
 import { useNavigate, SetProps } from "../../../global";
-import { usePersistentStore, useTargetStore } from "../../../store";
-import { useTarget } from "../../../store/useTarget";
+import { usePersistentStore, useTargetStore, useTarget } from "../../../store";
 
 const Exercise = () => {
   const { navigate } = useNavigate();

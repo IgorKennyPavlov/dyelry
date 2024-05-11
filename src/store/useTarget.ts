@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { usePersistentStore } from "./store";
+import { usePersistentStore } from "./persistentStore";
 import { useTargetStore } from "./targetStore";
 import { SESSIONS, SessionProps, ExerciseProps, SetProps } from "../global";
 

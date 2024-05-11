@@ -17,8 +17,7 @@ import {
   SetProps,
   Feels,
 } from "../../global";
-import { useTargetStore } from "../../store";
-import { useTarget } from "../../store/useTarget";
+import { useTargetStore, useTarget } from "../../store";
 
 export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   const { item: targetSet } = props;

@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { useMemo } from "react";
 
-import { useTarget } from "../../store/useTarget";
+import { useTarget } from "../../store";
 
 const SessionLayout = () => {
   const { targetSession } = useTarget();

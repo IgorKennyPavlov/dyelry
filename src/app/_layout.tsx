@@ -3,7 +3,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
 import { Text, Button } from "react-native";
 
-import { usePersistentStore, useHydrated } from "../store";
+import { usePersistentStore, useHydrated, useTabBarStore } from "../store";
 
 /**
  * DO NOT REMOVE! Check if helps with unwanted routing to session-editor
@@ -14,6 +14,7 @@ export const unstable_settings = { initialRouteName: "index" };
 const AppLayout = () => {
   const { clearStore } = usePersistentStore();
   const hydrated = useHydrated();
+  const { isTabBarVisible } = useTabBarStore();
 
   if (!hydrated) {
     return (
@@ -30,6 +31,7 @@ const AppLayout = () => {
         headerStyle: { backgroundColor: "#1c357f" },
         headerTintColor: "#fff",
         tabBarHideOnKeyboard: true,
+        tabBarStyle: { display: isTabBarVisible ? "flex" : "none" },
       }}
     >
       <Tabs.Screen

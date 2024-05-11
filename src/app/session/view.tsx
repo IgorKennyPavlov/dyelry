@@ -11,8 +11,7 @@ import {
 
 import { ExerciseListItem, listItemCommonStyles } from "../../components";
 import { useNavigate, ExerciseProps } from "../../global";
-import { usePersistentStore, useTargetStore } from "../../store";
-import { useTarget } from "../../store/useTarget";
+import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 const Session = () => {
   const { navigate } = useNavigate();
