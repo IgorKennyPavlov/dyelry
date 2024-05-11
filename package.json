@@ -7,7 +7,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "start:android": "npx expo start --go -a",
+    "build:android": "npx eas-cli@latest build --profile preview --platform android"
   },
   "dependencies": {
     "@react-native-community/datetimepicker": "7.6.1",
