@@ -10,12 +10,12 @@ import {
   Pressable,
 } from "react-native";
 
-import { useSelectedWeek } from "./use-selected-week";
 import {
   SessionListItem,
   listItemCommonStyles,
   DatePicker,
 } from "../components";
+import { useSelectedWeek } from "../decomposition/use-selected-week";
 import { useNavigate, SessionProps } from "../global";
 import { useTargetStore } from "../store";
 
