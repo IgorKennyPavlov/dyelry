@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
-import { usePersistentStore } from "./persistentStore";
-import { useTargetStore } from "./targetStore";
-import { SESSIONS, SessionProps, ExerciseProps, SetProps } from "../global";
+import { useTargetStore } from "./target-store";
+import { SESSIONS, SessionProps, ExerciseProps, SetProps } from "../../global";
+import { usePersistentStore } from "../persistent-store";
 
 export const useTarget = () => {
   const { [SESSIONS]: sessions } = usePersistentStore();

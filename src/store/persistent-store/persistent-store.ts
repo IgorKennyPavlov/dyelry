@@ -4,7 +4,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { StateStorage } from "zustand/middleware/persist";
 
 import { fileSystemStorage } from "./file-system";
-import { SessionProps, ExerciseProps, SetProps, SESSIONS } from "../global";
+import { SessionProps, ExerciseProps, SetProps, SESSIONS } from "../../global";
 
 interface SessionsStore {
   [SESSIONS]: SessionProps[];

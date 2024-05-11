@@ -1,7 +1,7 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 
-import { useTabBarStore } from "./tabBarStore";
+import { useTabBarStore } from "./tab-bar-store";
 
 export const useHideTabBar = () => {
   const { setTabBarVisibility } = useTabBarStore();

@@ -10,7 +10,7 @@ import {
   Pressable,
 } from "react-native";
 
-import { useSelectedWeek } from "./useSelectedWeek";
+import { useSelectedWeek } from "./use-selected-week";
 import {
   SessionListItem,
   listItemCommonStyles,

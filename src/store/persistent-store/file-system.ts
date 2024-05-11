@@ -3,7 +3,7 @@ import * as FileSystem from "expo-file-system";
 import { WritingOptions, ReadingOptions } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
-import { SESSIONS } from "../global";
+import { SESSIONS } from "../../global";
 
 const DEFAULT_STORE = { state: { sessions: [] }, version: 0 };
 const options = { encoding: FileSystem.EncodingType.UTF8 } as

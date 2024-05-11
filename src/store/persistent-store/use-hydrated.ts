@@ -1,7 +1,7 @@
 import { useFocusEffect } from "expo-router";
 import { useState, useCallback } from "react";
 
-import { usePersistentStore } from "./persistentStore";
+import { usePersistentStore } from "./persistent-store";
 
 export const useHydrated = () => {
   const [hydrated, setHydrated] = useState(false);
