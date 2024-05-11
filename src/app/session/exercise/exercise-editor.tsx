@@ -110,8 +110,8 @@ const ExerciseEditor = () => {
       <Stack.Screen options={{ title, headerBackVisible: false }} />
 
       <View style={styles.formWrap}>
-        <Input control={control} name="title" required />
-        <Input control={control} name="comment" />
+        <Input style={styles.field} control={control} name="title" required />
+        <Input style={styles.field} control={control} name="comment" />
       </View>
 
       {!isKeyboardVisible && (
@@ -140,7 +140,8 @@ const ExerciseEditor = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  field: { marginTop: 20 },
+  btn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
 export default ExerciseEditor;

@@ -65,7 +65,7 @@ const Impex = () => {
 };
 
 const styles = StyleSheet.create({
-  confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  confirmBtn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
 export default Impex;

@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
+import AntIcon from "@expo/vector-icons/AntDesign";
+import { useCallback } from "react";
 import {
   FlatList,
   View,
@@ -6,38 +7,24 @@ import {
   StyleSheet,
   ListRenderItemInfo,
   Text,
+  Pressable,
 } from "react-native";
 
-import { SessionListItem, listItemCommonStyles } from "../components";
+import { useSelectedWeek } from "./useSelectedWeek";
 import {
-  useNavigate,
-  SESSIONS,
-  SessionProps,
-  getPage,
-  PAGE_SIZE,
-} from "../global";
-import { usePersistentStore, useTargetStore } from "../store";
+  SessionListItem,
+  listItemCommonStyles,
+  DatePicker,
+} from "../components";
+import { useNavigate, SessionProps } from "../global";
+import { useTargetStore } from "../store";
 
 const SessionList = () => {
-  const { [SESSIONS]: sessions } = usePersistentStore();
   const { setTargetSessionId } = useTargetStore();
   const { navigate } = useNavigate();
 
-  const [pageNumber, setPageNumber] = useState(0);
-  const reversedSessions = useMemo(() => [...sessions].reverse(), [sessions]);
-  const page = useMemo(
-    () => getPage(reversedSessions, pageNumber),
-    [pageNumber, reversedSessions],
-  );
-
-  const toPage = useCallback(
-    (pageNumber: number) => {
-      const maxPage = Math.ceil(sessions.length / PAGE_SIZE) - 1;
-      const targetPage = Math.max(0, Math.min(pageNumber, maxPage));
-      setPageNumber(targetPage);
-    },
-    [sessions.length],
-  );
+  const { week, shiftWeek, selectDate, form } = useSelectedWeek();
+  const { control } = form;
 
   const addSession = useCallback(() => {
     setTargetSessionId(String(Date.now()));
@@ -46,7 +33,7 @@ const SessionList = () => {
 
   return (
     <>
-      {sessions?.length ? (
+      {week?.length ? (
         <View style={styles.list}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "25%" }}>Date</Text>
@@ -56,7 +43,7 @@ const SessionList = () => {
           </View>
 
           <FlatList
-            data={page}
+            data={week}
             renderItem={(props: ListRenderItemInfo<SessionProps>) => (
               <SessionListItem {...props} />
             )}
@@ -68,12 +55,22 @@ const SessionList = () => {
         </View>
       )}
 
-      {sessions.length > PAGE_SIZE && (
-        <View style={styles.paginationPanel}>
-          <Button title="<= Prev page" onPress={() => toPage(pageNumber - 1)} />
-          <Button title="Next page =>" onPress={() => toPage(pageNumber + 1)} />
-        </View>
-      )}
+      <View style={styles.paginationPanel}>
+        <Pressable style={styles.weekBtn} onPress={() => shiftWeek(-1)}>
+          <AntIcon size={32} name="leftcircle" />
+        </Pressable>
+        <DatePicker
+          style={styles.weekPicker}
+          name="selectedWeek"
+          label="Week"
+          control={control}
+          onChange={selectDate}
+        />
+        <Pressable style={styles.weekBtn} onPress={() => shiftWeek(1)}>
+          <AntIcon size={32} name="rightcircle" />
+        </Pressable>
+      </View>
+
       <View style={styles.confirmBtn}>
         <Button title="Add session" onPress={addSession} />
       </View>
@@ -82,10 +79,21 @@ const SessionList = () => {
 };
 
 const styles = StyleSheet.create({
-  list: { paddingBottom: 76 },
+  list: { paddingBottom: 140 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
-  paginationPanel: { position: "absolute", bottom: 40, flexDirection: "row" },
-  confirmBtn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  paginationPanel: {
+    position: "absolute",
+    bottom: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    height: 64,
+    width: "100%",
+    paddingHorizontal: 8,
+  },
+  weekBtn: { justifyContent: "center", height: 44 },
+  weekPicker: { flex: 1, paddingHorizontal: 12 },
+  confirmBtn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
 export default SessionList;

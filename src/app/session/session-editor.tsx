@@ -89,9 +89,14 @@ const SessionEditor = () => {
   return (
     <>
       <View style={styles.formWrap}>
-        <Input control={control} name="title" />
-        <DatePicker name="date" control={control} onChange={selectDate} />
-        <Input control={control} name="comment" />
+        <Input style={styles.field} control={control} name="title" />
+        <DatePicker
+          style={styles.field}
+          name="date"
+          control={control}
+          onChange={selectDate}
+        />
+        <Input style={styles.field} control={control} name="comment" />
       </View>
 
       {!isKeyboardVisible && (
@@ -120,7 +125,8 @@ const SessionEditor = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
-  btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  field: { marginTop: 20 },
+  btn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
 export default SessionEditor;

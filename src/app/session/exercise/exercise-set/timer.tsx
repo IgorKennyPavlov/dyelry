@@ -99,7 +99,7 @@ const Timer = () => {
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
   timer: { fontSize: 44, color: "orange" },
-  btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  btn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
 export default Timer;

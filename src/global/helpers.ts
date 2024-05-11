@@ -1,10 +1,11 @@
-import { PAGE_SIZE } from "./constants";
+import { SessionProps } from "./types";
 
 export const getIntervalSeconds = (from: Date, to: Date) =>
   Math.floor((from.valueOf() - to.valueOf()) / 1000);
 
-export const getPage = <T>(list: T[], pageNumber = 0, pageSize = PAGE_SIZE) => {
-  const start = pageNumber * pageSize;
-  const end = start + pageSize;
-  return list.slice(start, end);
+export const getWeek = (sessions: SessionProps[], monday: Date) => {
+  const sunday = new Date(monday);
+  sunday.setUTCDate(monday.getUTCDate() + 6);
+  sunday.setUTCHours(23, 59, 59, 999);
+  return sessions.filter((s) => s.start > monday && s.start < sunday);
 };

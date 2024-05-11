@@ -156,10 +156,32 @@ const SetEditor = () => {
       <Stack.Screen options={{ title }} />
 
       <ScrollView style={styles.formWrap}>
-        <Input control={control} name="weight" inputMode="numeric" required />
-        <Input control={control} name="reps" inputMode="numeric" required />
-        <Select control={control} name="feels" options={options} />
-        <Input control={control} name="comment" multiline />
+        <Input
+          style={styles.field}
+          control={control}
+          name="weight"
+          inputMode="numeric"
+          required
+        />
+        <Input
+          style={styles.field}
+          control={control}
+          name="reps"
+          inputMode="numeric"
+          required
+        />
+        <Select
+          style={styles.field}
+          control={control}
+          name="feels"
+          options={options}
+        />
+        <Input
+          style={styles.field}
+          control={control}
+          name="comment"
+          multiline
+        />
 
         {!isEditing && (
           <>
@@ -188,8 +210,9 @@ const SetEditor = () => {
 
 const styles = StyleSheet.create({
   formWrap: { flex: 1 },
+  field: { marginTop: 20 },
   timer: { fontSize: 44, color: "green" },
-  btn: { position: "absolute", bottom: 0, left: 0, right: 0 },
+  btn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
 export default SetEditor;
