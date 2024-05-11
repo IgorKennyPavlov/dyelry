@@ -1,5 +1,5 @@
+import { useFocusEffect } from "expo-router";
 import {
-  useEffect,
   useRef,
   useState,
   useCallback,
@@ -44,38 +44,34 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
     return end ? Math.round(getIntervalSeconds(end, start)) : 0;
   }, [targetSet]);
 
-  useEffect(() => {
-    if (!targetExercise?.sets?.length) {
-      return;
-    }
+  useFocusEffect(
+    useCallback(() => {
+      if (!targetExercise?.sets?.length) {
+        return;
+      }
 
-    if (targetSet !== targetExercise.sets.at(-1)) {
-      const nextSetStart = targetExercise.sets[targetSetIdx + 1].start;
-      setRest(getIntervalSeconds(nextSetStart, targetSet.end as Date));
-      return;
-    }
+      if (targetSet !== targetExercise.sets.at(-1)) {
+        const nextSetStart = targetExercise.sets[targetSetIdx + 1].start;
+        setRest(getIntervalSeconds(nextSetStart, targetSet.end as Date));
+        return;
+      }
 
-    if (targetExercise.end) {
-      setRest(getIntervalSeconds(targetExercise.end, targetSet.end as Date));
-      return;
-    }
+      if (targetExercise.end) {
+        setRest(getIntervalSeconds(targetExercise.end, targetSet.end as Date));
+        return;
+      }
 
-    if (!targetSet.end) {
-      return;
-    }
+      if (!targetSet.end) {
+        return;
+      }
 
-    intervalId.current = window.setInterval(() => {
-      setRest(getIntervalSeconds(new Date(), targetSet.end as Date));
-    }, 1000);
+      intervalId.current = window.setInterval(() => {
+        setRest(getIntervalSeconds(new Date(), targetSet.end as Date));
+      }, 1000);
 
-    return () => clearInterval(intervalId.current as number);
-  }, [
-    targetExercise?.end,
-    targetExercise?.sets,
-    targetSet,
-    targetSet.end,
-    targetSetIdx,
-  ]);
+      return () => clearInterval(intervalId.current as number);
+    }, [targetExercise?.end, targetExercise?.sets, targetSet, targetSetIdx]),
+  );
 
   const openExerciseSet = useCallback(() => {
     setTargetSetId(targetSet.id);

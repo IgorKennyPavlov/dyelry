@@ -1,7 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import { useEffect } from "react";
 import { Text, Button } from "react-native";
 
 import { usePersistentStore, useHydrated } from "../store";
@@ -13,10 +12,6 @@ import { usePersistentStore, useHydrated } from "../store";
 export const unstable_settings = { initialRouteName: "index" };
 
 const AppLayout = () => {
-  useEffect(() => {
-    usePersistentStore.persist.rehydrate();
-  }, []);
-
   const { clearStore } = usePersistentStore();
   const hydrated = useHydrated();
 

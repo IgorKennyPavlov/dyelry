@@ -1,9 +1,8 @@
-import { Stack } from "expo-router";
+import { Stack, useFocusEffect } from "expo-router";
 import {
   useCallback,
   useState,
   useRef,
-  useEffect,
   MutableRefObject,
   useMemo,
 } from "react";
@@ -59,17 +58,19 @@ const SetEditor = () => {
     },
   });
 
-  useEffect(() => {
-    if (isEditing || !targetSet?.end) {
-      return;
-    }
+  useFocusEffect(
+    useCallback(() => {
+      if (isEditing || !targetSet?.end) {
+        return;
+      }
 
-    intervalId.current = window.setInterval(() => {
-      setTimer(getIntervalSeconds(new Date(), targetSet.end as Date));
-    }, 1000);
+      intervalId.current = window.setInterval(() => {
+        setTimer(getIntervalSeconds(new Date(), targetSet.end as Date));
+      }, 1000);
 
-    return () => clearInterval(intervalId.current as number);
-  }, [isEditing, targetSet?.end]);
+      return () => clearInterval(intervalId.current as number);
+    }, [isEditing, targetSet?.end]),
+  );
 
   const editSetParams = useCallback(() => {
     if (!targetSessionId || !targetExerciseId || !targetSetId) {

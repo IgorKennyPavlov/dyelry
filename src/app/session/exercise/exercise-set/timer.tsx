@@ -1,9 +1,8 @@
-import { Stack } from "expo-router";
+import { Stack, useFocusEffect } from "expo-router";
 import {
   useCallback,
   useState,
   useRef,
-  useEffect,
   MutableRefObject,
   useMemo,
 } from "react";
@@ -25,17 +24,19 @@ const Timer = () => {
   const [timer, setTimer] = useState(0);
   const intervalId: MutableRefObject<number | null> = useRef(null);
 
-  useEffect(() => {
-    if (!start) {
-      return;
-    }
+  useFocusEffect(
+    useCallback(() => {
+      if (!start) {
+        return;
+      }
 
-    intervalId.current = window.setInterval(() => {
-      setTimer(getIntervalSeconds(new Date(), start));
-    }, 1000);
+      intervalId.current = window.setInterval(() => {
+        setTimer(getIntervalSeconds(new Date(), start));
+      }, 1000);
 
-    return () => clearInterval(intervalId.current as number);
-  }, [start]);
+      return () => clearInterval(intervalId.current as number);
+    }, [start]),
+  );
 
   const startExerciseSet = useCallback(() => {
     if (!targetSessionId || !targetExerciseId) {

@@ -1,19 +1,24 @@
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useState, useCallback } from "react";
 
 import { usePersistentStore } from "./store";
 
 export const useHydrated = () => {
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    const unsubFinishHydration = usePersistentStore.persist.onFinishHydration(
-      () => setHydrated(true),
-    );
+  useFocusEffect(
+    useCallback(() => {
+      usePersistentStore.persist.rehydrate();
 
-    setHydrated(usePersistentStore.persist.hasHydrated());
+      const unsubFinishHydration = usePersistentStore.persist.onFinishHydration(
+        () => setHydrated(true),
+      );
 
-    return () => unsubFinishHydration();
-  }, []);
+      setHydrated(usePersistentStore.persist.hasHydrated());
+
+      return () => unsubFinishHydration();
+    }, []),
+  );
 
   return hydrated;
 };
