@@ -9,6 +9,8 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { formCommonStyles } from "./form-common-styles";
+
 interface SelectOption {
   value: any;
   label: string;
@@ -60,7 +62,6 @@ export const Select = (props: SelectProps) => {
 };
 
 const styles = StyleSheet.create({
-  label: { textTransform: "capitalize" },
-  required: { color: "red" },
+  ...formCommonStyles,
   selectField: { minHeight: 44, fontSize: 20, textAlign: "left" },
 });

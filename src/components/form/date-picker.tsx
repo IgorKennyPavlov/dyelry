@@ -12,6 +12,8 @@ import {
   StyleProp,
 } from "react-native";
 
+import { formCommonStyles } from "./form-common-styles";
+
 interface DatePickerProps {
   name: string;
   control: Control<any>;
@@ -59,8 +61,7 @@ export const DatePicker = (props: DatePickerProps) => {
 };
 
 const styles = StyleSheet.create({
-  label: { textTransform: "capitalize" },
-  required: { color: "red" },
+  ...formCommonStyles,
   dateBtn: {
     height: 44,
     fontSize: 20,

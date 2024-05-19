@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import { InputModeOptions } from "react-native/Libraries/Components/TextInput/TextInput";
 
+import { formCommonStyles } from "./form-common-styles";
+
 interface InputProps {
   control: Control<any>;
   name: string;
@@ -67,8 +69,7 @@ export const Input = (props: InputProps) => {
 };
 
 const styles = StyleSheet.create({
-  label: { textTransform: "capitalize" },
-  required: { color: "red" },
+  ...formCommonStyles,
   textField: {
     fontSize: 20,
     borderWidth: 1,
