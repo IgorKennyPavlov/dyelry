@@ -197,11 +197,9 @@ const SetEditor = () => {
 
       {!isKeyboardVisible && (
         <>
-          {isEditing && (
-            <View style={{ ...styles.btn, bottom: 40 }}>
-              <Button title="Delete set" color="red" onPress={confirmDelete} />
-            </View>
-          )}
+          <View style={{ ...styles.btn, bottom: 40 }}>
+            <Button title="Delete set" color="red" onPress={confirmDelete} />
+          </View>
 
           <View style={styles.btn}>
             <Button title="Save set" onPress={editSetParams} />
