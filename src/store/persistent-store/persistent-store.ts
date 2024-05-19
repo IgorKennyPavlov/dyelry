@@ -3,7 +3,11 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { StateStorage } from "zustand/middleware/persist";
 
-import { fileSystemStorage } from "./file-system";
+import {
+  fileSystemStorage,
+  importSessionsAsync,
+  exportStoreAsync,
+} from "./file-system";
 import { SessionProps, ExerciseProps, SetProps, SESSIONS } from "../../global";
 
 interface SessionsStore {
@@ -30,6 +34,8 @@ interface SessionsStore {
   ) => void;
   deleteSet: (sessionId: string, exerciseId: string, setId: string) => void;
   clearStore: () => void;
+  importStore: () => Promise<void>;
+  exportStore: () => Promise<void>;
 }
 
 export const usePersistentStore = create<SessionsStore>()(
@@ -178,6 +184,8 @@ export const usePersistentStore = create<SessionsStore>()(
             state[SESSIONS] = [];
           }),
         ),
+      importStore: () => importSessionsAsync(),
+      exportStore: () => exportStoreAsync(),
     }),
     {
       name: SESSIONS,

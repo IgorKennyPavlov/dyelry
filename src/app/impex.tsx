@@ -1,14 +1,10 @@
 import { useCallback } from "react";
 import { View, Button, StyleSheet, Alert } from "react-native";
 
-import {
-  exportStoreAsync,
-  importSessionsAsync,
-  usePersistentStore,
-} from "../store";
+import { usePersistentStore } from "../store";
 
 const Impex = () => {
-  const { clearStore } = usePersistentStore();
+  const { clearStore, importStore, exportStore } = usePersistentStore();
 
   const tryToClearStore = useCallback(() => {
     Alert.alert(
@@ -23,9 +19,9 @@ const Impex = () => {
   }, [clearStore]);
 
   const importSessions = useCallback(async () => {
-    await importSessionsAsync();
+    await importStore();
     usePersistentStore.persist.rehydrate();
-  }, []);
+  }, [importStore]);
 
   const tryToImportSessions = useCallback(() => {
     Alert.alert(
@@ -46,11 +42,7 @@ const Impex = () => {
       </View>
 
       <View style={{ ...styles.confirmBtn, top: 40 }}>
-        <Button
-          title="Export store"
-          color="orange"
-          onPress={exportStoreAsync}
-        />
+        <Button title="Export store" color="orange" onPress={exportStore} />
       </View>
 
       <View style={{ ...styles.confirmBtn, top: 80 }}>
