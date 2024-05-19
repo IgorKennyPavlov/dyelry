@@ -31,7 +31,7 @@ const SessionList = () => {
     navigate(`/session/session-editor`);
   }, [navigate, setTargetSessionId]);
 
-  const title = useMemo(() => {
+  const headerTitle = useMemo(() => {
     const o: Intl.DateTimeFormatOptions = { day: "2-digit", month: "2-digit" };
     const mondayString = monday.toLocaleDateString("ru-RU", o);
     const sundayString = sunday.toLocaleDateString("ru-RU", o);
@@ -40,7 +40,7 @@ const SessionList = () => {
 
   return (
     <>
-      <Tabs.Screen options={{ title }} />
+      <Tabs.Screen options={{ headerTitle }} />
 
       {weekSessions?.length ? (
         <View style={styles.list}>
