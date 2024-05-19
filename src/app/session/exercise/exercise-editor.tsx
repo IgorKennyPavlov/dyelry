@@ -42,7 +42,7 @@ const ExerciseEditor = () => {
 
     const exerciseData: ExerciseProps = {
       id: targetExerciseId,
-      start: new Date(),
+      start: targetExercise?.start || new Date(),
       ...getValues(),
     };
 
