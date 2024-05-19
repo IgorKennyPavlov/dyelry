@@ -2,11 +2,11 @@ import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
-import { getWeek, SESSIONS } from "../global";
+import { SESSIONS } from "../global";
 import { usePersistentStore } from "../store";
 
 interface DisplayedWeekForm {
-  selectedWeek: Date;
+  targetDate: Date;
 }
 
 export const useSelectedWeek = () => {
@@ -14,35 +14,45 @@ export const useSelectedWeek = () => {
 
   const getLastMonday = useCallback((date: Date) => {
     const monday = new Date(date);
-    monday.setUTCDate(date.getDate() - ((date.getDay() + 6) % 7));
-    monday.setUTCHours(0, 0, 0, 0);
+    monday.setDate(date.getDate() - ((date.getDay() + 6) % 7));
+    monday.setHours(0, 0, 0, 0);
     return monday;
   }, []);
 
-  const form = useForm<DisplayedWeekForm>({
-    defaultValues: { selectedWeek: getLastMonday(new Date()) },
-  });
+  const getWeek = useCallback(
+    (targetDate: Date) => {
+      const monday = getLastMonday(targetDate);
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      sunday.setHours(23, 59, 59, 999);
+      const week = sessions.filter((s) => s.start > monday && s.start < sunday);
+      return { monday, sunday, weekSessions: week };
+    },
+    [getLastMonday, sessions],
+  );
 
-  const { getValues, setValue, watch } = form;
+  const form = useForm<DisplayedWeekForm>({
+    defaultValues: { targetDate: getLastMonday(new Date()) },
+  });
+  const { getValues, setValue, watch, control } = form;
 
   const selectDate = useCallback(
     (_: DateTimePickerEvent, date?: Date) =>
-      date && setValue("selectedWeek", getLastMonday(date)),
-    [getLastMonday, setValue],
+      date && setValue("targetDate", date),
+    [setValue],
   );
 
-  const monday = watch("selectedWeek");
+  const targetDate = watch("targetDate");
+  const week = useMemo(() => getWeek(targetDate), [getWeek, targetDate]);
 
-  const week = useMemo(() => getWeek(sessions, monday), [monday, sessions]);
   const shiftWeek = useCallback(
     (direction: number) => {
-      const curMonday = getValues().selectedWeek;
-      const copy = new Date(curMonday);
-      copy.setDate(copy.getDate() + 7 * direction);
-      setValue("selectedWeek", getLastMonday(copy));
+      const lastMonday = getLastMonday(getValues().targetDate);
+      lastMonday.setDate(lastMonday.getDate() + 7 * direction);
+      setValue("targetDate", lastMonday);
     },
     [getLastMonday, getValues, setValue],
   );
 
-  return { week, shiftWeek, selectDate, form };
+  return { week, shiftWeek, selectDate, control };
 };

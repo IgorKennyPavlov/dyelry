@@ -1,5 +1,6 @@
 import AntIcon from "@expo/vector-icons/AntDesign";
-import { useCallback } from "react";
+import { Tabs } from "expo-router";
+import { useCallback, useMemo } from "react";
 import {
   FlatList,
   View,
@@ -22,18 +23,26 @@ import { useTargetStore } from "../store";
 const SessionList = () => {
   const { setTargetSessionId } = useTargetStore();
   const { navigate } = useNavigate();
-
-  const { week, shiftWeek, selectDate, form } = useSelectedWeek();
-  const { control } = form;
+  const { week, control, shiftWeek, selectDate } = useSelectedWeek();
+  const { monday, sunday, weekSessions } = week;
 
   const addSession = useCallback(() => {
     setTargetSessionId(String(Date.now()));
     navigate(`/session/session-editor`);
   }, [navigate, setTargetSessionId]);
 
+  const title = useMemo(() => {
+    const o: Intl.DateTimeFormatOptions = { day: "2-digit", month: "2-digit" };
+    const mondayString = monday.toLocaleDateString("ru-RU", o);
+    const sundayString = sunday.toLocaleDateString("ru-RU", o);
+    return `Session List (${mondayString} - ${sundayString})`;
+  }, [monday, sunday]);
+
   return (
     <>
-      {week?.length ? (
+      <Tabs.Screen options={{ title }} />
+
+      {weekSessions?.length ? (
         <View style={styles.list}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "25%" }}>Date</Text>
@@ -43,7 +52,7 @@ const SessionList = () => {
           </View>
 
           <FlatList
-            data={week}
+            data={weekSessions}
             renderItem={(props: ListRenderItemInfo<SessionProps>) => (
               <SessionListItem {...props} />
             )}
@@ -61,8 +70,8 @@ const SessionList = () => {
         </Pressable>
         <DatePicker
           style={styles.weekPicker}
-          name="selectedWeek"
-          label="Week"
+          name="targetDate"
+          label="target date"
           control={control}
           onChange={selectDate}
         />
