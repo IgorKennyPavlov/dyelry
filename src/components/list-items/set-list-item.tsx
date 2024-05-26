@@ -17,13 +17,15 @@ import {
   SetProps,
   Feels,
   reduceSeconds,
+  SESSIONS,
 } from "../../global";
-import { useTargetStore, useTarget } from "../../store";
+import { useTargetStore, useTarget, usePersistentStore } from "../../store";
 
 export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   const { item: targetSet } = props;
 
   const { navigate } = useNavigate();
+  const { [SESSIONS]: sessions } = usePersistentStore();
   const { setTargetSetId } = useTargetStore();
   const { targetSession, targetExercise } = useTarget();
 
@@ -49,10 +51,12 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
         return;
       }
 
-      if (targetSet !== targetExercise.sets.at(-1)) {
-        const targetSetIdx = targetExercise.sets.indexOf(targetSet);
-        const nextSetStart = targetExercise.sets[targetSetIdx + 1].start;
-        setRest(reduceSeconds(getIntervalSeconds(nextSetStart, targetSet.end)));
+      const targetSetIdx = targetExercise.sets.indexOf(targetSet);
+      const nextSet = targetExercise.sets[targetSetIdx + 1];
+
+      if (nextSet) {
+        const { start } = nextSet;
+        setRest(reduceSeconds(getIntervalSeconds(start, targetSet.end)));
         return;
       }
 
@@ -62,8 +66,17 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
 
       if (nextExerciseFirstSet) {
         const { start } = nextExerciseFirstSet;
-        const seconds = getIntervalSeconds(start, targetSet.end);
-        setRest(reduceSeconds(seconds));
+        setRest(reduceSeconds(getIntervalSeconds(start, targetSet.end)));
+        return;
+      }
+
+      const targetSessionIdx = sessions.indexOf(targetSession);
+      const nextSession = sessions[targetSessionIdx + 1];
+      const nextSessionFirstSet = nextSession?.exercises?.[0]?.sets?.[0];
+
+      if (nextSessionFirstSet) {
+        const { start } = nextSessionFirstSet;
+        setRest(reduceSeconds(getIntervalSeconds(start, targetSet.end)));
         return;
       }
 
@@ -73,7 +86,7 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
       }, 1000);
 
       return () => clearInterval(intervalId.current as number);
-    }, [targetExercise, targetSession?.exercises, targetSet]),
+    }, [sessions, targetExercise, targetSession, targetSet]),
   );
 
   const openExerciseSet = useCallback(() => {
