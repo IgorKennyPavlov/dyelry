@@ -12,11 +12,11 @@
     "build:android": "npx eas-cli@latest build --profile preview --platform android"
   },
   "dependencies": {
-    "@react-native-community/datetimepicker": "7.6.1",
+    "@react-native-community/datetimepicker": "7.7.0",
     "@react-native-picker/picker": "2.6.1",
-    "expo": "~50.0.17",
+    "expo": "~50.0.19",
     "expo-constants": "~15.4.6",
-    "expo-dev-client": "~3.3.11",
+    "expo-dev-client": "~3.3.12",
     "expo-document-picker": "~11.10.1",
     "expo-file-system": "~16.0.9",
     "expo-linking": "~6.2.2",
