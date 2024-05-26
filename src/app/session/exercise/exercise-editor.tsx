@@ -19,7 +19,7 @@ const ExerciseEditor = () => {
   const { targetSessionId, targetExerciseId, setTargetExerciseId } =
     useTargetStore();
 
-  const { targetExercise } = useTarget();
+  const { targetSession, targetExercise } = useTarget();
   const isEditing = targetExercise?.title !== undefined;
 
   const { getValues, control } = useForm<ExerciseEditForm>({
@@ -94,6 +94,41 @@ const ExerciseEditor = () => {
     targetSessionId,
   ]);
 
+  const resumeExercise = useCallback(() => {
+    if (
+      !targetSessionId ||
+      !targetExerciseId ||
+      !targetSession?.exercises ||
+      !targetExercise
+    ) {
+      return;
+    }
+
+    const isSessionActive = !targetSession.end;
+    const isExerciseLast = targetExercise === targetSession.exercises.at(-1);
+    const isExerciseResumable = isSessionActive && isExerciseLast;
+
+    if (!isExerciseResumable) {
+      alert("You can resume only the last exercise in an active session!");
+      return;
+    }
+
+    editExercise(targetSessionId, targetExerciseId, {
+      ...targetExercise,
+      end: undefined,
+    });
+
+    navigate("/session/view");
+  }, [
+    editExercise,
+    navigate,
+    targetExercise,
+    targetExerciseId,
+    targetSession?.end,
+    targetSession?.exercises,
+    targetSessionId,
+  ]);
+
   const title = useMemo(() => {
     let res = isEditing ? "Edit exercise" : "Create exercise";
 
@@ -115,6 +150,16 @@ const ExerciseEditor = () => {
 
       {!isKeyboardVisible && (
         <>
+          {targetExercise?.end && (
+            <View style={{ ...styles.btn, bottom: 80 }}>
+              <Button
+                title="Resume exercise"
+                color="orange"
+                onPress={resumeExercise}
+              />
+            </View>
+          )}
+
           {targetExercise && (
             <View style={{ ...styles.btn, bottom: 40 }}>
               <Button

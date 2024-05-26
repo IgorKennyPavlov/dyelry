@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert } from "react-native";
 
 import { Input, DatePicker } from "../../components";
-import { useNavigate, SessionProps, useKeyboard } from "../../global";
+import { useNavigate, SessionProps, useKeyboard, SESSIONS } from "../../global";
 import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 interface SessionEditForm {
@@ -16,7 +16,12 @@ interface SessionEditForm {
 const SessionEditor = () => {
   const { navigate } = useNavigate();
   const { isKeyboardVisible } = useKeyboard();
-  const { addSession, editSession, deleteSession } = usePersistentStore();
+  const {
+    [SESSIONS]: sessions,
+    addSession,
+    editSession,
+    deleteSession,
+  } = usePersistentStore();
   const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTarget();
 
@@ -85,6 +90,26 @@ const SessionEditor = () => {
     );
   }, [deleteSession, navigate, setTargetSessionId, targetSessionId]);
 
+  const resumeSession = useCallback(() => {
+    if (!targetSessionId || !targetSession) {
+      return;
+    }
+
+    const isSessionLast = targetSession === sessions.at(-1);
+
+    if (!isSessionLast) {
+      alert("You can resume only the last session!");
+      return;
+    }
+
+    editSession(targetSessionId, {
+      ...targetSession,
+      end: undefined,
+    });
+
+    navigate("/");
+  }, [editSession, navigate, sessions, targetSession, targetSessionId]);
+
   return (
     <>
       <View style={styles.formWrap}>
@@ -100,6 +125,16 @@ const SessionEditor = () => {
 
       {!isKeyboardVisible && (
         <>
+          {targetSession?.end && (
+            <View style={{ ...styles.btn, bottom: 80 }}>
+              <Button
+                title="Resume session"
+                color="orange"
+                onPress={resumeSession}
+              />
+            </View>
+          )}
+
           {targetSession && (
             <View style={{ ...styles.btn, bottom: 40 }}>
               <Button
