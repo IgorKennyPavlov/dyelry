@@ -64,9 +64,9 @@ const Exercise = () => {
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "15%" }}>Weight</Text>
             <Text style={{ width: "15%" }}>Reps</Text>
-            <Text style={{ width: "30%" }}>Duration</Text>
+            <Text style={{ width: "20%" }}>Duration</Text>
             <Text style={{ width: "30%" }}>Feels</Text>
-            <Text style={{ width: "10%" }}>Rest</Text>
+            <Text style={{ width: "20%" }}>Rest</Text>
           </View>
 
           <FlatList

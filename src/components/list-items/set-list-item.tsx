@@ -16,6 +16,7 @@ import {
   FeelsColors,
   SetProps,
   Feels,
+  reduceSeconds,
 } from "../../global";
 import { useTargetStore, useTarget } from "../../store";
 
@@ -24,15 +25,10 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
 
   const { navigate } = useNavigate();
   const { setTargetSetId } = useTargetStore();
+  const { targetSession, targetExercise } = useTarget();
 
   const intervalId: MutableRefObject<number | null> = useRef(null);
-  const [rest, setRest] = useState(0);
-
-  const { targetExercise } = useTarget();
-  const targetSetIdx = useMemo(
-    () => targetExercise?.sets?.indexOf(targetSet) as number,
-    [targetExercise?.sets, targetSet],
-  );
+  const [rest, setRest] = useState("--");
 
   const duration = useMemo(() => {
     if (!targetSet) {
@@ -45,31 +41,39 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!targetExercise?.sets?.length) {
+      if (
+        !targetSession?.exercises ||
+        !targetExercise?.sets?.length ||
+        !targetSet.end
+      ) {
         return;
       }
 
       if (targetSet !== targetExercise.sets.at(-1)) {
+        const targetSetIdx = targetExercise.sets.indexOf(targetSet);
         const nextSetStart = targetExercise.sets[targetSetIdx + 1].start;
-        setRest(getIntervalSeconds(nextSetStart, targetSet.end as Date));
+        setRest(reduceSeconds(getIntervalSeconds(nextSetStart, targetSet.end)));
         return;
       }
 
-      if (targetExercise.end) {
-        setRest(getIntervalSeconds(targetExercise.end, targetSet.end as Date));
-        return;
-      }
+      const targetExerciseIdx = targetSession.exercises.indexOf(targetExercise);
+      const nextExercise = targetSession.exercises[targetExerciseIdx + 1];
+      const nextExerciseFirstSet = nextExercise?.sets?.[0];
 
-      if (!targetSet.end) {
+      if (nextExerciseFirstSet) {
+        const { start } = nextExerciseFirstSet;
+        const seconds = getIntervalSeconds(start, targetSet.end);
+        setRest(reduceSeconds(seconds));
         return;
       }
 
       intervalId.current = window.setInterval(() => {
-        setRest(getIntervalSeconds(new Date(), targetSet.end as Date));
+        const seconds = getIntervalSeconds(new Date(), targetSet.end as Date);
+        setRest(reduceSeconds(seconds));
       }, 1000);
 
       return () => clearInterval(intervalId.current as number);
-    }, [targetExercise?.end, targetExercise?.sets, targetSet, targetSetIdx]),
+    }, [targetExercise, targetSession?.exercises, targetSet]),
   );
 
   const openExerciseSet = useCallback(() => {
@@ -82,6 +86,11 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
     navigate("/session/exercise/exercise-set/timer");
   }, [navigate, setTargetSetId, targetSet.id]);
 
+  const isTimerRunning = useMemo(
+    () => intervalId.current && !targetExercise?.end,
+    [targetExercise?.end],
+  );
+
   return (
     <Pressable
       style={{
@@ -92,7 +101,7 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
     >
       <Text style={{ width: "15%" }}>{targetSet.weight}</Text>
       <Text style={{ width: "15%" }}>{targetSet.reps}</Text>
-      <Text style={{ width: "30%" }}>
+      <Text style={{ width: "20%" }}>
         {targetSet?.end ? `${duration}s` : "--"}
       </Text>
 
@@ -107,11 +116,11 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
 
       <Text
         style={{
-          width: "10%",
-          ...(intervalId.current ? styles.runningTimer : {}),
+          width: "20%",
+          ...(isTimerRunning ? styles.runningTimer : {}),
         }}
       >
-        {rest}s
+        {rest}
       </Text>
     </Pressable>
   );
