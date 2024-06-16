@@ -22,6 +22,21 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
     return end ? Math.round(getIntervalSeconds(end, start) / 60) : 0;
   }, [targetExercise]);
 
+  const kgPerMin = useMemo(() => {
+    if (!targetExercise || !duration) {
+      return "--";
+    }
+
+    const sets = targetExercise.sets || [];
+    const weightSum = sets.reduce((acc, cur) => acc + (cur.weight || 0), 0);
+
+    if (!weightSum) {
+      return "--";
+    }
+
+    return Math.round(weightSum / duration);
+  }, [duration, targetExercise]);
+
   const openExercise = useCallback(() => {
     setTargetExerciseId(targetExercise.id);
     navigate("/exercise");
@@ -44,10 +59,11 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
       }}
       onPress={openExercise}
     >
-      <Text style={{ width: "50%" }}>{targetExercise.title}</Text>
-      <Text style={{ width: "40%" }}>
+      <Text style={{ width: "40%" }}>{targetExercise.title}</Text>
+      <Text style={{ width: "30%" }}>
         {targetExercise?.end ? `~${duration} min` : "--"}
       </Text>
+      <Text style={{ width: "20%" }}>{kgPerMin}</Text>
 
       <Pressable style={{ width: "10%" }} onPress={editExercise}>
         <MCI name="pencil-circle-outline" size={32} color="#444" />

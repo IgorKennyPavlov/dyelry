@@ -56,8 +56,9 @@ const Session = () => {
       {targetSession?.exercises?.length ? (
         <View style={targetSession.end ? {} : styles.list}>
           <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "50%" }}>Title</Text>
-            <Text style={{ width: "40%" }}>Duration</Text>
+            <Text style={{ width: "40%" }}>Title</Text>
+            <Text style={{ width: "30%" }}>Duration</Text>
+            <Text style={{ width: "20%" }}>Kg/Min</Text>
             <Text style={{ width: "10%" }}>Edit</Text>
           </View>
 
