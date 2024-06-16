@@ -9,6 +9,8 @@ import {
   ListRenderItemInfo,
   Text,
   Pressable,
+  Animated,
+  Dimensions,
 } from "react-native";
 
 import {
@@ -17,14 +19,23 @@ import {
   DatePicker,
 } from "../components";
 import { useSelectedWeek } from "../decomposition/use-selected-week";
-import { useNavigate, SessionProps } from "../global";
+import { useNavigate, SessionProps, useSwipe } from "../global";
 import { useTargetStore } from "../store";
+import { useHorizontalSwipe } from "../decomposition/use-horizontal-swipe";
 
 const SessionList = () => {
   const { setTargetSessionId } = useTargetStore();
   const { navigate } = useNavigate();
   const { week, control, shiftWeek, selectDate } = useSelectedWeek();
   const { monday, sunday, weekSessions } = week;
+
+  const { animateSwipe, animatedXPos } = useHorizontalSwipe();
+  const screenWidth = Dimensions.get("window").width;
+
+  const { onTouchStart, onTouchEnd } = useSwipe(
+    () => animateSwipe(-screenWidth, screenWidth, () => shiftWeek(1)),
+    () => animateSwipe(screenWidth, -screenWidth, () => shiftWeek(-1)),
+  );
 
   const addSession = useCallback(() => {
     setTargetSessionId(String(Date.now()));
@@ -42,27 +53,36 @@ const SessionList = () => {
     <>
       <Tabs.Screen options={{ headerTitle }} />
 
-      {weekSessions?.length ? (
-        <View style={styles.list}>
-          <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "25%" }}>Date</Text>
-            <Text style={{ width: "45%" }}>Title</Text>
-            <Text style={{ width: "20%" }}>Duration</Text>
-            <Text style={{ width: "10%" }}>Edit</Text>
-          </View>
+      <Animated.View
+        style={{
+          ...styles.swipeable,
+          transform: [{ translateX: animatedXPos }],
+        }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {weekSessions?.length ? (
+          <View style={styles.list}>
+            <View style={listItemCommonStyles.header}>
+              <Text style={{ width: "25%" }}>Date</Text>
+              <Text style={{ width: "45%" }}>Title</Text>
+              <Text style={{ width: "20%" }}>Duration</Text>
+              <Text style={{ width: "10%" }}>Edit</Text>
+            </View>
 
-          <FlatList
-            data={weekSessions}
-            renderItem={(props: ListRenderItemInfo<SessionProps>) => (
-              <SessionListItem {...props} />
-            )}
-          />
-        </View>
-      ) : (
-        <View style={styles.emptyList}>
-          <Text>No sessions recorded</Text>
-        </View>
-      )}
+            <FlatList
+              data={weekSessions}
+              renderItem={(props: ListRenderItemInfo<SessionProps>) => (
+                <SessionListItem {...props} />
+              )}
+            />
+          </View>
+        ) : (
+          <View style={styles.emptyList}>
+            <Text>No sessions recorded</Text>
+          </View>
+        )}
+      </Animated.View>
 
       <View style={styles.paginationPanel}>
         <Pressable style={styles.weekBtn} onPress={() => shiftWeek(-1)}>
@@ -88,6 +108,7 @@ const SessionList = () => {
 };
 
 const styles = StyleSheet.create({
+  swipeable: { flexGrow: 1 },
   list: { paddingBottom: 140 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   paginationPanel: {
