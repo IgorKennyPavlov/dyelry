@@ -19,7 +19,8 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
     }
 
     const { start, end } = targetExercise;
-    return end ? Math.round(getIntervalSeconds(end, start) / 60) : 0;
+    const tillTime = end || new Date();
+    return Math.round(getIntervalSeconds(tillTime, start) / 60);
   }, [targetExercise]);
 
   const kgPerMin = useMemo(() => {
@@ -28,7 +29,10 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
     }
 
     const sets = targetExercise.sets || [];
-    const weightSum = sets.reduce((acc, cur) => acc + (cur.weight || 0), 0);
+    const weightSum = sets.reduce(
+      (acc, cur) => acc + (cur.weight || 0) * (cur.reps || 0),
+      0,
+    );
 
     if (!weightSum) {
       return "--";
@@ -60,9 +64,7 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
       onPress={openExercise}
     >
       <Text style={{ width: "40%" }}>{targetExercise.title}</Text>
-      <Text style={{ width: "30%" }}>
-        {targetExercise?.end ? `~${duration} min` : "--"}
-      </Text>
+      <Text style={{ width: "30%" }}>{`~${duration} min`}</Text>
       <Text style={{ width: "20%" }}>{kgPerMin}</Text>
 
       <Pressable style={{ width: "10%" }} onPress={editExercise}>
