@@ -28,7 +28,7 @@ const SessionList = () => {
 
   const addSession = useCallback(() => {
     setTargetSessionId(String(Date.now()));
-    navigate(`/session/session-editor`);
+    navigate(`/session-editor`);
   }, [navigate, setTargetSessionId]);
 
   const headerTitle = useMemo(() => {

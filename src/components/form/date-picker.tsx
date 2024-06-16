@@ -45,7 +45,7 @@ export const DatePicker = (props: DatePickerProps) => {
 
       <Pressable style={styles.dateBtn} onPress={() => setShowDatePicker(true)}>
         <Text style={styles.dateField}>
-          {field.value.toLocaleDateString("ru-RU")}
+          {field.value?.toLocaleDateString("ru-RU")}
         </Text>
       </Pressable>
 

@@ -16,7 +16,7 @@ import {
   Alert,
 } from "react-native";
 
-import { Input, Select } from "../../../../components";
+import { Input, Select } from "../../components";
 import {
   Feels,
   getIntervalSeconds,
@@ -24,12 +24,8 @@ import {
   useKeyboard,
   FeelsReadable,
   FeelsColors,
-} from "../../../../global";
-import {
-  usePersistentStore,
-  useTargetStore,
-  useTarget,
-} from "../../../../store";
+} from "../../global";
+import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 interface SetEditForm {
   weight: string;
@@ -96,7 +92,7 @@ const SetEditor = () => {
     };
     editSet(targetSessionId, targetExerciseId, targetSetId, updatedSet);
 
-    navigate("/session/exercise/view");
+    navigate("/exercise");
   }, [
     getValues,
     editSet,
@@ -120,7 +116,7 @@ const SetEditor = () => {
           text: "Confirm",
           style: "default",
           onPress: () => {
-            navigate("/session/exercise/view");
+            navigate("/exercise");
             deleteSet(targetSessionId, targetExerciseId, targetSetId);
             setTargetSetId(null);
           },

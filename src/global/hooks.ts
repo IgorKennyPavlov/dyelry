@@ -10,7 +10,7 @@ export const useNavigate = () => {
     while (router.canGoBack()) {
       router.back();
     }
-    router.replace(route);
+    router.push(route);
   };
 
   return { navigate };

@@ -5,12 +5,6 @@ import { Text, Button } from "react-native";
 
 import { usePersistentStore, useHydrated, useTabBarStore } from "../store";
 
-/**
- * DO NOT REMOVE! Check if helps with unwanted routing to session-editor
- * https://docs.expo.dev/router/reference/faq/#missing-back-button
- */
-export const unstable_settings = { initialRouteName: "index" };
-
 const AppLayout = () => {
   const { clearStore } = usePersistentStore();
   const hydrated = useHydrated();
@@ -61,9 +55,10 @@ const AppLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="session"
+        name="(sessions)"
         options={{ headerShown: false, href: null }}
       />
+      <Tabs.Screen name="session-editor" options={{ href: null }} />
     </Tabs>
   );
 };

@@ -91,12 +91,12 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
 
   const openExerciseSet = useCallback(() => {
     setTargetSetId(targetSet.id);
-    navigate("/session/exercise/exercise-set/set-editor");
+    navigate("/set-editor");
   }, [navigate, setTargetSetId, targetSet.id]);
 
   const openTimer = useCallback(() => {
     setTargetSetId(targetSet.id);
-    navigate("/session/exercise/exercise-set/timer");
+    navigate("/timer");
   }, [navigate, setTargetSetId, targetSet.id]);
 
   const isTimerRunning = useMemo(

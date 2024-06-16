@@ -1,3 +1,4 @@
+import { Stack } from "expo-router";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -10,7 +11,7 @@ import {
 } from "react-native";
 
 import { ExerciseListItem, listItemCommonStyles } from "../../components";
-import { useNavigate, ExerciseProps } from "../../global";
+import { useNavigate, ExerciseProps, getSessionTitle } from "../../global";
 import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 const Session = () => {
@@ -36,7 +37,7 @@ const Session = () => {
 
   const addExercise = useCallback(() => {
     setTargetExerciseId(String(Date.now()));
-    navigate(`/session/exercise/exercise-editor`);
+    navigate(`/exercise-editor`);
   }, [navigate, setTargetExerciseId]);
 
   const endSession = useCallback(() => {
@@ -48,8 +49,12 @@ const Session = () => {
     navigate(`/`);
   }, [editSession, navigate, targetSessionId]);
 
+  const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
+
   return (
     <>
+      <Stack.Screen options={{ title }} />
+
       {targetSession?.exercises?.length ? (
         <View style={targetSession.end ? {} : styles.list}>
           <View style={listItemCommonStyles.header}>

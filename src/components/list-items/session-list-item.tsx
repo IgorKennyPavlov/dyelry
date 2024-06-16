@@ -24,14 +24,14 @@ export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
 
   const openSession = useCallback(() => {
     setTargetSessionId(targetSession.id);
-    navigate("/session/view");
+    navigate("/session");
   }, [navigate, setTargetSessionId, targetSession.id]);
 
   const editSession = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
       setTargetSessionId(targetSession.id);
-      navigate("/session/session-editor");
+      navigate("/session-editor");
     },
     [navigate, setTargetSessionId, targetSession.id],
   );

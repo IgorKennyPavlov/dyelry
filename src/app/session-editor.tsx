@@ -1,11 +1,18 @@
 import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { useCallback } from "react";
+import { Tabs, useFocusEffect } from "expo-router";
+import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert } from "react-native";
 
-import { Input, DatePicker } from "../../components";
-import { useNavigate, SessionProps, useKeyboard, SESSIONS } from "../../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../../store";
+import { Input, DatePicker } from "../components";
+import {
+  useNavigate,
+  SessionProps,
+  useKeyboard,
+  SESSIONS,
+  getSessionTitle,
+} from "../global";
+import { usePersistentStore, useTargetStore, useTarget } from "../store";
 
 interface SessionEditForm {
   title: string;
@@ -25,13 +32,17 @@ const SessionEditor = () => {
   const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTarget();
 
-  const { getValues, control, setValue } = useForm<SessionEditForm>({
-    defaultValues: {
-      title: targetSession?.title || "",
-      date: targetSession?.start || new Date(),
-      comment: targetSession?.comment || "",
-    },
-  });
+  const { getValues, control, setValue, reset } = useForm<SessionEditForm>();
+
+  useFocusEffect(
+    useCallback(() => {
+      reset({
+        title: targetSession?.title || "",
+        date: targetSession?.start || new Date(),
+        comment: targetSession?.comment || "",
+      });
+    }, [reset, targetSession]),
+  );
 
   const selectDate = useCallback(
     (_: DateTimePickerEvent, date?: Date) => date && setValue("date", date),
@@ -56,7 +67,7 @@ const SessionEditor = () => {
     }
 
     addSession(sessionData);
-    navigate("/session/view");
+    navigate("/session");
   }, [
     addSession,
     editSession,
@@ -110,8 +121,12 @@ const SessionEditor = () => {
     navigate("/");
   }, [editSession, navigate, sessions, targetSession, targetSessionId]);
 
+  const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
+
   return (
     <>
+      <Tabs.Screen options={{ title }} />
+
       <View style={styles.formWrap}>
         <Input style={styles.field} control={control} name="title" />
         <DatePicker

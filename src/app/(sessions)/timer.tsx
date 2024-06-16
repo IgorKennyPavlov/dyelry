@@ -8,13 +8,13 @@ import {
 } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
-import { getIntervalSeconds, useNavigate } from "../../../../global";
+import { getIntervalSeconds, useNavigate } from "../../global";
 import {
   usePersistentStore,
   useTargetStore,
   useHideTabBar,
   useTarget,
-} from "../../../../store";
+} from "../../store";
 
 const Timer = () => {
   useHideTabBar();
@@ -63,7 +63,7 @@ const Timer = () => {
 
     const end = new Date();
     editSet(targetSessionId, targetExerciseId, targetSetId, { end });
-    navigate("/session/exercise/exercise-set/set-editor");
+    navigate("/set-editor");
   }, [editSet, targetSessionId, targetExerciseId, targetSetId, navigate]);
 
   const finishExerciseSet = useCallback(() => {

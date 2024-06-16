@@ -24,14 +24,14 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
 
   const openExercise = useCallback(() => {
     setTargetExerciseId(targetExercise.id);
-    navigate("/session/exercise/view");
+    navigate("/exercise");
   }, [navigate, setTargetExerciseId, targetExercise.id]);
 
   const editExercise = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
       setTargetExerciseId(targetExercise.id);
-      navigate("/session/exercise/exercise-editor");
+      navigate("/exercise-editor");
     },
     [navigate, setTargetExerciseId, targetExercise.id],
   );

@@ -1,3 +1,5 @@
+import { SessionProps } from "./types";
+
 export const getIntervalSeconds = (from: Date, to: Date) =>
   Math.floor((from.valueOf() - to.valueOf()) / 1000);
 
@@ -19,4 +21,22 @@ export const reduceSeconds = (seconds: number): string => {
   }
 
   return `${seconds}s`;
+};
+
+export const getSessionTitle = (targetSession?: SessionProps) => {
+  let res = "Session";
+
+  if (!targetSession) {
+    return "New " + res;
+  }
+
+  if (targetSession.start) {
+    res += ` ${targetSession.start.toLocaleDateString("ru-RU")}`;
+  }
+
+  if (targetSession.title) {
+    res += ` (${targetSession.title})`;
+  }
+
+  return res;
 };

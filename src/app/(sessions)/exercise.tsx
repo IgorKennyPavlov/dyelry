@@ -10,9 +10,9 @@ import {
   Dimensions,
 } from "react-native";
 
-import { SetListItem, listItemCommonStyles } from "../../../components";
-import { useNavigate, SetProps } from "../../../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../../../store";
+import { SetListItem, listItemCommonStyles } from "../../components";
+import { useNavigate, SetProps } from "../../global";
+import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 const Exercise = () => {
   const { navigate } = useNavigate();
@@ -38,7 +38,7 @@ const Exercise = () => {
 
   const addSet = useCallback(() => {
     setTargetSetId(null);
-    navigate("/session/exercise/exercise-set/timer");
+    navigate("/timer");
   }, [navigate, setTargetSetId]);
 
   const endExercise = useCallback(() => {
@@ -47,7 +47,7 @@ const Exercise = () => {
     }
 
     editExercise(targetSessionId, targetExerciseId, { end: new Date() });
-    navigate("/session/view");
+    navigate("/session");
   }, [editExercise, navigate, targetExerciseId, targetSessionId]);
 
   return (

@@ -3,9 +3,9 @@ import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert } from "react-native";
 
-import { Input } from "../../../components";
-import { useNavigate, ExerciseProps, useKeyboard } from "../../../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../../../store";
+import { Input } from "../../components";
+import { useNavigate, ExerciseProps, useKeyboard } from "../../global";
+import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 interface ExerciseEditForm {
   title: string;
@@ -48,12 +48,12 @@ const ExerciseEditor = () => {
 
     if (targetExercise) {
       editExercise(targetSessionId, targetExerciseId, exerciseData);
-      navigate("/session/view");
+      navigate("/session");
       return;
     }
 
     addExercise(targetSessionId, exerciseData);
-    navigate("/session/exercise/view");
+    navigate("/exercise");
   }, [
     addExercise,
     editExercise,
@@ -78,7 +78,7 @@ const ExerciseEditor = () => {
           text: "Confirm",
           style: "default",
           onPress: () => {
-            navigate("/session/view");
+            navigate("/session");
             deleteExercise(targetSessionId, targetExerciseId);
             setTargetExerciseId(null);
           },
@@ -118,7 +118,7 @@ const ExerciseEditor = () => {
       end: undefined,
     });
 
-    navigate("/session/view");
+    navigate("/session");
   }, [
     editExercise,
     navigate,
