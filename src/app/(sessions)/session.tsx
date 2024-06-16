@@ -41,9 +41,7 @@ const Session = () => {
   }, [navigate, setTargetExerciseId]);
 
   const endSession = useCallback(() => {
-    if (!targetSessionId) {
-      return;
-    }
+    if (!targetSessionId) return;
 
     editSession(targetSessionId, { end: new Date() });
     navigate(`/`);

@@ -59,9 +59,7 @@ const SetEditor = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (isEditing || !targetSet?.end) {
-        return;
-      }
+      if (isEditing || !targetSet?.end) return;
 
       intervalId.current = window.setInterval(() => {
         setTimer(getIntervalSeconds(new Date(), targetSet.end as Date));
@@ -72,9 +70,7 @@ const SetEditor = () => {
   );
 
   const editSetParams = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId || !targetSetId) {
-      return;
-    }
+    if (!targetSessionId || !targetExerciseId || !targetSetId) return;
 
     const { weight, reps, feels, comment } = getValues();
 
@@ -103,9 +99,7 @@ const SetEditor = () => {
   ]);
 
   const confirmDelete = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId || !targetSetId) {
-      return;
-    }
+    if (!targetSessionId || !targetExerciseId || !targetSetId) return;
 
     Alert.alert(
       "Deleting set",

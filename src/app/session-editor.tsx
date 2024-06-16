@@ -50,9 +50,7 @@ const SessionEditor = () => {
   );
 
   const saveSession = useCallback(() => {
-    if (!targetSessionId) {
-      return;
-    }
+    if (!targetSessionId) return;
 
     const sessionData: SessionProps = {
       id: targetSessionId,
@@ -78,9 +76,7 @@ const SessionEditor = () => {
   ]);
 
   const confirmDelete = useCallback(() => {
-    if (!targetSessionId) {
-      return;
-    }
+    if (!targetSessionId) return;
 
     Alert.alert(
       "Deleting session",
@@ -102,9 +98,7 @@ const SessionEditor = () => {
   }, [deleteSession, navigate, setTargetSessionId, targetSessionId]);
 
   const resumeSession = useCallback(() => {
-    if (!targetSessionId || !targetSession) {
-      return;
-    }
+    if (!targetSessionId || !targetSession) return;
 
     const isSessionLast = targetSession === sessions.at(-1);
 

@@ -47,9 +47,8 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
         !targetSession?.exercises ||
         !targetExercise?.sets?.length ||
         !targetSet.end
-      ) {
+      )
         return;
-      }
 
       const targetSetIdx = targetExercise.sets.indexOf(targetSet);
       const nextSet = targetExercise.sets[targetSetIdx + 1];

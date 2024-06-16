@@ -30,9 +30,7 @@ const ExerciseEditor = () => {
   });
 
   const saveExercise = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId) {
-      return;
-    }
+    if (!targetSessionId || !targetExerciseId) return;
 
     // TODO replace with proper validation
     if (getValues().title === "") {
@@ -65,9 +63,7 @@ const ExerciseEditor = () => {
   ]);
 
   const confirmDelete = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId) {
-      return;
-    }
+    if (!targetSessionId || !targetExerciseId) return;
 
     Alert.alert(
       "Deleting exercise",
@@ -100,9 +96,8 @@ const ExerciseEditor = () => {
       !targetExerciseId ||
       !targetSession?.exercises ||
       !targetExercise
-    ) {
+    )
       return;
-    }
 
     const isSessionActive = !targetSession.end;
     const isExerciseLast = targetExercise === targetSession.exercises.at(-1);

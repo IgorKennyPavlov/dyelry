@@ -54,9 +54,7 @@ export const usePersistentStore = create<SessionsStore>()(
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
 
-            if (!session) {
-              return;
-            }
+            if (!session) return;
 
             Object.assign(session, editedSession);
           }),
@@ -73,9 +71,7 @@ export const usePersistentStore = create<SessionsStore>()(
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
 
-            if (!session) {
-              return;
-            }
+            if (!session) return;
 
             if (!session.exercises) {
               session.exercises = [];
@@ -97,9 +93,7 @@ export const usePersistentStore = create<SessionsStore>()(
               (e) => e.id === exerciseId,
             );
 
-            if (!exercise) {
-              return;
-            }
+            if (!exercise) return;
 
             Object.assign(exercise, editedExercise);
           }),
@@ -110,9 +104,7 @@ export const usePersistentStore = create<SessionsStore>()(
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
 
-            if (!session) {
-              return;
-            }
+            if (!session) return;
 
             session.exercises = session.exercises?.filter(
               (e) => e.id !== exerciseId,
@@ -129,9 +121,7 @@ export const usePersistentStore = create<SessionsStore>()(
               (e) => e.id === exerciseId,
             );
 
-            if (!exercise) {
-              return;
-            }
+            if (!exercise) return;
 
             if (!exercise.sets) {
               exercise.sets = [];
@@ -155,9 +145,7 @@ export const usePersistentStore = create<SessionsStore>()(
             );
             const targetSet = exercise?.sets?.find((s) => s.id === setId);
 
-            if (!targetSet) {
-              return;
-            }
+            if (!targetSet) return;
 
             Object.assign(targetSet, updatedSet);
           }),
@@ -171,9 +159,7 @@ export const usePersistentStore = create<SessionsStore>()(
               (e) => e.id === exerciseId,
             );
 
-            if (!exercise) {
-              return;
-            }
+            if (!exercise) return;
 
             exercise.sets = exercise.sets?.filter((s) => s.id !== setId);
           }),

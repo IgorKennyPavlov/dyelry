@@ -31,9 +31,7 @@ const Timer = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!start) {
-        return;
-      }
+      if (!start) return;
 
       intervalId.current = window.setInterval(() => {
         setTimer(getIntervalSeconds(new Date(), start));
@@ -44,9 +42,7 @@ const Timer = () => {
   );
 
   const startExerciseSet = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId) {
-      return;
-    }
+    if (!targetSessionId || !targetExerciseId) return;
 
     const id = Date.now().toString();
     const start = new Date();
@@ -57,9 +53,7 @@ const Timer = () => {
   }, [addSet, setTargetSetId, targetExerciseId, targetSessionId]);
 
   const endExerciseSet = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId || !targetSetId) {
-      return;
-    }
+    if (!targetSessionId || !targetExerciseId || !targetSetId) return;
 
     const end = new Date();
     editSet(targetSessionId, targetExerciseId, targetSetId, { end });

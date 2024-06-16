@@ -71,15 +71,11 @@ export const importSessionsAsync = async () => {
     const pickerOptions = { type: "application/json" };
     const result = await DocumentPicker.getDocumentAsync(pickerOptions);
 
-    if (result.canceled) {
-      return;
-    }
+    if (result.canceled) return;
 
     const uri = result.assets[0]?.uri;
 
-    if (!uri) {
-      return;
-    }
+    if (!uri) return;
 
     await setItem(SESSIONS, await FileSystem.readAsStringAsync(uri, options));
     await FileSystem.deleteAsync(uri);
