@@ -18,10 +18,10 @@ import {
   listItemCommonStyles,
   DatePicker,
 } from "../components";
+import { useHorizontalSwipe } from "../decomposition/use-horizontal-swipe";
 import { useSelectedWeek } from "../decomposition/use-selected-week";
 import { useNavigate, SessionProps, useSwipe } from "../global";
 import { useTargetStore } from "../store";
-import { useHorizontalSwipe } from "../decomposition/use-horizontal-swipe";
 
 const SessionList = () => {
   const { setTargetSessionId } = useTargetStore();

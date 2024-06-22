@@ -32,8 +32,10 @@ const ExerciseEditor = () => {
   const saveExercise = useCallback(() => {
     if (!targetSessionId || !targetExerciseId) return;
 
+    const { title, comment } = getValues();
+
     // TODO replace with proper validation
-    if (getValues().title === "") {
+    if (title.trim() === "") {
       alert("Fill the title field!");
       return;
     }
@@ -41,7 +43,8 @@ const ExerciseEditor = () => {
     const exerciseData: ExerciseProps = {
       id: targetExerciseId,
       start: targetExercise?.start || new Date(),
-      ...getValues(),
+      title: title.trim(),
+      comment: comment.trim(),
     };
 
     if (targetExercise) {

@@ -31,7 +31,7 @@ interface SetEditForm {
   weight: string;
   reps: string;
   feels: Feels;
-  comment?: string;
+  comment: string;
 }
 
 const SetEditor = () => {
@@ -75,7 +75,7 @@ const SetEditor = () => {
     const { weight, reps, feels, comment } = getValues();
 
     // TODO replace with proper validation
-    if (weight === "" || reps === "") {
+    if (weight.trim() === "" || reps.trim() === "") {
       alert("Fill the required fields!");
       return;
     }
@@ -84,7 +84,7 @@ const SetEditor = () => {
       weight: +weight,
       reps: +reps,
       feels,
-      comment,
+      comment: comment.trim(),
     };
     editSet(targetSessionId, targetExerciseId, targetSetId, updatedSet);
 

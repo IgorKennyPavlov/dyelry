@@ -52,10 +52,12 @@ const SessionEditor = () => {
   const saveSession = useCallback(() => {
     if (!targetSessionId) return;
 
+    const { date, comment, title } = getValues();
     const sessionData: SessionProps = {
       id: targetSessionId,
-      start: getValues().date,
-      ...getValues(),
+      start: date,
+      comment: comment.trim(),
+      title: title.trim(),
     };
 
     if (targetSession) {
