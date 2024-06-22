@@ -4,7 +4,12 @@ import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert } from "react-native";
 
 import { Input } from "../../components";
-import { useNavigate, ExerciseProps, useKeyboard } from "../../global";
+import {
+  useNavigate,
+  ExerciseProps,
+  useKeyboard,
+  SESSIONS,
+} from "../../global";
 import { usePersistentStore, useTargetStore, useTarget } from "../../store";
 
 interface ExerciseEditForm {
@@ -15,7 +20,12 @@ interface ExerciseEditForm {
 const ExerciseEditor = () => {
   const { navigate } = useNavigate();
   const { isKeyboardVisible } = useKeyboard();
-  const { addExercise, editExercise, deleteExercise } = usePersistentStore();
+  const {
+    [SESSIONS]: sessions,
+    addExercise,
+    editExercise,
+    deleteExercise,
+  } = usePersistentStore();
   const { targetSessionId, targetExerciseId, setTargetExerciseId } =
     useTargetStore();
 
@@ -137,12 +147,25 @@ const ExerciseEditor = () => {
     return res;
   }, [isEditing, targetExercise?.title]);
 
+  const uniqueExerciseTitles = useMemo(() => {
+    const exerciseTitles = sessions
+      .flatMap((s) => s.exercises || [])
+      .map((e) => e.title);
+    return [...new Set(exerciseTitles)];
+  }, [sessions]);
+
   return (
     <>
       <Stack.Screen options={{ title, headerBackVisible: false }} />
 
       <View style={styles.formWrap}>
-        <Input style={styles.field} control={control} name="title" required />
+        <Input
+          style={styles.field}
+          control={control}
+          name="title"
+          autocomplete={uniqueExerciseTitles}
+          required
+        />
         <Input style={styles.field} control={control} name="comment" />
       </View>
 
