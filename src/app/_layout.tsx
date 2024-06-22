@@ -55,6 +55,19 @@ const AppLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="exercise-constructor"
+        options={{
+          title: "Exercise Constructor",
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="construction"
+              size={32}
+              color={focused ? "#2196F3" : "#ccc"}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="(sessions)"
         options={{ headerShown: false, href: null }}
       />
