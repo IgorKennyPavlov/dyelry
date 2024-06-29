@@ -1,2 +1,2 @@
 export * from "./target-store";
-export * from "./use-target";
+export * from "./use-target-selectors";

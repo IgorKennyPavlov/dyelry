@@ -12,14 +12,18 @@ import {
 
 import { ExerciseListItem, listItemCommonStyles } from "../../components";
 import { useNavigate, ExerciseProps, getSessionTitle } from "../../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../../store";
+import {
+  usePersistentStore,
+  useTargetStore,
+  useTargetSelectors,
+} from "../../store";
 
 const Session = () => {
   const { navigate } = useNavigate();
   const { editSession } = usePersistentStore();
   const { targetSessionId, setTargetExerciseId } = useTargetStore();
 
-  const { targetSession } = useTarget();
+  const { targetSession } = useTargetSelectors();
 
   const showActionPanel = useMemo(() => {
     if (!targetSession) {

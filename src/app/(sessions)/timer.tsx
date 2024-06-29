@@ -13,7 +13,7 @@ import {
   usePersistentStore,
   useTargetStore,
   useHideTabBar,
-  useTarget,
+  useTargetSelectors,
 } from "../../store";
 
 const Timer = () => {
@@ -23,7 +23,7 @@ const Timer = () => {
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
 
-  const { targetExercise, targetSet } = useTarget();
+  const { targetExercise, targetSet } = useTargetSelectors();
 
   const [start, setStart] = useState<Date | null>(targetSet?.start || null);
   const [timer, setTimer] = useState(0);

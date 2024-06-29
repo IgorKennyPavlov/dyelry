@@ -3,9 +3,6 @@ import * as FileSystem from "expo-file-system";
 import { WritingOptions, ReadingOptions } from "expo-file-system";
 import * as Sharing from "expo-sharing";
 
-import { SESSIONS } from "../../global";
-
-const DEFAULT_STORE = { state: { sessions: [] }, version: 0 };
 const options = { encoding: FileSystem.EncodingType.UTF8 } as
   | WritingOptions
   | ReadingOptions;
@@ -18,11 +15,11 @@ const ensureStore = async (key: string) => {
     await FileSystem.makeDirectoryAsync(storeDir, { intermediates: true });
   }
 
-  const storeURI = storeDir + "store.json";
+  const storeURI = `${storeDir}${key}.json`;
   const fileInfo = await FileSystem.getInfoAsync(storeURI);
 
   if (!fileInfo.exists) {
-    const defaultStore = JSON.stringify(DEFAULT_STORE);
+    const defaultStore = JSON.stringify({ state: {}, version: 0 });
     await FileSystem.writeAsStringAsync(storeURI, defaultStore, options);
   }
 
@@ -56,9 +53,9 @@ const removeItem = async (key: string) => {
   }
 };
 
-export const exportStoreAsync = async () => {
+export const exportStoreAsync = async (key: string) => {
   try {
-    const uri = await ensureStore(SESSIONS);
+    const uri = await ensureStore(key);
     await Sharing.shareAsync(uri);
   } catch (e) {
     console.error("FileSystem: Failed to export storage", e);
@@ -66,7 +63,7 @@ export const exportStoreAsync = async () => {
 };
 
 // TODO add import strategies [override, merge, append, prepend]
-export const importSessionsAsync = async () => {
+export const importStoreAsync = async (key: string) => {
   try {
     const pickerOptions = { type: "application/json" };
     const result = await DocumentPicker.getDocumentAsync(pickerOptions);
@@ -77,7 +74,7 @@ export const importSessionsAsync = async () => {
 
     if (!uri) return;
 
-    await setItem(SESSIONS, await FileSystem.readAsStringAsync(uri, options));
+    await setItem(key, await FileSystem.readAsStringAsync(uri, options));
     await FileSystem.deleteAsync(uri);
   } catch (err) {
     console.error(err);

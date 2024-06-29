@@ -2,26 +2,31 @@ import { useCallback } from "react";
 import { View, Button, StyleSheet, Alert } from "react-native";
 
 import { usePersistentStore } from "../store";
+import { useExerciseDataStore } from "../store/persistent-store/exercise-data-store";
 
 const Impex = () => {
-  const { clearStore, importStore, exportStore } = usePersistentStore();
+  const { clearSessions, importSessions, exportSessions } =
+    usePersistentStore();
 
-  const tryToClearStore = useCallback(() => {
+  const { clearExerciseData, importExerciseData, exportExerciseData } =
+    useExerciseDataStore();
+
+  const tryToClearSessions = useCallback(() => {
     Alert.alert(
       "Cleaning storage",
       "Are you REALLY sure?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: clearStore },
+        { text: "Confirm", style: "default", onPress: clearSessions },
       ],
       { cancelable: true },
     );
-  }, [clearStore]);
+  }, [clearSessions]);
 
-  const importSessions = useCallback(async () => {
-    await importStore();
+  const importSessionsStore = useCallback(async () => {
+    await importSessions();
     usePersistentStore.persist.rehydrate();
-  }, [importStore]);
+  }, [importSessions]);
 
   const tryToImportSessions = useCallback(() => {
     Alert.alert(
@@ -29,27 +34,88 @@ const Impex = () => {
       "Are you REALLY sure? Your sessions will be overridden!",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: importSessions },
+        { text: "Confirm", style: "default", onPress: importSessionsStore },
       ],
       { cancelable: true },
     );
-  }, [importSessions]);
+  }, [importSessionsStore]);
+
+  const tryToClearExerciseData = useCallback(() => {
+    Alert.alert(
+      "Cleaning storage",
+      "Are you REALLY sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: clearExerciseData },
+      ],
+      { cancelable: true },
+    );
+  }, [clearExerciseData]);
+
+  const importExerciseDataStore = useCallback(async () => {
+    await importExerciseData();
+    usePersistentStore.persist.rehydrate();
+  }, [importExerciseData]);
+
+  const tryToImportExerciseData = useCallback(() => {
+    Alert.alert(
+      "Importing sessions",
+      "Are you REALLY sure? Your sessions will be overridden!",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: importExerciseDataStore },
+      ],
+      { cancelable: true },
+    );
+  }, [importExerciseDataStore]);
 
   return (
     <>
       <View style={{ ...styles.confirmBtn, top: 0 }}>
-        <Button title="Clear store" color="red" onPress={tryToClearStore} />
+        <Button
+          title="Clear sessions"
+          color="red"
+          onPress={tryToClearSessions}
+        />
       </View>
 
       <View style={{ ...styles.confirmBtn, top: 40 }}>
-        <Button title="Export store" color="orange" onPress={exportStore} />
+        <Button
+          title="Export sessions"
+          color="orange"
+          onPress={exportSessions}
+        />
       </View>
 
       <View style={{ ...styles.confirmBtn, top: 80 }}>
         <Button
-          title="Import store"
+          title="Import sessions"
           color="green"
           onPress={tryToImportSessions}
+        />
+      </View>
+
+      <View style={{ ...styles.confirmBtn, top: 160 }}>
+        <Button
+          title="Clear exercise data"
+          color="red"
+          onPress={tryToClearExerciseData}
+        />
+      </View>
+
+      <View style={{ ...styles.confirmBtn, top: 200 }}>
+        <Button
+          title="Export exercise data"
+          color="orange"
+          onPress={exportExerciseData}
+        />
+      </View>
+
+      <View style={{ ...styles.confirmBtn, top: 240 }}>
+        <Button
+          title="Import exercise data"
+          color="green"
+          onPress={tryToImportExerciseData}
         />
       </View>
     </>

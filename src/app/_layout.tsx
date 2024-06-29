@@ -6,7 +6,7 @@ import { Text, Button } from "react-native";
 import { usePersistentStore, useHydrated, useTabBarStore } from "../store";
 
 const AppLayout = () => {
-  const { clearStore } = usePersistentStore();
+  const { clearSessions } = usePersistentStore();
   const hydrated = useHydrated();
   const { isTabBarVisible } = useTabBarStore();
 
@@ -14,7 +14,7 @@ const AppLayout = () => {
     return (
       <>
         <Text>Loading...</Text>
-        <Button title="Clear store" color="red" onPress={clearStore} />
+        <Button title="Clear store" color="red" onPress={clearSessions} />
       </>
     );
   }
@@ -42,19 +42,6 @@ const AppLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="impex"
-        options={{
-          title: "ImpEx",
-          tabBarIcon: ({ focused }) => (
-            <MaterialIcons
-              name="import-export"
-              size={32}
-              color={focused ? "#2196F3" : "#ccc"}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="exercise-constructor"
         options={{
           title: "Exercise Constructor",
@@ -68,7 +55,24 @@ const AppLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="impex"
+        options={{
+          title: "ImpEx",
+          tabBarIcon: ({ focused }) => (
+            <MaterialIcons
+              name="import-export"
+              size={32}
+              color={focused ? "#2196F3" : "#ccc"}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="(sessions)"
+        options={{ headerShown: false, href: null }}
+      />
+      <Tabs.Screen
+        name="(exercise-constructor)"
         options={{ headerShown: false, href: null }}
       />
       <Tabs.Screen name="session-editor" options={{ href: null }} />

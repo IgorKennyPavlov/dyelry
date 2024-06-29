@@ -25,7 +25,11 @@ import {
   FeelsReadable,
   FeelsColors,
 } from "../../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../../store";
+import {
+  usePersistentStore,
+  useTargetStore,
+  useTargetSelectors,
+} from "../../store";
 
 interface SetEditForm {
   weight: string;
@@ -40,7 +44,7 @@ const SetEditor = () => {
   const { editSet, deleteSet } = usePersistentStore();
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
-  const { targetExercise, targetSet } = useTarget();
+  const { targetExercise, targetSet } = useTargetSelectors();
 
   const [timer, setTimer] = useState(0);
   const intervalId: MutableRefObject<number | null> = useRef(null);

@@ -5,7 +5,7 @@ import { StateStorage } from "zustand/middleware/persist";
 
 import {
   fileSystemStorage,
-  importSessionsAsync,
+  importStoreAsync,
   exportStoreAsync,
 } from "./file-system";
 import { SessionProps, ExerciseProps, SetProps, SESSIONS } from "../../global";
@@ -33,9 +33,9 @@ interface SessionsStore {
     updatedSet: Partial<SetProps>,
   ) => void;
   deleteSet: (sessionId: string, exerciseId: string, setId: string) => void;
-  clearStore: () => void;
-  importStore: () => Promise<void>;
-  exportStore: () => Promise<void>;
+  clearSessions: () => void;
+  importSessions: () => Promise<void>;
+  exportSessions: () => Promise<void>;
 }
 
 export const usePersistentStore = create<SessionsStore>()(
@@ -164,14 +164,14 @@ export const usePersistentStore = create<SessionsStore>()(
             exercise.sets = exercise.sets?.filter((s) => s.id !== setId);
           }),
         ),
-      clearStore: () =>
+      clearSessions: () =>
         set(
           produce((state: SessionsStore) => {
             state[SESSIONS] = [];
           }),
         ),
-      importStore: () => importSessionsAsync(),
-      exportStore: () => exportStoreAsync(),
+      importSessions: () => importStoreAsync(SESSIONS),
+      exportSessions: () => exportStoreAsync(SESSIONS),
     }),
     {
       name: SESSIONS,

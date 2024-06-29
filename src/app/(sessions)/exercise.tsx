@@ -12,7 +12,11 @@ import {
 
 import { SetListItem, listItemCommonStyles } from "../../components";
 import { useNavigate, SetProps } from "../../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../../store";
+import {
+  usePersistentStore,
+  useTargetStore,
+  useTargetSelectors,
+} from "../../store";
 
 const Exercise = () => {
   const { navigate } = useNavigate();
@@ -20,7 +24,7 @@ const Exercise = () => {
   const { targetSessionId, targetExerciseId, setTargetSetId } =
     useTargetStore();
 
-  const { targetExercise } = useTarget();
+  const { targetExercise } = useTargetSelectors();
 
   const showActionPanel = useMemo(() => {
     if (!targetExercise) {

@@ -4,7 +4,7 @@ import { useTargetStore } from "./target-store";
 import { SESSIONS, SessionProps, ExerciseProps, SetProps } from "../../global";
 import { usePersistentStore } from "../persistent-store";
 
-export const useTarget = () => {
+export const useTargetSelectors = () => {
   const { [SESSIONS]: sessions } = usePersistentStore();
   const { targetSessionId, targetExerciseId, targetSetId } = useTargetStore();
 

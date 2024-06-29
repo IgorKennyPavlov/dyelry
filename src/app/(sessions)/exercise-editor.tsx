@@ -10,7 +10,11 @@ import {
   useKeyboard,
   SESSIONS,
 } from "../../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../../store";
+import {
+  usePersistentStore,
+  useTargetStore,
+  useTargetSelectors,
+} from "../../store";
 
 interface ExerciseEditForm {
   title: string;
@@ -29,7 +33,7 @@ const ExerciseEditor = () => {
   const { targetSessionId, targetExerciseId, setTargetExerciseId } =
     useTargetStore();
 
-  const { targetSession, targetExercise } = useTarget();
+  const { targetSession, targetExercise } = useTargetSelectors();
   const isEditing = targetExercise?.title !== undefined;
 
   const { getValues, control } = useForm<ExerciseEditForm>({

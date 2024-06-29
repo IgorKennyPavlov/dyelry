@@ -12,7 +12,11 @@ import {
   SESSIONS,
   getSessionTitle,
 } from "../global";
-import { usePersistentStore, useTargetStore, useTarget } from "../store";
+import {
+  usePersistentStore,
+  useTargetStore,
+  useTargetSelectors,
+} from "../store";
 
 interface SessionEditForm {
   title: string;
@@ -30,7 +34,7 @@ const SessionEditor = () => {
     deleteSession,
   } = usePersistentStore();
   const { targetSessionId, setTargetSessionId } = useTargetStore();
-  const { targetSession } = useTarget();
+  const { targetSession } = useTargetSelectors();
 
   const { getValues, control, setValue, reset } = useForm<SessionEditForm>();
 

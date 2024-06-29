@@ -19,7 +19,11 @@ import {
   reduceSeconds,
   SESSIONS,
 } from "../../global";
-import { useTargetStore, useTarget, usePersistentStore } from "../../store";
+import {
+  useTargetStore,
+  useTargetSelectors,
+  usePersistentStore,
+} from "../../store";
 
 export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   const { item: targetSet } = props;
@@ -27,7 +31,7 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   const { navigate } = useNavigate();
   const { [SESSIONS]: sessions } = usePersistentStore();
   const { setTargetSetId } = useTargetStore();
-  const { targetSession, targetExercise } = useTarget();
+  const { targetSession, targetExercise } = useTargetSelectors();
 
   const intervalId: MutableRefObject<number | null> = useRef(null);
   const [rest, setRest] = useState("--");
