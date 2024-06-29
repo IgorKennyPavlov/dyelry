@@ -7,7 +7,6 @@ import {
   StyleSheet,
   TextInputContentSizeChangeEventData,
   NativeSyntheticEvent,
-  StyleProp,
   ViewStyle,
   Pressable,
   ScrollView,
@@ -21,7 +20,7 @@ interface InputProps {
   control: Control<any>;
   name: string;
   label?: string;
-  style?: StyleProp<ViewStyle>;
+  style?: ViewStyle;
   inputMode?: InputModeOptions;
   multiline?: boolean;
   autocomplete?: any[];

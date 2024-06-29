@@ -3,14 +3,7 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { useState, useCallback } from "react";
 import { Control, useController } from "react-hook-form";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  ViewStyle,
-  StyleProp,
-} from "react-native";
+import { StyleSheet, View, Text, Pressable, ViewStyle } from "react-native";
 
 import { formCommonStyles } from "./form-common-styles";
 
@@ -19,7 +12,7 @@ interface DatePickerProps {
   control: Control<any>;
   onChange: (event: DateTimePickerEvent, date?: Date) => void;
   label?: string;
-  style?: StyleProp<ViewStyle>;
+  style?: ViewStyle;
   required?: boolean;
 }
 

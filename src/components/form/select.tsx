@@ -4,7 +4,6 @@ import {
   View,
   Text,
   StyleSheet,
-  type StyleProp,
   type TextStyle,
   ViewStyle,
 } from "react-native";
@@ -14,7 +13,7 @@ import { formCommonStyles } from "./form-common-styles";
 interface SelectOption {
   value: any;
   label: string;
-  style: StyleProp<TextStyle>;
+  style?: TextStyle;
 }
 
 interface SelectProps {
@@ -22,7 +21,7 @@ interface SelectProps {
   name: string;
   options: SelectOption[];
   label?: string;
-  style?: StyleProp<ViewStyle>;
+  style?: ViewStyle;
   required?: boolean;
 }
 
@@ -55,7 +54,7 @@ export const Select = (props: SelectProps) => {
             ))}
           </Picker>
         )}
-        name="feels"
+        name={name}
       />
     </View>
   );
