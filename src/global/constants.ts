@@ -1,4 +1,5 @@
 export const SESSIONS = "sessions";
+export const EXERCISE_DATA = "exerciseData";
 
 export const enum Feels {
   LikeNothing = 1,
@@ -9,17 +10,53 @@ export const enum Feels {
 }
 
 export const FeelsReadable = new Map<Feels, string>([
-  [1, "Like nothing"],
-  [2, "Easy"],
-  [3, "Ok"],
-  [4, "Hard"],
-  [5, "Failed"],
+  [Feels.LikeNothing, "Like nothing"],
+  [Feels.Easy, "Easy"],
+  [Feels.Ok, "Ok"],
+  [Feels.Hard, "Hard"],
+  [Feels.Failed, "Failed"],
 ]);
 
 export const FeelsColors = new Map<Feels, string>([
-  [1, "gray"],
-  [2, "lightgreen"],
-  [3, "green"],
-  [4, "orange"],
-  [5, "red"],
+  [Feels.LikeNothing, "gray"],
+  [Feels.Easy, "lightgreen"],
+  [Feels.Ok, "green"],
+  [Feels.Hard, "orange"],
+  [Feels.Failed, "red"],
+]);
+
+export const enum Muscles {
+  Pecs,
+  FrontDelts,
+  SideDelts,
+  RearDelts,
+  Bis,
+  Tris,
+  Forearms,
+  Core,
+  Traps,
+  Lats,
+  Erectors,
+  Quads,
+  Hams,
+  Glutes,
+  Calves,
+}
+
+export const MusclesReadable = new Map<Muscles, string>([
+  [Muscles.Pecs, "Pecs"],
+  [Muscles.FrontDelts, "Front Delts"],
+  [Muscles.SideDelts, "Side Delts"],
+  [Muscles.RearDelts, "Rear Delts"],
+  [Muscles.Bis, "Bis"],
+  [Muscles.Tris, "Tris"],
+  [Muscles.Forearms, "Forearms"],
+  [Muscles.Core, "Core"],
+  [Muscles.Traps, "Traps"],
+  [Muscles.Lats, "Lats"],
+  [Muscles.Erectors, "Erectors"],
+  [Muscles.Quads, "Quads"],
+  [Muscles.Hams, "Hams"],
+  [Muscles.Glutes, "Glutes"],
+  [Muscles.Calves, "Calves"],
 ]);
