@@ -27,7 +27,6 @@ interface SelectProps {
 
 export const Select = (props: SelectProps) => {
   const { control, name, label, style, options, required } = props;
-
   return (
     <View style={style}>
       <Text style={styles.label}>

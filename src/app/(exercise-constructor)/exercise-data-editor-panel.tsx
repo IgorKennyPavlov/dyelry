@@ -40,6 +40,7 @@ const ExerciseDataEditorPanel = () => {
   const targetExerciseData = useMemo(() => {
     return exercises[targetExerciseDataTitle || ""] || null;
   }, [exercises, targetExerciseDataTitle]);
+
   const storedLoadingDistribution = useMemo(() => {
     const entries = targetExerciseData
       ? (Object.entries(targetExerciseData.loadingDistribution) as unknown as [
@@ -143,7 +144,7 @@ const ExerciseDataEditorPanel = () => {
   const muscleOptions = useMemo(
     () =>
       [...MusclesReadable.entries()].map(([value, label]) => {
-        return { label, value };
+        return { label, value: value.toString() };
       }),
     [],
   );
@@ -151,7 +152,7 @@ const ExerciseDataEditorPanel = () => {
   const sideOptions = useMemo(
     () =>
       [...SidesReadable.entries()].map(([value, label]) => {
-        return { label, value };
+        return { label, value: value.toString() };
       }),
     [],
   );
