@@ -44,7 +44,7 @@ const Stats = () => {
   // TODO PAVLOV add unilateral exercise calculations
   const getStatItems = useCallback(() => {
     if (!lastWeekExercises?.length) {
-      return;
+      return [];
     }
 
     const describedLastWeek = lastWeekExercises
@@ -112,7 +112,7 @@ const Stats = () => {
 };
 
 const styles = StyleSheet.create({
-  statsWrap: { flex: 1 },
+  statsWrap: { flex: 1, marginBottom: 40 },
   emptyStats: { height: 200, justifyContent: "center", alignItems: "center" },
 });
 

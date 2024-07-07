@@ -67,11 +67,6 @@ export const useExerciseDataStore = create<SessionsStore>()(
           return value;
         },
         replacer: (key, value) => {
-          // TODO remove after db fixed
-          if (["title", "comment"].includes(key)) {
-            return (value as string).trim();
-          }
-
           return value;
         },
       }),

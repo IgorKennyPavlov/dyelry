@@ -52,6 +52,7 @@ const Impex = () => {
     );
   }, [clearExerciseData]);
 
+  // TODO exercise import doesn't work, needs fixing
   const importExerciseDataStore = useCallback(async () => {
     await importExerciseData();
     usePersistentStore.persist.rehydrate();
@@ -59,8 +60,8 @@ const Impex = () => {
 
   const tryToImportExerciseData = useCallback(() => {
     Alert.alert(
-      "Importing sessions",
-      "Are you REALLY sure? Your sessions will be overridden!",
+      "Importing exercises",
+      "Are you REALLY sure? Your exercise library will be overridden!",
       [
         { text: "Cancel", style: "cancel" },
         { text: "Confirm", style: "default", onPress: importExerciseDataStore },
