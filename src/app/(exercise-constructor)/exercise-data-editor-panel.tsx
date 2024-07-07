@@ -201,8 +201,8 @@ const ExerciseDataEditorPanel = () => {
               />
 
               <Input
-                style={{ width: "30%" }}
-                label=" "
+                style={{ width: "35%" }}
+                label="Load fraction (%)"
                 control={control}
                 name={loadName}
               />
