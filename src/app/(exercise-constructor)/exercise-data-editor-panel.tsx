@@ -87,12 +87,11 @@ const ExerciseDataEditorPanel = () => {
     const { unilateral, bodyWeightRate, loadingDistribution } = getValues();
 
     // TODO replace with proper validation
-    const totalPercents = loadingDistribution.reduce(
-      (acc, cur) => acc + Number(cur.value),
-      0,
-    );
-    if (totalPercents !== 100) {
-      alert("Percents are not equal to 100!");
+    if (
+      loadingDistribution.some((item) => Number(item.value) > 100) ||
+      Number(loadingDistribution) > 100
+    ) {
+      alert("Percent value can't be more than 100");
       return;
     }
     const uniqueMuscles = new Set(loadingDistribution.map((item) => item.key));
@@ -206,6 +205,7 @@ const ExerciseDataEditorPanel = () => {
                 label="Load fraction (%)"
                 control={control}
                 name={loadName}
+                inputMode="numeric"
               />
 
               <Pressable style={styles.deleteBtn} onPress={() => remove(index)}>
