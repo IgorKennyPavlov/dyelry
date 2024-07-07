@@ -7,8 +7,10 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import { listItemCommonStyles } from "../components";
-import { ExerciseConstructorListItem } from "../components/list-items/exercise-constructor-list-item";
+import {
+  listItemCommonStyles,
+  ExerciseConstructorListItem,
+} from "../components";
 import { SESSIONS } from "../global";
 import { usePersistentStore } from "../store";
 

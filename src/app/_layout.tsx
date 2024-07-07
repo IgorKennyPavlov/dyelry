@@ -55,6 +55,19 @@ const AppLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="stats"
+        options={{
+          title: "Stats",
+          tabBarIcon: ({ focused }) => (
+            <Ionicons
+              name="stats-chart"
+              size={32}
+              color={focused ? "#2196F3" : "#ccc"}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="impex"
         options={{
           title: "ImpEx",

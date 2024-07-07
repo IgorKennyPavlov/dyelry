@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button, View, StyleSheet, Pressable, ScrollView } from "react-native";
 
-import { Input, Checkbox, Select } from "../../components";
+import { Input, Select } from "../../components";
 import {
   useNavigate,
   useKeyboard,
@@ -12,12 +12,14 @@ import {
   Muscles,
   MusclesReadable,
   ExerciseDataProps,
+  SidesReadable,
+  Sides,
 } from "../../global";
 import { useTargetStore } from "../../store";
 import { useExerciseDataStore } from "../../store/persistent-store/exercise-data-store";
 
 interface ExerciseDataForm {
-  unilateral: boolean;
+  unilateral?: Sides;
   bodyWeightRate: number;
   loadingDistribution: { key: Muscles; value: string }[];
 }
@@ -29,6 +31,7 @@ const ExerciseDataEditorPanel = () => {
     [EXERCISE_DATA]: exercises,
     addExerciseData,
     editExerciseData,
+    deleteExerciseData,
   } = useExerciseDataStore();
 
   const { targetExerciseDataTitle, setTargetExerciseDataTitle } =
@@ -58,7 +61,7 @@ const ExerciseDataEditorPanel = () => {
   useFocusEffect(
     useCallback(() => {
       reset({
-        unilateral: !!targetExerciseData?.unilateral,
+        unilateral: targetExerciseData?.unilateral,
         bodyWeightRate: targetExerciseData?.bodyWeightRate,
         loadingDistribution: storedLoadingDistribution,
       });
@@ -77,7 +80,7 @@ const ExerciseDataEditorPanel = () => {
     ]),
   );
 
-  const saveExercise = useCallback(() => {
+  const saveExerciseData = useCallback(() => {
     if (!targetExerciseDataTitle) return;
 
     const { unilateral, bodyWeightRate, loadingDistribution } = getValues();
@@ -126,13 +129,28 @@ const ExerciseDataEditorPanel = () => {
     targetExerciseDataTitle,
   ]);
 
+  const removeExerciseData = useCallback(() => {
+    if (targetExerciseDataTitle) {
+      deleteExerciseData(targetExerciseDataTitle);
+      navigate("/exercise-constructor");
+    }
+  }, [deleteExerciseData, navigate, targetExerciseDataTitle]);
+
   const title = useMemo(() => {
     return isEditing ? "Edit exercise data" : "Add exercise data";
   }, [isEditing]);
 
-  const options = useMemo(
+  const muscleOptions = useMemo(
     () =>
       [...MusclesReadable.entries()].map(([value, label]) => {
+        return { label, value };
+      }),
+    [],
+  );
+
+  const sideOptions = useMemo(
+    () =>
+      [...SidesReadable.entries()].map(([value, label]) => {
         return { label, value };
       }),
     [],
@@ -142,14 +160,25 @@ const ExerciseDataEditorPanel = () => {
     <>
       <Stack.Screen options={{ title, headerBackVisible: false }} />
 
-      <ScrollView style={styles.formWrap}>
-        <Checkbox control={control} name="unilateral" />
+      <ScrollView
+        style={{
+          ...styles.formWrap,
+          ...(targetExerciseData ? { marginBottom: 80 } : {}),
+          ...(isKeyboardVisible ? { marginBottom: 0 } : {}),
+        }}
+      >
+        <Select
+          label="Unilateral"
+          control={control}
+          name="unilateral"
+          options={[{ label: "Not", value: undefined }, ...sideOptions]}
+        />
 
         <Input
           style={styles.field}
           control={control}
           name="bodyWeightRate"
-          label="Used body weight rate (for bodyweight exercises)"
+          label="Used body weight rate (%, for bodyweight exercises)"
           inputMode="numeric"
         />
 
@@ -168,7 +197,7 @@ const ExerciseDataEditorPanel = () => {
                 label=" "
                 control={control}
                 name={muscleName}
-                options={options}
+                options={muscleOptions}
               />
 
               <Input
@@ -195,8 +224,13 @@ const ExerciseDataEditorPanel = () => {
 
       {!isKeyboardVisible && (
         <>
+          {targetExerciseData && (
+            <View style={{ ...styles.btn, bottom: 40 }}>
+              <Button title="Delete" onPress={removeExerciseData} color="red" />
+            </View>
+          )}
           <View style={styles.btn}>
-            <Button title="Save" onPress={saveExercise} />
+            <Button title="Save" onPress={saveExerciseData} />
           </View>
         </>
       )}
@@ -205,7 +239,7 @@ const ExerciseDataEditorPanel = () => {
 };
 
 const styles = StyleSheet.create({
-  formWrap: { flex: 1 },
+  formWrap: { flex: 1, marginBottom: 40 },
   field: { marginTop: 20 },
   pairedFieldWrap: { flexDirection: "row" },
   deleteBtn: {

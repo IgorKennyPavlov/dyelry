@@ -47,7 +47,7 @@ export const Select = (props: SelectProps) => {
             {options.map(({ value, label, style }) => (
               <Picker.Item
                 style={style}
-                key={value}
+                key={label}
                 label={label}
                 value={value}
               />

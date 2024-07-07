@@ -1,4 +1,4 @@
-import { Feels, Muscles } from "./constants";
+import { Feels, Muscles, Sides } from "./constants";
 
 export interface SessionProps {
   id: string;
@@ -31,6 +31,6 @@ export interface SetProps {
 
 export interface ExerciseDataProps {
   loadingDistribution: Record<Muscles, number>;
-  unilateral?: boolean;
+  unilateral?: Sides;
   bodyWeightRate?: number;
 }

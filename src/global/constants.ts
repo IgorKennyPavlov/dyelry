@@ -33,13 +33,17 @@ export const enum Muscles {
   Bis,
   Tris,
   Forearms,
-  Core,
-  Traps,
+  Abs,
+  Obliques,
+  UpperTraps,
+  LowerTraps,
   Lats,
   Erectors,
   Quads,
   Hams,
   Glutes,
+  Abductors,
+  Adductors,
   Calves,
 }
 
@@ -51,12 +55,26 @@ export const MusclesReadable = new Map<Muscles, string>([
   [Muscles.Bis, "Bis"],
   [Muscles.Tris, "Tris"],
   [Muscles.Forearms, "Forearms"],
-  [Muscles.Core, "Core"],
-  [Muscles.Traps, "Traps"],
+  [Muscles.Abs, "Abs"],
+  [Muscles.Obliques, "Obliques"],
+  [Muscles.UpperTraps, "Upper Traps"],
+  [Muscles.LowerTraps, "Lower Traps"],
   [Muscles.Lats, "Lats"],
-  [Muscles.Erectors, "Erectors"],
+  [Muscles.Erectors, "Spine Erectors"],
   [Muscles.Quads, "Quads"],
   [Muscles.Hams, "Hams"],
   [Muscles.Glutes, "Glutes"],
+  [Muscles.Abductors, "Hip Abductors"],
+  [Muscles.Adductors, "Hip Adductors"],
   [Muscles.Calves, "Calves"],
+]);
+
+export const enum Sides {
+  Left,
+  Right,
+}
+
+export const SidesReadable = new Map<Sides, string>([
+  [Sides.Left, "Left"],
+  [Sides.Right, "Right"],
 ]);
