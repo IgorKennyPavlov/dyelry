@@ -52,10 +52,9 @@ const Impex = () => {
     );
   }, [clearExerciseData]);
 
-  // TODO exercise import doesn't work, needs fixing
   const importExerciseDataStore = useCallback(async () => {
     await importExerciseData();
-    usePersistentStore.persist.rehydrate();
+    useExerciseDataStore.persist.rehydrate();
   }, [importExerciseData]);
 
   const tryToImportExerciseData = useCallback(() => {
