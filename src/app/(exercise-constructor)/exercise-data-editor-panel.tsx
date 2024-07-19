@@ -20,7 +20,7 @@ import { useExerciseDataStore } from "../../store/persistent-store/exercise-data
 
 interface ExerciseDataForm {
   unilateral?: Sides;
-  bodyWeightRate: number;
+  bodyWeightRate: string;
   loadingDistribution: { key: Muscles; value: string }[];
 }
 
@@ -63,7 +63,7 @@ const ExerciseDataEditorPanel = () => {
     useCallback(() => {
       reset({
         unilateral: targetExerciseData?.unilateral,
-        bodyWeightRate: targetExerciseData?.bodyWeightRate,
+        bodyWeightRate: targetExerciseData?.bodyWeightRate?.toString(),
         loadingDistribution: storedLoadingDistribution,
       });
 
@@ -137,12 +137,12 @@ const ExerciseDataEditorPanel = () => {
   }, [deleteExerciseData, navigate, targetExerciseDataTitle]);
 
   const title = useMemo(() => {
-    return isEditing ? "Edit exercise data" : "Add exercise data";
-  }, [isEditing]);
+    return `${isEditing ? "Edit" : "Add"} exercise data (${targetExerciseDataTitle})`;
+  }, [isEditing, targetExerciseDataTitle]);
 
   const muscleOptions = useMemo(
     () =>
-      [...MusclesReadable.entries()].map(([value, label]) => {
+      Array.from(MusclesReadable.entries()).map(([value, label]) => {
         return { label, value: value.toString() };
       }),
     [],
@@ -150,7 +150,7 @@ const ExerciseDataEditorPanel = () => {
 
   const sideOptions = useMemo(
     () =>
-      [...SidesReadable.entries()].map(([value, label]) => {
+      Array.from(SidesReadable.entries()).map(([value, label]) => {
         return { label, value: value.toString() };
       }),
     [],

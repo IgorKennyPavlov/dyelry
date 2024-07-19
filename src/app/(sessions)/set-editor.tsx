@@ -143,7 +143,7 @@ const SetEditor = () => {
 
   const options = useMemo(
     () =>
-      [...FeelsReadable.entries()].map(([value, label]) => {
+      Array.from(FeelsReadable.entries()).map(([value, label]) => {
         return { label, value, style: { color: FeelsColors.get(value) } };
       }),
     [],
