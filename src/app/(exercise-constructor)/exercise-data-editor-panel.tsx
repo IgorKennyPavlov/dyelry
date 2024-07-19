@@ -11,10 +11,10 @@ import {
   EXERCISE_DATA,
   Muscles,
   MusclesReadable,
-  ExerciseDataProps,
   SidesReadable,
   Sides,
 } from "../../global";
+import type { ExerciseDataProps } from "../../global";
 import { useTargetStore } from "../../store";
 import { useExerciseDataStore } from "../../store/persistent-store/exercise-data-store";
 

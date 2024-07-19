@@ -11,7 +11,8 @@ import {
 } from "react-native";
 
 import { SetListItem, listItemCommonStyles } from "../../components";
-import { useNavigate, SetProps } from "../../global";
+import type { SetProps } from "../../global";
+import { useNavigate } from "../../global";
 import {
   usePersistentStore,
   useTargetStore,

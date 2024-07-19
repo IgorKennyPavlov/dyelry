@@ -8,7 +8,8 @@ import {
   importStoreAsync,
   exportStoreAsync,
 } from "./file-system";
-import { SessionProps, ExerciseProps, SetProps, SESSIONS } from "../../global";
+import { SESSIONS } from "../../global";
+import type { SessionProps, ExerciseProps, SetProps } from "../../global";
 
 interface SessionsStore {
   [SESSIONS]: SessionProps[];

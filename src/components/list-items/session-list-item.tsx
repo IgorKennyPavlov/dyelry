@@ -1,10 +1,11 @@
 import MCI from "@expo/vector-icons/MaterialCommunityIcons";
 import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, Pressable } from "react-native";
-import { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
+import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import { getIntervalSeconds, useNavigate, SessionProps } from "../../global";
+import type { SessionProps } from "../../global";
+import { getIntervalSeconds, useNavigate } from "../../global";
 import { useTargetStore } from "../../store";
 
 export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {

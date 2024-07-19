@@ -1,17 +1,12 @@
-import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import type { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { Tabs, useFocusEffect } from "expo-router";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert } from "react-native";
 
 import { Input, DatePicker } from "../components";
-import {
-  useNavigate,
-  SessionProps,
-  useKeyboard,
-  SESSIONS,
-  getSessionTitle,
-} from "../global";
+import { useNavigate, useKeyboard, SESSIONS, getSessionTitle } from "../global";
+import type { SessionProps } from "../global";
 import {
   usePersistentStore,
   useTargetStore,

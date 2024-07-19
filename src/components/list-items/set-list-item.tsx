@@ -1,20 +1,15 @@
 import { useFocusEffect } from "expo-router";
-import {
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-  MutableRefObject,
-} from "react";
+import type { MutableRefObject } from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
+import type { SetProps } from "../../global";
 import {
   FeelsReadable,
   getIntervalSeconds,
   useNavigate,
   FeelsColors,
-  SetProps,
   Feels,
   reduceSeconds,
   SESSIONS,

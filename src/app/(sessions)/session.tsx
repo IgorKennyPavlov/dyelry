@@ -11,7 +11,8 @@ import {
 } from "react-native";
 
 import { ExerciseListItem, listItemCommonStyles } from "../../components";
-import { useNavigate, ExerciseProps, getSessionTitle } from "../../global";
+import type { ExerciseProps } from "../../global";
+import { useNavigate, getSessionTitle } from "../../global";
 import {
   usePersistentStore,
   useTargetStore,

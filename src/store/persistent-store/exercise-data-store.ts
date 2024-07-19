@@ -1,14 +1,15 @@
 import { produce } from "immer";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { StateStorage } from "zustand/middleware/persist";
+import type { StateStorage } from "zustand/middleware/persist";
 
 import {
   fileSystemStorage,
   importStoreAsync,
   exportStoreAsync,
 } from "./file-system";
-import { EXERCISE_DATA, ExerciseDataProps } from "../../global";
+import type { ExerciseDataProps } from "../../global";
+import { EXERCISE_DATA } from "../../global";
 
 interface SessionsStore {
   [EXERCISE_DATA]: Record<string, ExerciseDataProps>;

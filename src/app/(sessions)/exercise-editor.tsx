@@ -4,12 +4,8 @@ import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert } from "react-native";
 
 import { Input } from "../../components";
-import {
-  useNavigate,
-  ExerciseProps,
-  useKeyboard,
-  SESSIONS,
-} from "../../global";
+import type { ExerciseProps } from "../../global";
+import { useNavigate, useKeyboard, SESSIONS } from "../../global";
 import {
   usePersistentStore,
   useTargetStore,
