@@ -4,8 +4,7 @@ import { Text, StyleSheet, View, FlatList } from "react-native";
 import { listItemCommonStyles, StatsListItem } from "../components";
 import type { ExerciseProps } from "../global";
 import { SESSIONS, EXERCISE_DATA, MusclesReadable, Muscles } from "../global";
-import { usePersistentStore } from "../store";
-import { useExerciseDataStore } from "../store/persistent-store/exercise-data-store";
+import { usePersistentStore, useExerciseDataStore } from "../store";
 
 const Stats = () => {
   const { [SESSIONS]: sessions } = usePersistentStore();

@@ -10,8 +10,7 @@ import {
 
 import { listItemCommonStyles } from "./list-item-common-styles";
 import { useNavigate, EXERCISE_DATA } from "../../global";
-import { useTargetStore } from "../../store";
-import { useExerciseDataStore } from "../../store/persistent-store/exercise-data-store";
+import { useTargetStore, useExerciseDataStore } from "../../store";
 
 export const ExerciseConstructorListItem = (
   props: ListRenderItemInfo<string>,

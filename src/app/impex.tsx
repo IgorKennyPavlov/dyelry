@@ -1,8 +1,7 @@
 import { useCallback } from "react";
 import { View, Button, StyleSheet, Alert } from "react-native";
 
-import { usePersistentStore } from "../store";
-import { useExerciseDataStore } from "../store/persistent-store/exercise-data-store";
+import { usePersistentStore, useExerciseDataStore } from "../store";
 
 const Impex = () => {
   const { clearSessions, importSessions, exportSessions } =

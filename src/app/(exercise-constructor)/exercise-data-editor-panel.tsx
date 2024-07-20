@@ -5,6 +5,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { Button, View, StyleSheet, Pressable, ScrollView } from "react-native";
 
 import { Input, Select } from "../../components";
+import type { ExerciseDataProps } from "../../global";
 import {
   useNavigate,
   useKeyboard,
@@ -14,9 +15,7 @@ import {
   SidesReadable,
   Sides,
 } from "../../global";
-import type { ExerciseDataProps } from "../../global";
-import { useTargetStore } from "../../store";
-import { useExerciseDataStore } from "../../store/persistent-store/exercise-data-store";
+import { useTargetStore, useExerciseDataStore } from "../../store";
 
 interface ExerciseDataForm {
   unilateral?: Sides;
