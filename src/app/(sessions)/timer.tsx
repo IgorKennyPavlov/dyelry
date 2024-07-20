@@ -1,3 +1,4 @@
+import { uuid } from "expo-modules-core";
 import { Stack, useFocusEffect } from "expo-router";
 import {
   useCallback,
@@ -44,13 +45,25 @@ const Timer = () => {
   const startExerciseSet = useCallback(() => {
     if (!targetSessionId || !targetExerciseId) return;
 
-    const id = Date.now().toString();
     const start = new Date();
+    setStart(start);
 
+    if (targetSetId) {
+      editSet(targetSessionId, targetExerciseId, targetSetId, { start });
+      return;
+    }
+
+    const id = uuid.v4();
     addSet(targetSessionId, targetExerciseId, { id, start });
     setTargetSetId(id);
-    setStart(start);
-  }, [addSet, setTargetSetId, targetExerciseId, targetSessionId]);
+  }, [
+    addSet,
+    editSet,
+    setTargetSetId,
+    targetExerciseId,
+    targetSessionId,
+    targetSetId,
+  ]);
 
   const endExerciseSet = useCallback(() => {
     if (!targetSessionId || !targetExerciseId || !targetSetId) return;
@@ -82,7 +95,7 @@ const Timer = () => {
       <Stack.Screen options={{ title }} />
 
       <View style={styles.formWrap}>
-        <Text style={styles.timer}>{timer.toString()}</Text>
+        <Text style={styles.timer}>{String(timer)}</Text>
       </View>
 
       <View style={styles.btn}>

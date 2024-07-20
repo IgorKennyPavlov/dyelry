@@ -4,8 +4,12 @@ import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import type { ExerciseProps } from "../../global";
-import { useNavigate, getIntervalSeconds } from "../../global";
+import {
+  useNavigate,
+  getIntervalSeconds,
+  getExerciseInterval,
+} from "../../global";
+import type { ExerciseProps } from "../../global/types";
 import { useTargetStore } from "../../store";
 
 export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
@@ -15,19 +19,18 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
   const { setTargetExerciseId } = useTargetStore();
 
   const duration = useMemo(() => {
-    if (!targetExercise) {
-      return 0;
-    }
+    if (!targetExercise) return 0;
 
-    const { start, end } = targetExercise;
+    const [start, end] = getExerciseInterval(targetExercise);
+
+    if (!start) return 0;
+
     const tillTime = end || new Date();
-    return Math.round(getIntervalSeconds(tillTime, start) / 60);
+    return Math.round(getIntervalSeconds(tillTime, start) / 60) || 1;
   }, [targetExercise]);
 
   const kgPerMin = useMemo(() => {
-    if (!targetExercise || !duration) {
-      return "--";
-    }
+    if (!targetExercise || !duration) return "--";
 
     const sets = targetExercise.sets || [];
     const weightSum = sets.reduce(
@@ -35,9 +38,7 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
       0,
     );
 
-    if (!weightSum) {
-      return "--";
-    }
+    if (!weightSum) return "--";
 
     return Math.round(weightSum / duration);
   }, [duration, targetExercise]);
@@ -57,13 +58,7 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
   );
 
   return (
-    <Pressable
-      style={{
-        ...styles.plaque,
-        borderColor: targetExercise.end ? "gray" : "orange",
-      }}
-      onPress={openExercise}
-    >
+    <Pressable style={styles.plaque} onPress={openExercise}>
       <Text style={{ width: "40%" }}>{targetExercise.title}</Text>
       <Text style={{ width: "30%" }}>{`~${duration} min`}</Text>
       <Text style={{ width: "20%" }}>{kgPerMin}</Text>

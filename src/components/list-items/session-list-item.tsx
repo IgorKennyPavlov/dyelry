@@ -4,8 +4,12 @@ import { Text, ListRenderItemInfo, Pressable } from "react-native";
 import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import type { SessionProps } from "../../global";
-import { getIntervalSeconds, useNavigate } from "../../global";
+import {
+  getIntervalSeconds,
+  useNavigate,
+  getSessionInterval,
+} from "../../global";
+import type { SessionProps } from "../../global/types";
 import { useTargetStore } from "../../store";
 
 export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
@@ -15,11 +19,12 @@ export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
   const { setTargetSessionId } = useTargetStore();
 
   const duration = useMemo(() => {
-    if (!targetSession) {
-      return 0;
-    }
+    if (!targetSession) return 0;
 
-    const { start, end } = targetSession;
+    const [start, end] = getSessionInterval(targetSession);
+
+    if (!start) return 0;
+
     return end ? Math.round(getIntervalSeconds(end, start) / 60) : 0;
   }, [targetSession]);
 
@@ -37,20 +42,19 @@ export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
     [navigate, setTargetSessionId, targetSession.id],
   );
 
+  const targetSessionInterval = useMemo(
+    () => getSessionInterval(targetSession),
+    [targetSession],
+  );
+
   return (
-    <Pressable
-      style={{
-        ...styles.plaque,
-        borderColor: targetSession?.end ? "gray" : "orange",
-      }}
-      onPress={openSession}
-    >
+    <Pressable style={styles.plaque} onPress={openSession}>
       <Text style={{ width: "25%" }}>
-        {targetSession?.start.toLocaleDateString("ru-RU")}
+        {targetSessionInterval[0]?.toLocaleDateString("ru-RU") || "--"}
       </Text>
       <Text style={{ width: "45%" }}>{targetSession?.title}</Text>
       <Text style={{ width: "20%" }}>
-        {targetSession?.end ? `~${duration} min` : "--"}
+        {targetSessionInterval[1] ? `~${duration} min` : "--"}
       </Text>
 
       <Pressable onPress={editSession}>

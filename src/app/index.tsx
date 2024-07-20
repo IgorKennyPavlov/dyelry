@@ -1,4 +1,5 @@
 import AntIcon from "@expo/vector-icons/AntDesign";
+import { uuid } from "expo-modules-core";
 import { Tabs } from "expo-router";
 import { useCallback, useMemo } from "react";
 import {
@@ -21,7 +22,7 @@ import {
 import { useHorizontalSwipe } from "../decomposition/use-horizontal-swipe";
 import { useSelectedWeek } from "../decomposition/use-selected-week";
 import { useNavigate, useSwipe } from "../global";
-import type { SessionProps } from "../global";
+import type { SessionProps } from "../global/types";
 import { useTargetStore } from "../store";
 
 const SessionList = () => {
@@ -39,7 +40,7 @@ const SessionList = () => {
   );
 
   const addSession = useCallback(() => {
-    setTargetSessionId(String(Date.now()));
+    setTargetSessionId(uuid.v4());
     navigate(`/session-editor`);
   }, [navigate, setTargetSessionId]);
 

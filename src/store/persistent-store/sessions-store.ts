@@ -9,7 +9,7 @@ import {
   exportStoreAsync,
 } from "./file-system";
 import { SESSIONS } from "../../global";
-import type { SessionProps, ExerciseProps, SetProps } from "../../global";
+import type { SessionProps, ExerciseProps, SetProps } from "../../global/types";
 
 interface SessionsStore {
   [SESSIONS]: SessionProps[];
@@ -43,13 +43,13 @@ export const usePersistentStore = create<SessionsStore>()(
   persist(
     (set) => ({
       [SESSIONS]: [] as SessionProps[],
-      addSession: (newSession: SessionProps) =>
+      addSession: (newSession) =>
         set(
           produce((state: SessionsStore) => {
             state[SESSIONS].push(newSession);
           }),
         ),
-      editSession: (sessionId: string, editedSession: Partial<SessionProps>) =>
+      editSession: (sessionId, editedSession) =>
         set(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
@@ -60,13 +60,13 @@ export const usePersistentStore = create<SessionsStore>()(
             Object.assign(session, editedSession);
           }),
         ),
-      deleteSession: (sessionId: string) =>
+      deleteSession: (sessionId) =>
         set(
           produce((state: SessionsStore) => {
             state[SESSIONS] = state[SESSIONS].filter((s) => s.id !== sessionId);
           }),
         ),
-      addExercise: (sessionId: string, newExercise: ExerciseProps) =>
+      addExercise: (sessionId, newExercise) =>
         set(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
@@ -81,11 +81,7 @@ export const usePersistentStore = create<SessionsStore>()(
             session.exercises.push(newExercise);
           }),
         ),
-      editExercise: (
-        sessionId: string,
-        exerciseId: string,
-        editedExercise: Partial<ExerciseProps>,
-      ) =>
+      editExercise: (sessionId, exerciseId, editedExercise) =>
         set(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
@@ -99,7 +95,7 @@ export const usePersistentStore = create<SessionsStore>()(
             Object.assign(exercise, editedExercise);
           }),
         ),
-      deleteExercise: (sessionId: string, exerciseId: string) =>
+      deleteExercise: (sessionId, exerciseId) =>
         set(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
@@ -112,10 +108,9 @@ export const usePersistentStore = create<SessionsStore>()(
             );
           }),
         ),
-      addSet: (sessionId: string, exerciseId: string, newSet: SetProps) =>
+      addSet: (sessionId, exerciseId, newSet) =>
         set(
           produce((state: SessionsStore) => {
-            // TODO duplicate. How to make getters?
             const sessions = state[SESSIONS];
             const session = sessions.find((s) => s.id === sessionId);
             const exercise = session?.exercises?.find(
@@ -131,12 +126,7 @@ export const usePersistentStore = create<SessionsStore>()(
             exercise.sets.push(newSet);
           }),
         ),
-      editSet: (
-        sessionId: string,
-        exerciseId: string,
-        setId: string,
-        updatedSet: Partial<SetProps>,
-      ) =>
+      editSet: (sessionId, exerciseId, setId, updatedSet) =>
         set(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];
@@ -151,7 +141,7 @@ export const usePersistentStore = create<SessionsStore>()(
             Object.assign(targetSet, updatedSet);
           }),
         ),
-      deleteSet: (sessionId: string, exerciseId: string, setId: string) =>
+      deleteSet: (sessionId, exerciseId, setId) =>
         set(
           produce((state: SessionsStore) => {
             const sessions = state[SESSIONS];

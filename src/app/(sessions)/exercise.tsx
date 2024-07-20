@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import {
   Text,
   StyleSheet,
@@ -7,51 +7,23 @@ import {
   View,
   Button,
   ListRenderItemInfo,
-  Dimensions,
 } from "react-native";
 
 import { SetListItem, listItemCommonStyles } from "../../components";
-import type { SetProps } from "../../global";
-import { useNavigate } from "../../global";
-import {
-  usePersistentStore,
-  useTargetStore,
-  useTargetSelectors,
-} from "../../store";
+import { useNavigate, getExerciseInterval } from "../../global";
+import type { SetProps } from "../../global/types";
+import { useTargetStore, useTargetSelectors } from "../../store";
 
 const Exercise = () => {
   const { navigate } = useNavigate();
-  const { editExercise } = usePersistentStore();
-  const { targetSessionId, targetExerciseId, setTargetSetId } =
-    useTargetStore();
+  const { setTargetSetId } = useTargetStore();
 
   const { targetExercise } = useTargetSelectors();
-
-  const showActionPanel = useMemo(() => {
-    if (!targetExercise) {
-      return false;
-    }
-
-    const { end, sets } = targetExercise;
-
-    if (end) {
-      return false;
-    }
-
-    return !sets || sets.every((s) => s.end);
-  }, [targetExercise]);
 
   const addSet = useCallback(() => {
     setTargetSetId(null);
     navigate("/timer");
   }, [navigate, setTargetSetId]);
-
-  const endExercise = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId) return;
-
-    editExercise(targetSessionId, targetExerciseId, { end: new Date() });
-    navigate("/session");
-  }, [editExercise, navigate, targetExerciseId, targetSessionId]);
 
   return (
     <>
@@ -63,7 +35,7 @@ const Exercise = () => {
       />
 
       {targetExercise?.sets?.length ? (
-        <View style={targetExercise.end ? {} : styles.list}>
+        <View style={getExerciseInterval(targetExercise)[1] ? {} : styles.list}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "15%" }}>Weight</Text>
             <Text style={{ width: "15%" }}>Reps</Text>
@@ -85,20 +57,9 @@ const Exercise = () => {
         </View>
       )}
 
-      {showActionPanel && (
-        <>
-          <View style={{ ...styles.btn, ...styles.btnLeft }}>
-            <Button title="Add set" color="green" onPress={addSet} />
-          </View>
-          <View style={{ ...styles.btn, ...styles.btnRight }}>
-            <Button
-              title="Finish exercise"
-              color="orange"
-              onPress={endExercise}
-            />
-          </View>
-        </>
-      )}
+      <View style={styles.btn}>
+        <Button title="Add set" color="green" onPress={addSet} />
+      </View>
     </>
   );
 };
@@ -106,13 +67,7 @@ const Exercise = () => {
 const styles = StyleSheet.create({
   list: { paddingBottom: 76 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
-  btn: {
-    position: "absolute",
-    bottom: 0,
-    width: Dimensions.get("window").width / 2,
-  },
-  btnLeft: { left: 0 },
-  btnRight: { right: 0 },
+  btn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
 export default Exercise;

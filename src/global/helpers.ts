@@ -1,4 +1,6 @@
-import type { SessionProps } from "./types";
+import type { SessionProps, ExerciseProps } from "./types";
+
+type Interval = [Date | undefined, Date | undefined];
 
 export const getIntervalSeconds = (from: Date, to: Date) =>
   Math.floor((from.valueOf() - to.valueOf()) / 1000);
@@ -23,6 +25,20 @@ export const reduceSeconds = (seconds: number): string => {
   return `${seconds}s`;
 };
 
+export const getExerciseInterval = (e?: ExerciseProps): Interval => {
+  if (!e?.sets?.length) return [undefined, undefined];
+  const [first] = e.sets;
+  return [first.start, e.sets.at(-1)?.end];
+};
+
+export const getSessionInterval = (s?: SessionProps): Interval => {
+  if (!s?.exercises?.length) return [undefined, undefined];
+  const [first] = s.exercises;
+  const [start] = getExerciseInterval(first);
+  const [, end] = getExerciseInterval(s.exercises.at(-1));
+  return [start, end];
+};
+
 export const getSessionTitle = (targetSession?: SessionProps) => {
   let res = "Session";
 
@@ -30,8 +46,10 @@ export const getSessionTitle = (targetSession?: SessionProps) => {
     return "New " + res;
   }
 
-  if (targetSession.start) {
-    res += ` ${targetSession.start.toLocaleDateString("ru-RU")}`;
+  const [start] = getSessionInterval(targetSession);
+
+  if (start) {
+    res += ` ${start.toLocaleDateString("ru-RU")}`;
   }
 
   if (targetSession.title) {

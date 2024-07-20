@@ -2,8 +2,14 @@ import { useMemo, useCallback } from "react";
 import { Text, StyleSheet, View, FlatList } from "react-native";
 
 import { listItemCommonStyles, StatsListItem } from "../components";
-import type { ExerciseProps } from "../global";
-import { SESSIONS, EXERCISE_DATA, MusclesReadable, Muscles } from "../global";
+import {
+  SESSIONS,
+  EXERCISE_DATA,
+  MusclesReadable,
+  Muscles,
+  getSessionInterval,
+} from "../global";
+import type { ExerciseProps } from "../global/types";
 import { usePersistentStore, useExerciseDataStore } from "../store";
 
 const Stats = () => {
@@ -13,7 +19,10 @@ const Stats = () => {
   const lastWeekExercises = useMemo(() => {
     const weekAgo = new Date();
     weekAgo.setDate(weekAgo.getDate() - 7);
-    const lastWeekSessions = sessions.filter((s) => s.start >= weekAgo);
+    const lastWeekSessions = sessions.filter((s) => {
+      const [start] = getSessionInterval(s);
+      return start && start >= weekAgo;
+    });
 
     const filteredExercises = lastWeekSessions
       ?.flatMap((s) => s.exercises)

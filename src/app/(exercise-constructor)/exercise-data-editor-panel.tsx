@@ -5,7 +5,6 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { Button, View, StyleSheet, Pressable, ScrollView } from "react-native";
 
 import { Input, Select } from "../../components";
-import type { ExerciseDataProps } from "../../global";
 import {
   useNavigate,
   useKeyboard,
@@ -15,6 +14,7 @@ import {
   SidesReadable,
   Sides,
 } from "../../global";
+import type { ExerciseDataProps } from "../../global/types";
 import { useTargetStore, useExerciseDataStore } from "../../store";
 
 interface ExerciseDataForm {
@@ -48,7 +48,7 @@ const ExerciseDataEditorPanel = () => {
         ][])
       : [];
 
-    return entries.map(([key, value]) => ({ key, value: value.toString() }));
+    return entries.map(([key, value]) => ({ key, value: String(value) }));
   }, [targetExerciseData]);
   const isEditing = useMemo(() => !!targetExerciseData, [targetExerciseData]);
 
@@ -62,7 +62,7 @@ const ExerciseDataEditorPanel = () => {
     useCallback(() => {
       reset({
         unilateral: targetExerciseData?.unilateral,
-        bodyWeightRate: targetExerciseData?.bodyWeightRate?.toString(),
+        bodyWeightRate: String(targetExerciseData?.bodyWeightRate || ""),
         loadingDistribution: storedLoadingDistribution,
       });
 
@@ -142,7 +142,7 @@ const ExerciseDataEditorPanel = () => {
   const muscleOptions = useMemo(
     () =>
       Array.from(MusclesReadable.entries()).map(([value, label]) => {
-        return { label, value: value.toString() };
+        return { label, value: String(value) };
       }),
     [],
   );
@@ -150,7 +150,7 @@ const ExerciseDataEditorPanel = () => {
   const sideOptions = useMemo(
     () =>
       Array.from(SidesReadable.entries()).map(([value, label]) => {
-        return { label, value: value.toString() };
+        return { label, value: String(value) };
       }),
     [],
   );

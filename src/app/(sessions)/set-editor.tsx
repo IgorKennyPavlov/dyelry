@@ -184,7 +184,7 @@ const SetEditor = () => {
         {!isEditing && (
           <>
             <Text>Rest timer:</Text>
-            <Text style={styles.timer}>{timer.toString()}</Text>
+            <Text style={styles.timer}>{String(timer)}</Text>
           </>
         )}
       </ScrollView>

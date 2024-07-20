@@ -8,8 +8,8 @@ import {
   importStoreAsync,
   exportStoreAsync,
 } from "./file-system";
-import type { ExerciseDataProps } from "../../global";
 import { EXERCISE_DATA } from "../../global";
+import type { ExerciseDataProps } from "../../global/types";
 
 interface SessionsStore {
   [EXERCISE_DATA]: Record<string, ExerciseDataProps>;

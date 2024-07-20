@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert } from "react-native";
 
 import { Input } from "../../components";
-import type { ExerciseProps } from "../../global";
 import { useNavigate, useKeyboard, SESSIONS } from "../../global";
+import type { ExerciseProps } from "../../global/types";
 import {
   usePersistentStore,
   useTargetStore,
@@ -29,7 +29,7 @@ const ExerciseEditor = () => {
   const { targetSessionId, targetExerciseId, setTargetExerciseId } =
     useTargetStore();
 
-  const { targetSession, targetExercise } = useTargetSelectors();
+  const { targetExercise } = useTargetSelectors();
   const isEditing = targetExercise?.title !== undefined;
 
   const { getValues, control } = useForm<ExerciseEditForm>({
@@ -52,7 +52,6 @@ const ExerciseEditor = () => {
 
     const exerciseData: ExerciseProps = {
       id: targetExerciseId,
-      start: targetExercise?.start || new Date(),
       title: title.trim(),
       comment: comment.trim(),
     };
@@ -103,40 +102,6 @@ const ExerciseEditor = () => {
     targetSessionId,
   ]);
 
-  const resumeExercise = useCallback(() => {
-    if (
-      !targetSessionId ||
-      !targetExerciseId ||
-      !targetSession?.exercises ||
-      !targetExercise
-    )
-      return;
-
-    const isSessionActive = !targetSession.end;
-    const isExerciseLast = targetExercise === targetSession.exercises.at(-1);
-    const isExerciseResumable = isSessionActive && isExerciseLast;
-
-    if (!isExerciseResumable) {
-      alert("You can resume only the last exercise in an active session!");
-      return;
-    }
-
-    editExercise(targetSessionId, targetExerciseId, {
-      ...targetExercise,
-      end: undefined,
-    });
-
-    navigate("/session");
-  }, [
-    editExercise,
-    navigate,
-    targetExercise,
-    targetExerciseId,
-    targetSession?.end,
-    targetSession?.exercises,
-    targetSessionId,
-  ]);
-
   const title = useMemo(() => {
     let res = isEditing ? "Edit exercise" : "Create exercise";
 
@@ -171,16 +136,6 @@ const ExerciseEditor = () => {
 
       {!isKeyboardVisible && (
         <>
-          {targetExercise?.end && (
-            <View style={{ ...styles.btn, bottom: 80 }}>
-              <Button
-                title="Resume exercise"
-                color="orange"
-                onPress={resumeExercise}
-              />
-            </View>
-          )}
-
           {targetExercise && (
             <View style={{ ...styles.btn, bottom: 40 }}>
               <Button

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
 import { useTargetStore } from "./target-store";
-import type { SessionProps, ExerciseProps, SetProps } from "../../global";
 import { SESSIONS } from "../../global";
+import type { SessionProps, ExerciseProps, SetProps } from "../../global/types";
 import { usePersistentStore } from "../persistent-store";
 
 export const useTargetSelectors = () => {

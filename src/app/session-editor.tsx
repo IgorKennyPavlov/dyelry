@@ -1,12 +1,12 @@
-import type { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { uuid } from "expo-modules-core";
 import { Tabs, useFocusEffect } from "expo-router";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { Button, View, StyleSheet, Alert } from "react-native";
+import { Button, View, StyleSheet, Alert, Dimensions } from "react-native";
 
-import { Input, DatePicker } from "../components";
-import { useNavigate, useKeyboard, SESSIONS, getSessionTitle } from "../global";
-import type { SessionProps } from "../global";
+import { Input } from "../components";
+import { useNavigate, useKeyboard, getSessionTitle } from "../global";
+import type { SessionProps } from "../global/types";
 import {
   usePersistentStore,
   useTargetStore,
@@ -15,46 +15,34 @@ import {
 
 interface SessionEditForm {
   title: string;
-  date: Date;
   comment: string;
 }
 
 const SessionEditor = () => {
   const { navigate } = useNavigate();
   const { isKeyboardVisible } = useKeyboard();
-  const {
-    [SESSIONS]: sessions,
-    addSession,
-    editSession,
-    deleteSession,
-  } = usePersistentStore();
+  const { addSession, editSession, deleteSession } = usePersistentStore();
   const { targetSessionId, setTargetSessionId } = useTargetStore();
   const { targetSession } = useTargetSelectors();
 
-  const { getValues, control, setValue, reset } = useForm<SessionEditForm>();
+  const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
+  const { getValues, control, reset } = useForm<SessionEditForm>();
 
   useFocusEffect(
     useCallback(() => {
       reset({
         title: targetSession?.title || "",
-        date: targetSession?.start || new Date(),
         comment: targetSession?.comment || "",
       });
     }, [reset, targetSession]),
   );
 
-  const selectDate = useCallback(
-    (_: DateTimePickerEvent, date?: Date) => date && setValue("date", date),
-    [setValue],
-  );
-
   const saveSession = useCallback(() => {
     if (!targetSessionId) return;
 
-    const { date, comment, title } = getValues();
+    const { comment, title } = getValues();
     const sessionData: SessionProps = {
       id: targetSessionId,
-      start: date,
       comment: comment.trim(),
       title: title.trim(),
     };
@@ -98,25 +86,21 @@ const SessionEditor = () => {
     );
   }, [deleteSession, navigate, setTargetSessionId, targetSessionId]);
 
-  const resumeSession = useCallback(() => {
-    if (!targetSessionId || !targetSession) return;
+  const copySession = useCallback(() => {
+    if (!targetSession) return;
 
-    const isSessionLast = targetSession === sessions.at(-1);
+    const replacer = ["id", "title", "exercises", "sets", "weight", "reps"];
+    const tplString = JSON.stringify(targetSession, replacer);
+    const sessionCopy: SessionProps = JSON.parse(
+      tplString,
+      (key: string, value: unknown) => (key === "id" ? uuid.v4() : value),
+    );
 
-    if (!isSessionLast) {
-      alert("You can resume only the last session!");
-      return;
-    }
-
-    editSession(targetSessionId, {
-      ...targetSession,
-      end: undefined,
-    });
-
+    // TODO add saving/loading session templates
+    // addTplSession({ ...sessionCopy, title: sessionCopy.title + "(copy)" });
+    addSession({ ...sessionCopy, title: `${sessionCopy.title} (copy)` });
     navigate("/");
-  }, [editSession, navigate, sessions, targetSession, targetSessionId]);
-
-  const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
+  }, [addSession, navigate, targetSession]);
 
   return (
     <>
@@ -124,28 +108,12 @@ const SessionEditor = () => {
 
       <View style={styles.formWrap}>
         <Input style={styles.field} control={control} name="title" />
-        <DatePicker
-          style={styles.field}
-          name="date"
-          control={control}
-          onChange={selectDate}
-        />
         <Input style={styles.field} control={control} name="comment" />
       </View>
 
       {!isKeyboardVisible && (
         <>
-          {targetSession?.end && (
-            <View style={{ ...styles.btn, bottom: 80 }}>
-              <Button
-                title="Resume session"
-                color="orange"
-                onPress={resumeSession}
-              />
-            </View>
-          )}
-
-          {targetSession && (
+          {targetSessionId && (
             <View style={{ ...styles.btn, bottom: 40 }}>
               <Button
                 title="Delete session"
@@ -155,12 +123,22 @@ const SessionEditor = () => {
             </View>
           )}
 
-          <View style={styles.btn}>
-            <Button
-              title={`${targetSession ? "Update" : "Add"} session`}
-              onPress={saveSession}
-            />
-          </View>
+          <>
+            <View style={{ ...styles.btnCompact, ...styles.btnLeft }}>
+              <Button
+                title={`${targetSession ? "Update" : "Add"} session`}
+                onPress={saveSession}
+              />
+            </View>
+            <View style={{ ...styles.btnCompact, ...styles.btnRight }}>
+              <Button
+                title="Copy session"
+                color="orange"
+                disabled={!targetSession}
+                onPress={copySession}
+              />
+            </View>
+          </>
         </>
       )}
     </>
@@ -171,6 +149,13 @@ const styles = StyleSheet.create({
   formWrap: { flex: 1 },
   field: { marginTop: 20 },
   btn: { position: "absolute", bottom: 0, width: "100%" },
+  btnCompact: {
+    position: "absolute",
+    bottom: 0,
+    width: Dimensions.get("window").width / 2,
+  },
+  btnLeft: { left: 0 },
+  btnRight: { right: 0 },
 });
 
 export default SessionEditor;

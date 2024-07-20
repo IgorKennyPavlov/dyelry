@@ -4,7 +4,6 @@ import { useRef, useState, useCallback, useMemo } from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import type { SetProps } from "../../global";
 import {
   FeelsReadable,
   getIntervalSeconds,
@@ -13,7 +12,9 @@ import {
   Feels,
   reduceSeconds,
   SESSIONS,
+  getExerciseInterval,
 } from "../../global";
+import type { SetProps } from "../../global/types";
 import {
   useTargetStore,
   useTargetSelectors,
@@ -32,11 +33,12 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   const [rest, setRest] = useState("--");
 
   const duration = useMemo(() => {
-    if (!targetSet) {
-      return 0;
-    }
+    if (!targetSet) return 0;
 
     const { start, end } = targetSet;
+
+    if (!start) return 0;
+
     return end ? Math.round(getIntervalSeconds(end, start)) : 0;
   }, [targetSet]);
 
@@ -52,9 +54,9 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
       const targetSetIdx = targetExercise.sets.indexOf(targetSet);
       const nextSet = targetExercise.sets[targetSetIdx + 1];
 
-      if (nextSet) {
-        const { start } = nextSet;
-        setRest(reduceSeconds(getIntervalSeconds(start, targetSet.end)));
+      if (nextSet?.start) {
+        const interval = getIntervalSeconds(nextSet.start, targetSet.end);
+        setRest(reduceSeconds(interval));
         return;
       }
 
@@ -62,9 +64,12 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
       const nextExercise = targetSession.exercises[targetExerciseIdx + 1];
       const nextExerciseFirstSet = nextExercise?.sets?.[0];
 
-      if (nextExerciseFirstSet) {
-        const { start } = nextExerciseFirstSet;
-        setRest(reduceSeconds(getIntervalSeconds(start, targetSet.end)));
+      if (nextExerciseFirstSet?.start) {
+        const interval = getIntervalSeconds(
+          nextExerciseFirstSet.start,
+          targetSet.end,
+        );
+        setRest(reduceSeconds(interval));
         return;
       }
 
@@ -72,9 +77,12 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
       const nextSession = sessions[targetSessionIdx + 1];
       const nextSessionFirstSet = nextSession?.exercises?.[0]?.sets?.[0];
 
-      if (nextSessionFirstSet) {
-        const { start } = nextSessionFirstSet;
-        setRest(reduceSeconds(getIntervalSeconds(start, targetSet.end)));
+      if (nextSessionFirstSet?.start) {
+        const interval = getIntervalSeconds(
+          nextSessionFirstSet.start,
+          targetSet.end,
+        );
+        setRest(reduceSeconds(interval));
         return;
       }
 
@@ -98,8 +106,8 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   }, [navigate, setTargetSetId, targetSet.id]);
 
   const isTimerRunning = useMemo(
-    () => intervalId.current && !targetExercise?.end,
-    [targetExercise?.end],
+    () => intervalId.current && !getExerciseInterval(targetExercise)[1],
+    [targetExercise],
   );
 
   return (

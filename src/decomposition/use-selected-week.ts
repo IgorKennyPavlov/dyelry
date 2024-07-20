@@ -2,7 +2,7 @@ import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
-import { SESSIONS } from "../global";
+import { SESSIONS, getSessionInterval } from "../global";
 import { usePersistentStore } from "../store";
 
 interface DisplayedWeekForm {
@@ -25,7 +25,10 @@ export const useSelectedWeek = () => {
       const sunday = new Date(monday);
       sunday.setDate(monday.getDate() + 6);
       sunday.setHours(23, 59, 59, 999);
-      const week = sessions.filter((s) => s.start > monday && s.start < sunday);
+      const week = sessions.filter((s) => {
+        const [start] = getSessionInterval(s);
+        return !start || (start > monday && start < sunday);
+      });
       return { monday, sunday, weekSessions: week };
     },
     [getLastMonday, sessions],

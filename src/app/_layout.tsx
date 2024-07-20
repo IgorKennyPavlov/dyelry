@@ -1,20 +1,18 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import { Text, Button } from "react-native";
+import { Text } from "react-native";
 
-import { usePersistentStore, useHydrated, useTabBarStore } from "../store";
+import { useHydrated, useTabBarStore } from "../store";
 
 const AppLayout = () => {
-  const { clearSessions } = usePersistentStore();
   const hydrated = useHydrated();
   const { isTabBarVisible } = useTabBarStore();
 
   if (!hydrated) {
     return (
       <>
-        <Text>Loading...</Text>
-        <Button title="Clear store" color="red" onPress={clearSessions} />
+        <Text>LOADING...</Text>
       </>
     );
   }
