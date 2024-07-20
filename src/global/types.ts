@@ -25,7 +25,6 @@ export interface SetProps {
   weight?: number;
   reps?: number;
   feels?: Feels;
-  rest?: number;
   comment?: string;
 }
 
