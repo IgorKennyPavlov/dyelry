@@ -11,7 +11,12 @@ import {
 } from "react-native";
 
 import { ExerciseListItem, listItemCommonStyles } from "../../components";
-import { useNavigate, getSessionTitle, getSessionInterval } from "../../global";
+import {
+  useNavigate,
+  getSessionTitle,
+  getSessionInterval,
+  getExerciseInterval,
+} from "../../global";
 import type { ExerciseProps } from "../../global/types";
 import { useTargetStore, useTargetSelectors } from "../../store";
 
@@ -28,12 +33,17 @@ const Session = () => {
 
   const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
 
+  const getListOffset = useCallback(
+    () => (getSessionInterval(targetSession)[1] ? 76 : 40),
+    [],
+  );
+
   return (
     <>
       <Stack.Screen options={{ title }} />
 
       {targetSession?.exercises?.length ? (
-        <View style={getSessionInterval(targetSession)[1] ? {} : styles.list}>
+        <View style={{ paddingBottom: getListOffset() }}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "40%" }}>Title</Text>
             <Text style={{ width: "30%" }}>Duration</Text>
@@ -62,7 +72,6 @@ const Session = () => {
 };
 
 const styles = StyleSheet.create({
-  list: { paddingBottom: 76 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   btn: { position: "absolute", bottom: 0, width: "100%" },
 });

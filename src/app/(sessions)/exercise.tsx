@@ -25,6 +25,11 @@ const Exercise = () => {
     navigate("/timer");
   }, [navigate, setTargetSetId]);
 
+  const getListOffset = useCallback(
+    () => (getExerciseInterval(targetExercise)[1] ? 76 : 40),
+    [],
+  );
+
   return (
     <>
       <Stack.Screen
@@ -35,7 +40,7 @@ const Exercise = () => {
       />
 
       {targetExercise?.sets?.length ? (
-        <View style={getExerciseInterval(targetExercise)[1] ? {} : styles.list}>
+        <View style={{ paddingBottom: getListOffset() }}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "15%" }}>Weight</Text>
             <Text style={{ width: "15%" }}>Reps</Text>
@@ -57,15 +62,16 @@ const Exercise = () => {
         </View>
       )}
 
-      <View style={styles.btn}>
-        <Button title="Add set" color="green" onPress={addSet} />
-      </View>
+      {getExerciseInterval(targetExercise)[1] && (
+        <View style={styles.btn}>
+          <Button title="Add set" color="green" onPress={addSet} />
+        </View>
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  list: { paddingBottom: 76 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   btn: { position: "absolute", bottom: 0, width: "100%" },
 });
