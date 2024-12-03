@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import {
   Text,
   StyleSheet,
@@ -25,9 +25,15 @@ const Exercise = () => {
     navigate("/timer");
   }, [navigate, setTargetSetId]);
 
-  const getListOffset = useCallback(
+  const listOffset = useMemo(
     () => (getExerciseInterval(targetExercise)[1] ? 76 : 40),
-    [],
+    [targetExercise],
+  );
+
+  const showAddBtn = useMemo(
+    () =>
+      !targetExercise?.sets?.length || !!getExerciseInterval(targetExercise)[1],
+    [targetExercise],
   );
 
   return (
@@ -40,7 +46,7 @@ const Exercise = () => {
       />
 
       {targetExercise?.sets?.length ? (
-        <View style={{ paddingBottom: getListOffset() }}>
+        <View style={{ paddingBottom: listOffset }}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "15%" }}>Weight</Text>
             <Text style={{ width: "15%" }}>Reps</Text>
@@ -62,7 +68,7 @@ const Exercise = () => {
         </View>
       )}
 
-      {getExerciseInterval(targetExercise)[1] && (
+      {showAddBtn && (
         <View style={styles.btn}>
           <Button title="Add set" color="green" onPress={addSet} />
         </View>

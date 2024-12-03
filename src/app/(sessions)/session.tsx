@@ -33,9 +33,9 @@ const Session = () => {
 
   const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
 
-  const getListOffset = useCallback(
+  const listOffset = useMemo(
     () => (getSessionInterval(targetSession)[1] ? 76 : 40),
-    [],
+    [targetSession],
   );
 
   return (
@@ -43,7 +43,7 @@ const Session = () => {
       <Stack.Screen options={{ title }} />
 
       {targetSession?.exercises?.length ? (
-        <View style={{ paddingBottom: getListOffset() }}>
+        <View style={{ paddingBottom: listOffset }}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "40%" }}>Title</Text>
             <Text style={{ width: "30%" }}>Duration</Text>
