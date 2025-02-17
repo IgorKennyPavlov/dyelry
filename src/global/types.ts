@@ -22,10 +22,11 @@ export interface SetProps {
   reps?: number;
   feels?: Feels;
   comment?: string;
+  side?: Sides;
 }
 
 export interface ExerciseDataProps {
   loadingDistribution: Record<Muscles, number>;
-  unilateral?: Sides;
+  unilateral?: boolean;
   bodyWeightRate?: number;
 }

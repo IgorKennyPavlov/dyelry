@@ -8,8 +8,13 @@ import {
   MusclesReadable,
   Muscles,
   getSessionInterval,
+  Sides,
 } from "../global";
-import type { ExerciseProps } from "../global/types";
+import type {
+  ExerciseProps,
+  ExerciseDataProps,
+  SetProps,
+} from "../global/types";
 import { usePersistentStore, useExerciseDataStore } from "../store";
 
 const Stats = () => {
@@ -43,8 +48,16 @@ const Stats = () => {
     return lastWeekExercises.some((e) => describedExercises[e.title]);
   }, [describedExercises, lastWeekExercises]);
 
-  // TODO PAVLOV calculation is not optimal. Needs refactoring.
-  // TODO PAVLOV add unilateral exercise calculations
+  const getRawWeight = (sets?: SetProps[]) => {
+    if (!sets) return 0;
+    return sets.reduce((a, c) => a + (c.weight || 0) * (c.reps || 0), 0);
+  };
+
+  const getTotalWeight = (rawWeight: number, bodyWeightRate = 100) => {
+    return Math.round((rawWeight / 100) * (bodyWeightRate || 100));
+  };
+
+  // TODO PAVLOV calculation is NOT optimal and NOT readable. Needs refactoring.
   const getStatItems = useCallback(() => {
     if (!lastWeekExercises?.length) {
       return [];
@@ -53,36 +66,56 @@ const Stats = () => {
     const describedLastWeek = lastWeekExercises
       .filter((e) => describedExercises[e.title])
       .map(({ title, sets }) => {
-        const data = describedExercises[title];
+        const data: ExerciseDataProps = describedExercises[title];
         const { loadingDistribution, bodyWeightRate } = data;
 
         const setsAmount = sets?.length || 0;
-        const rawWeight =
-          sets?.reduce((a, c) => a + (c.weight || 0) * (c.reps || 0), 0) || 0;
 
-        const totalWeight = Math.round(
-          (rawWeight / 100) * (bodyWeightRate || 100),
-        );
+        const leftSideSets =
+          sets?.filter((s) => !s.side || +s.side === Sides.Left) || [];
+
+        const rightSideSets =
+          sets?.filter((s) => !s.side || +s.side === Sides.Right) || [];
+
+        const rawWeightLeft = getRawWeight(leftSideSets);
+        const rawWeightRight = getRawWeight(rightSideSets);
+
+        const totalWeightLeft = getTotalWeight(rawWeightLeft, bodyWeightRate);
+        const totalWeightRight = getTotalWeight(rawWeightRight, bodyWeightRate);
 
         const loadEntries = Object.entries(loadingDistribution);
         return loadEntries.map(([muscle, rate]) => {
-          return [
+          return {
             muscle,
-            [setsAmount, Math.round((totalWeight / 100) * (rate || 0))],
-          ] as unknown as [Muscles, [number, number]];
+            setsAmount,
+            weight: [
+              Math.round((totalWeightLeft / 100) * (rate || 0)),
+              Math.round((totalWeightRight / 100) * (rate || 0)),
+            ],
+          };
         });
       })
       .flat();
 
     return Array.from(MusclesReadable.entries())
       .map(([title, readableTitle]) => {
-        const lastWeekMuscleData = describedLastWeek
-          .filter(([muscle]) => title === +muscle)
-          .map(([, data]) => data);
+        const lastWeekMuscleData = describedLastWeek.filter(
+          ({ muscle }) => title === +muscle,
+        );
 
-        const sets = lastWeekMuscleData.reduce((acc, [s]) => acc + s, 0);
-        const weight = lastWeekMuscleData.reduce((acc, [, w]) => acc + w, 0);
-        return { title: readableTitle, sets, weight };
+        const sets = lastWeekMuscleData.reduce(
+          (acc, { setsAmount: s }) => acc + s,
+          0,
+        );
+        const [left, right] = lastWeekMuscleData.reduce(
+          ([al, ar], { weight: [l, r] }) => [al + l, ar + r],
+          [0, 0],
+        );
+        return {
+          title: readableTitle,
+          sets,
+          weight: [left, right],
+        };
       })
       .filter((muscle) => muscle.sets);
   }, [describedExercises, lastWeekExercises]);

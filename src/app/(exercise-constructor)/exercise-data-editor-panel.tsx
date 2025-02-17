@@ -1,7 +1,12 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Stack, useFocusEffect } from "expo-router";
 import { useCallback, useMemo } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import {
+  useForm,
+  useFieldArray,
+  FieldPath,
+  FieldArrayPath,
+} from "react-hook-form";
 import { Button, View, StyleSheet, Pressable, ScrollView } from "react-native";
 
 import { Input, Select } from "../../components";
@@ -11,14 +16,12 @@ import {
   EXERCISE_DATA,
   Muscles,
   MusclesReadable,
-  SidesReadable,
-  Sides,
 } from "../../global";
 import type { ExerciseDataProps } from "../../global/types";
 import { useTargetStore, useExerciseDataStore } from "../../store";
 
 interface ExerciseDataForm {
-  unilateral?: Sides;
+  unilateral?: boolean;
   bodyWeightRate: string;
   loadingDistribution: { key: Muscles; value: string }[];
 }
@@ -53,7 +56,10 @@ const ExerciseDataEditorPanel = () => {
   const isEditing = useMemo(() => !!targetExerciseData, [targetExerciseData]);
 
   const { getValues, control, register, reset } = useForm<ExerciseDataForm>();
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<
+    ExerciseDataForm,
+    FieldArrayPath<ExerciseDataForm>
+  >({
     control,
     name: "loadingDistribution",
   });
@@ -147,14 +153,6 @@ const ExerciseDataEditorPanel = () => {
     [],
   );
 
-  const sideOptions = useMemo(
-    () =>
-      Array.from(SidesReadable.entries()).map(([value, label]) => {
-        return { label, value: String(value) };
-      }),
-    [],
-  );
-
   return (
     <>
       <Stack.Screen options={{ title, headerBackVisible: false }} />
@@ -170,7 +168,10 @@ const ExerciseDataEditorPanel = () => {
           label="Unilateral"
           control={control}
           name="unilateral"
-          options={[{ label: "Not", value: undefined }, ...sideOptions]}
+          options={[
+            { label: "No", value: false },
+            { label: "Yes", value: true },
+          ]}
         />
 
         <Input
@@ -183,10 +184,10 @@ const ExerciseDataEditorPanel = () => {
 
         {fields.map((item, index) => {
           const { name: muscleName } = register(
-            `loadingDistribution.${index}.key`,
+            `loadingDistribution.${index}.key` as FieldPath<ExerciseDataForm>,
           );
           const { name: loadName } = register(
-            `loadingDistribution.${index}.value`,
+            `loadingDistribution.${index}.value` as FieldPath<ExerciseDataForm>,
           );
 
           return (

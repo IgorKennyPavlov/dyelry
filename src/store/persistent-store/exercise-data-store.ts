@@ -11,7 +11,7 @@ import {
 import { EXERCISE_DATA } from "../../global";
 import type { ExerciseDataProps } from "../../global/types";
 
-interface SessionsStore {
+interface ExerciseDataStore {
   [EXERCISE_DATA]: Record<string, ExerciseDataProps>;
   addExerciseData: (title: string, data: ExerciseDataProps) => void;
   editExerciseData: (
@@ -24,13 +24,13 @@ interface SessionsStore {
   exportExerciseData: () => Promise<void>;
 }
 
-export const useExerciseDataStore = create<SessionsStore>()(
+export const useExerciseDataStore = create<ExerciseDataStore>()(
   persist(
     (set) => ({
       [EXERCISE_DATA]: {} as Record<string, ExerciseDataProps>,
       addExerciseData: (title: string, data: ExerciseDataProps) =>
         set(
-          produce((state: SessionsStore) => {
+          produce((state: ExerciseDataStore) => {
             state[EXERCISE_DATA][title] = data;
           }),
         ),
@@ -39,7 +39,7 @@ export const useExerciseDataStore = create<SessionsStore>()(
         editedExerciseData: Partial<ExerciseDataProps>,
       ) =>
         set(
-          produce((state: SessionsStore) => {
+          produce((state: ExerciseDataStore) => {
             const sessions = state[EXERCISE_DATA];
             if (!sessions[title]) return;
             Object.assign(sessions[title], editedExerciseData);
@@ -47,14 +47,14 @@ export const useExerciseDataStore = create<SessionsStore>()(
         ),
       deleteExerciseData: (title: string) =>
         set(
-          produce((state: SessionsStore) => {
+          produce((state: ExerciseDataStore) => {
             delete state[EXERCISE_DATA][title];
           }),
         ),
 
       clearExerciseData: () =>
         set(
-          produce((state: SessionsStore) => {
+          produce((state: ExerciseDataStore) => {
             state[EXERCISE_DATA] = {};
           }),
         ),

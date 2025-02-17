@@ -19,13 +19,17 @@ import {
 import { Input, Select } from "../../components";
 import {
   Feels,
+  Sides,
   getIntervalSeconds,
   useNavigate,
   useKeyboard,
   FeelsReadable,
   FeelsColors,
+  SidesReadable,
+  EXERCISE_DATA,
 } from "../../global";
 import {
+  useExerciseDataStore,
   usePersistentStore,
   useTargetStore,
   useTargetSelectors,
@@ -36,6 +40,7 @@ interface SetEditForm {
   reps: string;
   feels: Feels;
   comment: string;
+  side?: Sides;
 }
 
 const SetEditor = () => {
@@ -45,6 +50,8 @@ const SetEditor = () => {
   const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
     useTargetStore();
   const { targetExercise, targetSet } = useTargetSelectors();
+
+  const { [EXERCISE_DATA]: exerciseData } = useExerciseDataStore();
 
   const [timer, setTimer] = useState(0);
   const intervalId: MutableRefObject<number | null> = useRef(null);
@@ -58,6 +65,7 @@ const SetEditor = () => {
       reps: String(targetSet?.reps || ""),
       feels: targetSet?.feels || Feels.Ok,
       comment: String(targetSet?.comment || ""),
+      side: String(targetSet?.side || ""),
     },
   });
 
@@ -76,7 +84,7 @@ const SetEditor = () => {
   const editSetParams = useCallback(() => {
     if (!targetSessionId || !targetExerciseId || !targetSetId) return;
 
-    const { weight, reps, feels, comment } = getValues();
+    const { weight, reps, feels, comment, side } = getValues();
 
     // TODO replace with proper validation
     if (weight.trim() === "" || reps.trim() === "") {
@@ -84,10 +92,16 @@ const SetEditor = () => {
       return;
     }
 
+    if (isUnilateral && !side) {
+      alert("The exercise is unilateral! Select the trained side!");
+      return;
+    }
+
     const updatedSet = {
       weight: +weight,
       reps: +reps,
       feels,
+      side,
       comment: comment.trim(),
     };
     editSet(targetSessionId, targetExerciseId, targetSetId, updatedSet);
@@ -141,10 +155,23 @@ const SetEditor = () => {
     return res;
   }, [isEditing, targetExercise?.title]);
 
-  const options = useMemo(
+  const feelingOptions = useMemo(
     () =>
       Array.from(FeelsReadable.entries()).map(([value, label]) => {
         return { label, value, style: { color: FeelsColors.get(value) } };
+      }),
+    [],
+  );
+
+  const isUnilateral = useMemo(
+    () => exerciseData[targetExercise?.title]?.unilateral,
+    [exerciseData, targetExercise],
+  );
+
+  const sideOptions = useMemo(
+    () =>
+      Array.from(SidesReadable.entries()).map(([value, label]) => {
+        return { label, value: String(value) };
       }),
     [],
   );
@@ -154,6 +181,19 @@ const SetEditor = () => {
       <Stack.Screen options={{ title }} />
 
       <ScrollView style={styles.formWrap}>
+        {isUnilateral && (
+          <Select
+            style={styles.field}
+            control={control}
+            name="side"
+            options={[
+              { label: "Select side", value: undefined },
+              ...sideOptions,
+            ]}
+            required
+          />
+        )}
+
         <Input
           style={styles.field}
           control={control}
@@ -172,7 +212,7 @@ const SetEditor = () => {
           style={styles.field}
           control={control}
           name="feels"
-          options={options}
+          options={feelingOptions}
         />
         <Input
           style={styles.field}
