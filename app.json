@@ -23,7 +23,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ipdev.dyelry"
+      "package": "com.ipdev.dyelry",
+      "newArchEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
