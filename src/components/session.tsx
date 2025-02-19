@@ -1,5 +1,4 @@
-import { uuid } from "expo-modules-core";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams, router } from "expo-router";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -10,28 +9,45 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import { ExerciseListItem, listItemCommonStyles } from "../../components";
+import { ExerciseListItem, listItemCommonStyles } from "./list-items";
 import {
-  useNavigate,
   getSessionTitle,
   getSessionInterval,
-  getExerciseInterval,
-} from "../../global";
-import type { ExerciseProps } from "../../global/types";
-import { useTargetStore, useTargetSelectors } from "../../store";
+  SESSIONS,
+  TEMPLATES,
+} from "../global";
+import type { ExerciseProps } from "../global/types";
+import { useSessionsStore, useTemplatesStore } from "../store";
 
-const Session = () => {
-  const { navigate } = useNavigate();
-  const { setTargetExerciseId } = useTargetStore();
+interface SessionViewProps {
+  isTemplate?: boolean;
+}
 
-  const { targetSession } = useTargetSelectors();
+export const Session = ({ isTemplate }: SessionViewProps) => {
+  const storeKey = isTemplate ? TEMPLATES : SESSIONS;
+  const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
+
+  const { [storeKey]: sessions } = useStore();
+
+  const params = useLocalSearchParams<{ sessionID: string }>();
+  const { sessionID } = params;
+
+  const targetSession = useMemo(
+    () => sessions.find((s) => s.id === sessionID),
+    [sessions, sessionID],
+  );
 
   const addExercise = useCallback(() => {
-    setTargetExerciseId(uuid.v4());
-    navigate(`/exercise-editor`);
-  }, [navigate, setTargetExerciseId]);
+    router.navigate({
+      pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/editor`,
+      params: { sessionID },
+    });
+  }, [sessionID]);
 
-  const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
+  const title = useMemo(
+    () => getSessionTitle(targetSession, isTemplate),
+    [targetSession],
+  );
 
   const listOffset = useMemo(
     () => (getSessionInterval(targetSession)[1] ? 76 : 40),
@@ -54,7 +70,11 @@ const Session = () => {
           <FlatList
             data={targetSession.exercises}
             renderItem={(props: ListRenderItemInfo<ExerciseProps>) => (
-              <ExerciseListItem {...props} />
+              <ExerciseListItem
+                sessionID={sessionID}
+                isTemplate={isTemplate}
+                {...props}
+              />
             )}
           />
         </View>
@@ -75,5 +95,3 @@ const styles = StyleSheet.create({
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   btn: { position: "absolute", bottom: 0, width: "100%" },
 });
-
-export default Session;

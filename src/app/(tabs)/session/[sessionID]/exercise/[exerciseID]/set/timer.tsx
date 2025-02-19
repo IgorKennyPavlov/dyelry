@@ -1,5 +1,10 @@
 import { uuid } from "expo-modules-core";
-import { Stack, useFocusEffect } from "expo-router";
+import {
+  useFocusEffect,
+  useLocalSearchParams,
+  router,
+  Stack,
+} from "expo-router";
 import {
   useCallback,
   useState,
@@ -9,22 +14,37 @@ import {
 } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
 
-import { getIntervalSeconds, useNavigate } from "../../global";
-import {
-  usePersistentStore,
-  useTargetStore,
-  useHideTabBar,
-  useTargetSelectors,
-} from "../../store";
+import { getIntervalSeconds, SESSIONS } from "../../../../../../../global";
+import { useSessionsStore, useHideTabBar } from "../../../../../../../store";
 
 const Timer = () => {
   useHideTabBar();
-  const { navigate } = useNavigate();
-  const { addSet, editSet } = usePersistentStore();
-  const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
-    useTargetStore();
 
-  const { targetExercise, targetSet } = useTargetSelectors();
+  const params = useLocalSearchParams<{
+    sessionID: string;
+    exerciseID: string;
+    setID?: string;
+  }>();
+  const { sessionID, exerciseID, setID } = params;
+
+  const [targetSetID, setTargetSetID] = useState<string | null>(setID || null);
+
+  const { [SESSIONS]: sessions, addSet, editSet } = useSessionsStore();
+
+  const targetSession = useMemo(
+    () => sessions.find((s) => s.id === sessionID),
+    [sessions, sessionID],
+  );
+
+  const targetExercise = useMemo(
+    () => targetSession?.exercises.find((e) => e.id === exerciseID),
+    [targetSession, exerciseID],
+  );
+
+  const targetSet = useMemo(
+    () => targetExercise?.sets.find((s) => s.id === targetSetID),
+    [targetExercise, targetSetID],
+  );
 
   const [start, setStart] = useState<Date | null>(targetSet?.start || null);
   const [timer, setTimer] = useState(0);
@@ -43,35 +63,29 @@ const Timer = () => {
   );
 
   const startExerciseSet = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId) return;
-
     const start = new Date();
     setStart(start);
 
-    if (targetSetId) {
-      editSet(targetSessionId, targetExerciseId, targetSetId, { start });
+    if (targetSetID) {
+      editSet(sessionID, exerciseID, targetSetID, { start });
       return;
     }
 
     const id = uuid.v4();
-    addSet(targetSessionId, targetExerciseId, { id, start });
-    setTargetSetId(id);
-  }, [
-    addSet,
-    editSet,
-    setTargetSetId,
-    targetExerciseId,
-    targetSessionId,
-    targetSetId,
-  ]);
+    addSet(sessionID, exerciseID, { id, start });
+    setTargetSetID(id);
+  }, [addSet, editSet, setTargetSetID, exerciseID, sessionID, targetSetID]);
 
   const endExerciseSet = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId || !targetSetId) return;
+    if (!targetSetID) return;
 
     const end = new Date();
-    editSet(targetSessionId, targetExerciseId, targetSetId, { end });
-    navigate("/set-editor");
-  }, [editSet, targetSessionId, targetExerciseId, targetSetId, navigate]);
+    editSet(sessionID, exerciseID, targetSetID, { end });
+    router.navigate({
+      pathname: "/session/[sessionID]/exercise/[exerciseID]/set/[setID]",
+      params: { sessionID, exerciseID, setID: targetSetID },
+    });
+  }, [editSet, sessionID, exerciseID, targetSetID]);
 
   const finishExerciseSet = useCallback(() => {
     Alert.alert(

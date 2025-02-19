@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from "react";
 import { Text, StyleSheet, View, FlatList } from "react-native";
 
-import { listItemCommonStyles, StatsListItem } from "../components";
+import { listItemCommonStyles, StatsListItem } from "../../components";
 import {
   SESSIONS,
   EXERCISE_DATA,
@@ -9,16 +9,16 @@ import {
   Muscles,
   getSessionInterval,
   Sides,
-} from "../global";
+} from "../../global";
 import type {
   ExerciseProps,
   ExerciseDataProps,
   SetProps,
-} from "../global/types";
-import { usePersistentStore, useExerciseDataStore } from "../store";
+} from "../../global/types";
+import { useSessionsStore, useExerciseDataStore } from "../../store";
 
 const Stats = () => {
-  const { [SESSIONS]: sessions } = usePersistentStore();
+  const { [SESSIONS]: sessions } = useSessionsStore();
   const { [EXERCISE_DATA]: describedExercises } = useExerciseDataStore();
 
   const lastWeekExercises = useMemo(() => {

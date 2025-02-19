@@ -1,6 +1,5 @@
 import AntIcon from "@expo/vector-icons/AntDesign";
-import { uuid } from "expo-modules-core";
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import { useCallback, useMemo } from "react";
 import {
   FlatList,
@@ -18,16 +17,13 @@ import {
   SessionListItem,
   listItemCommonStyles,
   DatePicker,
-} from "../components";
-import { useHorizontalSwipe } from "../decomposition/use-horizontal-swipe";
-import { useSelectedWeek } from "../decomposition/use-selected-week";
-import { useNavigate, useSwipe } from "../global";
-import type { SessionProps } from "../global/types";
-import { useTargetStore } from "../store";
+} from "../../components";
+import { useHorizontalSwipe } from "../../decomposition/use-horizontal-swipe";
+import { useSelectedWeek } from "../../decomposition/use-selected-week";
+import { useSwipe } from "../../global";
+import type { SessionProps } from "../../global/types";
 
 const SessionList = () => {
-  const { setTargetSessionId } = useTargetStore();
-  const { navigate } = useNavigate();
   const { week, control, shiftWeek, selectDate } = useSelectedWeek();
   const { monday, sunday, weekSessions } = week;
 
@@ -40,9 +36,8 @@ const SessionList = () => {
   );
 
   const addSession = useCallback(() => {
-    setTargetSessionId(uuid.v4());
-    navigate(`/session-editor`);
-  }, [navigate, setTargetSessionId]);
+    router.navigate(`/session/editor`);
+  }, []);
 
   const headerTitle = useMemo(() => {
     const o: Intl.DateTimeFormatOptions = { day: "2-digit", month: "2-digit" };

@@ -1,5 +1,10 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Stack, useFocusEffect } from "expo-router";
+import {
+  Stack,
+  useFocusEffect,
+  router,
+  useLocalSearchParams,
+} from "expo-router";
 import { useCallback, useMemo } from "react";
 import {
   useForm,
@@ -9,16 +14,15 @@ import {
 } from "react-hook-form";
 import { Button, View, StyleSheet, Pressable, ScrollView } from "react-native";
 
-import { Input, Select } from "../../components";
+import { Input, Select } from "../../../components";
 import {
-  useNavigate,
   useKeyboard,
   EXERCISE_DATA,
   Muscles,
   MusclesReadable,
-} from "../../global";
-import type { ExerciseDataProps } from "../../global/types";
-import { useTargetStore, useExerciseDataStore } from "../../store";
+} from "../../../global";
+import type { ExerciseDataProps } from "../../../global/types";
+import { useExerciseDataStore } from "../../../store";
 
 interface ExerciseDataForm {
   unilateral?: boolean;
@@ -26,8 +30,7 @@ interface ExerciseDataForm {
   loadingDistribution: { key: Muscles; value: string }[];
 }
 
-const ExerciseDataEditorPanel = () => {
-  const { navigate } = useNavigate();
+const ExerciseDataEditor = () => {
   const { isKeyboardVisible } = useKeyboard();
   const {
     [EXERCISE_DATA]: exercises,
@@ -36,12 +39,11 @@ const ExerciseDataEditorPanel = () => {
     deleteExerciseData,
   } = useExerciseDataStore();
 
-  const { targetExerciseDataTitle, setTargetExerciseDataTitle } =
-    useTargetStore();
+  const { exerciseTitle } = useLocalSearchParams();
 
   const targetExerciseData = useMemo(() => {
-    return exercises[targetExerciseDataTitle || ""] || null;
-  }, [exercises, targetExerciseDataTitle]);
+    return exercises[exerciseTitle || ""] || null;
+  }, [exercises, exerciseTitle]);
 
   const storedLoadingDistribution = useMemo(() => {
     const entries = targetExerciseData
@@ -75,20 +77,11 @@ const ExerciseDataEditorPanel = () => {
       return () => {
         remove();
         reset();
-        setTargetExerciseDataTitle(null);
       };
-    }, [
-      remove,
-      reset,
-      setTargetExerciseDataTitle,
-      storedLoadingDistribution,
-      targetExerciseData,
-    ]),
+    }, [remove, reset, storedLoadingDistribution, targetExerciseData]),
   );
 
   const saveExerciseData = useCallback(() => {
-    if (!targetExerciseDataTitle) return;
-
     const { unilateral, bodyWeightRate, loadingDistribution } = getValues();
 
     // TODO replace with proper validation
@@ -122,28 +115,19 @@ const ExerciseDataEditorPanel = () => {
     }
 
     isEditing
-      ? editExerciseData(targetExerciseDataTitle, exerciseData)
-      : addExerciseData(targetExerciseDataTitle, exerciseData);
-    navigate("/exercise-constructor");
-  }, [
-    addExerciseData,
-    editExerciseData,
-    getValues,
-    isEditing,
-    navigate,
-    targetExerciseDataTitle,
-  ]);
+      ? editExerciseData(exerciseTitle, exerciseData)
+      : addExerciseData(exerciseTitle, exerciseData);
+    router.navigate("exercise-constructor");
+  }, [addExerciseData, editExerciseData, getValues, isEditing, exerciseTitle]);
 
   const removeExerciseData = useCallback(() => {
-    if (targetExerciseDataTitle) {
-      deleteExerciseData(targetExerciseDataTitle);
-      navigate("/exercise-constructor");
-    }
-  }, [deleteExerciseData, navigate, targetExerciseDataTitle]);
+    deleteExerciseData(exerciseTitle);
+    router.navigate("exercise-constructor");
+  }, [deleteExerciseData, exerciseTitle]);
 
   const title = useMemo(() => {
-    return `${isEditing ? "Edit" : "Add"} exercise data (${targetExerciseDataTitle})`;
-  }, [isEditing, targetExerciseDataTitle]);
+    return `${isEditing ? "Edit" : "Add"} exercise data (${exerciseTitle})`;
+  }, [isEditing, exerciseTitle]);
 
   const muscleOptions = useMemo(
     () =>
@@ -254,4 +238,4 @@ const styles = StyleSheet.create({
   btn: { position: "absolute", bottom: 0, width: "100%" },
 });
 
-export default ExerciseDataEditorPanel;
+export default ExerciseDataEditor;

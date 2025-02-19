@@ -3,14 +3,14 @@ import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 
 import { SESSIONS, getSessionInterval } from "../global";
-import { usePersistentStore } from "../store";
+import { useSessionsStore } from "../store";
 
 interface DisplayedWeekForm {
   targetDate: Date;
 }
 
 export const useSelectedWeek = () => {
-  const { [SESSIONS]: sessions } = usePersistentStore();
+  const { [SESSIONS]: sessions } = useSessionsStore();
 
   const getLastMonday = useCallback((date: Date) => {
     const monday = new Date(date);

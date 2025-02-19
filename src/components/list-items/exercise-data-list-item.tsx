@@ -9,22 +9,21 @@ import {
 } from "react-native";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import { useNavigate, EXERCISE_DATA } from "../../global";
-import { useTargetStore, useExerciseDataStore } from "../../store";
+import { EXERCISE_DATA } from "../../global";
+import { useExerciseDataStore } from "../../store";
+import { router } from "expo-router";
 
-export const ExerciseConstructorListItem = (
-  props: ListRenderItemInfo<string>,
-) => {
+export const ExerciseDataListItem = (props: ListRenderItemInfo<string>) => {
   const title = props.item;
 
-  const { navigate } = useNavigate();
   const { [EXERCISE_DATA]: exercises } = useExerciseDataStore();
-  const { setTargetExerciseDataTitle } = useTargetStore();
 
   const editExerciseData = useCallback(() => {
-    setTargetExerciseDataTitle(title);
-    navigate("/(exercise-constructor)/exercise-data-editor-panel");
-  }, [navigate, setTargetExerciseDataTitle, title]);
+    router.navigate({
+      pathname: "edit-exercise-data/[exerciseTitle]",
+      params: { exerciseTitle: title },
+    });
+  }, [title]);
 
   return (
     <Pressable style={styles.plaque} onPress={editExerciseData}>

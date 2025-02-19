@@ -1,14 +1,24 @@
 import { useCallback } from "react";
 import { View, Button, StyleSheet, Alert } from "react-native";
 
-import { usePersistentStore, useExerciseDataStore } from "../store";
+import {
+  useSessionsStore,
+  useExerciseDataStore,
+  useTemplatesStore,
+} from "../../store";
 
+// TODO copy-pasted code. Refactoring is needed.
 const Impex = () => {
-  const { clearSessions, importSessions, exportSessions } =
-    usePersistentStore();
+  const { clearSessions, importSessions, exportSessions } = useSessionsStore();
 
   const { clearExerciseData, importExerciseData, exportExerciseData } =
     useExerciseDataStore();
+
+  const {
+    clearSessions: clearTemplates,
+    importSessions: importTemplates,
+    exportSessions: exportTemplates,
+  } = useTemplatesStore();
 
   const tryToClearSessions = useCallback(() => {
     Alert.alert(
@@ -24,7 +34,7 @@ const Impex = () => {
 
   const importSessionsStore = useCallback(async () => {
     await importSessions();
-    usePersistentStore.persist.rehydrate();
+    useSessionsStore.persist.rehydrate();
   }, [importSessions]);
 
   const tryToImportSessions = useCallback(() => {
@@ -68,6 +78,35 @@ const Impex = () => {
     );
   }, [importExerciseDataStore]);
 
+  const tryToClearTemplates = useCallback(() => {
+    Alert.alert(
+      "Cleaning storage",
+      "Are you REALLY sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: clearTemplates },
+      ],
+      { cancelable: true },
+    );
+  }, [clearTemplates]);
+
+  const importTemplatesStore = useCallback(async () => {
+    await importTemplates();
+    useTemplatesStore.persist.rehydrate();
+  }, [importTemplates]);
+
+  const tryToImportTemplates = useCallback(() => {
+    Alert.alert(
+      "Importing exercises",
+      "Are you REALLY sure? Your exercise library will be overridden!",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: importTemplatesStore },
+      ],
+      { cancelable: true },
+    );
+  }, [importTemplatesStore]);
+
   return (
     <>
       <View style={{ ...styles.confirmBtn, top: 0 }}>
@@ -94,6 +133,8 @@ const Impex = () => {
         />
       </View>
 
+      {/*===========================================================*/}
+
       <View style={{ ...styles.confirmBtn, top: 160 }}>
         <Button
           title="Clear exercise data"
@@ -112,9 +153,35 @@ const Impex = () => {
 
       <View style={{ ...styles.confirmBtn, top: 240 }}>
         <Button
-          title="Import exercise data"
+          title="Import templates"
           color="green"
           onPress={tryToImportExerciseData}
+        />
+      </View>
+
+      {/*===========================================================*/}
+
+      <View style={{ ...styles.confirmBtn, top: 320 }}>
+        <Button
+          title="Clear templates"
+          color="red"
+          onPress={tryToClearTemplates}
+        />
+      </View>
+
+      <View style={{ ...styles.confirmBtn, top: 360 }}>
+        <Button
+          title="Export templates"
+          color="orange"
+          onPress={exportTemplates}
+        />
+      </View>
+
+      <View style={{ ...styles.confirmBtn, top: 400 }}>
+        <Button
+          title="Import exercise data"
+          color="green"
+          onPress={tryToImportTemplates}
         />
       </View>
     </>

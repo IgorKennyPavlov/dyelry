@@ -4,19 +4,23 @@ import { Text, ListRenderItemInfo, Pressable } from "react-native";
 import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import {
-  getIntervalSeconds,
-  useNavigate,
-  getSessionInterval,
-} from "../../global";
+import { getIntervalSeconds, getSessionInterval } from "../../global";
 import type { SessionProps } from "../../global/types";
-import { useTargetStore } from "../../store";
+import { router } from "expo-router";
+import { uuid } from "expo-modules-core";
+import { useTemplatesStore, useSessionsStore } from "../../store";
 
-export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
-  const { item: targetSession } = props;
+type SessionListItemProps = ListRenderItemInfo<SessionProps> & {
+  isTemplate?: boolean;
+};
 
-  const { navigate } = useNavigate();
-  const { setTargetSessionId } = useTargetStore();
+const REPLACER = ["id", "title", "exercises", "sets", "weight", "reps", "side"];
+
+export const SessionListItem = (props: SessionListItemProps) => {
+  const { item: targetSession, isTemplate } = props;
+  const basePart = isTemplate ? "template" : "session";
+
+  const { addSession } = useSessionsStore();
 
   const duration = useMemo(() => {
     if (!targetSession) return 0;
@@ -29,17 +33,21 @@ export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
   }, [targetSession]);
 
   const openSession = useCallback(() => {
-    setTargetSessionId(targetSession.id);
-    navigate("/session");
-  }, [navigate, setTargetSessionId, targetSession.id]);
+    router.navigate({
+      pathname: `/${basePart}/[sessionID]`,
+      params: { sessionID: targetSession.id },
+    });
+  }, [targetSession.id]);
 
   const editSession = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
-      setTargetSessionId(targetSession.id);
-      navigate("/session-editor");
+      router.navigate({
+        pathname: `/${basePart}/editor`,
+        params: { sessionID: targetSession.id },
+      });
     },
-    [navigate, setTargetSessionId, targetSession.id],
+    [targetSession.id],
   );
 
   const targetSessionInterval = useMemo(
@@ -47,17 +55,44 @@ export const SessionListItem = (props: ListRenderItemInfo<SessionProps>) => {
     [targetSession],
   );
 
+  const createSession = useCallback(() => {
+    if (!targetSession) return;
+
+    const tplString = JSON.stringify(targetSession, REPLACER);
+    const sessionCopy: SessionProps = JSON.parse(
+      tplString,
+      (key: string, value: unknown) => (key === "id" ? uuid.v4() : value),
+    );
+
+    addSession(sessionCopy);
+    router.navigate("/");
+  }, [targetSession, addSession]);
+
   return (
     <Pressable style={styles.plaque} onPress={openSession}>
-      <Text style={{ width: "25%" }}>
-        {targetSessionInterval[0]?.toLocaleDateString("ru-RU") || "--"}
-      </Text>
-      <Text style={{ width: "45%" }}>{targetSession?.title}</Text>
-      <Text style={{ width: "20%" }}>
-        {targetSessionInterval[1] ? `~${duration} min` : "--"}
+      {!isTemplate && (
+        <Text style={{ width: "25%" }}>
+          {targetSessionInterval[0]?.toLocaleDateString("ru-RU") || "--"}
+        </Text>
+      )}
+
+      <Text style={{ width: isTemplate ? "75%" : "45%" }}>
+        {targetSession?.title}
       </Text>
 
-      <Pressable onPress={editSession}>
+      {!isTemplate && (
+        <Text style={{ width: "20%" }}>
+          {targetSessionInterval[1] ? `~${duration} min` : "--"}
+        </Text>
+      )}
+
+      {isTemplate && (
+        <Pressable style={{ width: "15%" }} onPress={createSession}>
+          <MCI name="plus" size={32} color="#444" />
+        </Pressable>
+      )}
+
+      <Pressable style={{ width: "10%" }} onPress={editSession}>
         <MCI name="pencil-circle-outline" size={32} color="#444" />
       </Pressable>
     </Pressable>

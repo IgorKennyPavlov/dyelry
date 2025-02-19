@@ -1,31 +1,58 @@
 import { uuid } from "expo-modules-core";
-import { Tabs, useFocusEffect } from "expo-router";
+import {
+  Tabs,
+  useFocusEffect,
+  useLocalSearchParams,
+  router,
+} from "expo-router";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert, Dimensions } from "react-native";
 
-import { Input } from "../components";
-import { useNavigate, useKeyboard, getSessionTitle } from "../global";
+import { Input } from "./form";
+import { useKeyboard, getSessionTitle, SESSIONS, TEMPLATES } from "../global";
 import type { SessionProps } from "../global/types";
-import {
-  usePersistentStore,
-  useTargetStore,
-  useTargetSelectors,
-} from "../store";
+import { useSessionsStore, useTemplatesStore } from "../store";
 
 interface SessionEditForm {
   title: string;
   comment: string;
 }
 
-const SessionEditor = () => {
-  const { navigate } = useNavigate();
-  const { isKeyboardVisible } = useKeyboard();
-  const { addSession, editSession, deleteSession } = usePersistentStore();
-  const { targetSessionId, setTargetSessionId } = useTargetStore();
-  const { targetSession } = useTargetSelectors();
+interface SessionEditorProps {
+  isTemplate?: boolean;
+}
 
-  const title = useMemo(() => getSessionTitle(targetSession), [targetSession]);
+const REPLACER = ["id", "title", "exercises", "sets", "weight", "reps", "side"];
+
+export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
+  const { isKeyboardVisible } = useKeyboard();
+
+  const { sessionID } = useLocalSearchParams<{
+    sessionID?: string;
+  }>();
+
+  const { addSession: addTemplateSession } = useTemplatesStore();
+
+  const storeKey = isTemplate ? TEMPLATES : SESSIONS;
+  const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
+
+  const {
+    [storeKey]: sessions,
+    addSession,
+    editSession,
+    deleteSession,
+  } = useStore();
+
+  const targetSession = useMemo(
+    () => sessions.find((s) => s.id === sessionID),
+    [sessions, sessionID],
+  );
+
+  const title = useMemo(
+    () => getSessionTitle(targetSession, isTemplate),
+    [targetSession],
+  );
   const { getValues, control, reset } = useForm<SessionEditForm>();
 
   useFocusEffect(
@@ -38,34 +65,28 @@ const SessionEditor = () => {
   );
 
   const saveSession = useCallback(() => {
-    if (!targetSessionId) return;
-
     const { comment, title } = getValues();
     const sessionData: SessionProps = {
-      id: targetSessionId,
+      id: sessionID || uuid.v4(),
       comment: comment.trim(),
       title: title.trim(),
     };
 
-    if (targetSession) {
-      editSession(targetSessionId, sessionData);
-      navigate("/");
+    if (sessionID) {
+      editSession(sessionID, sessionData);
+      router.navigate(isTemplate ? "templates" : "/");
       return;
     }
 
     addSession(sessionData);
-    navigate("/session");
-  }, [
-    addSession,
-    editSession,
-    getValues,
-    navigate,
-    targetSession,
-    targetSessionId,
-  ]);
+    router.navigate({
+      pathname: `/${isTemplate ? "template" : "session"}/[sessionID]`,
+      params: { sessionID: sessionData.id },
+    });
+  }, [addSession, editSession, getValues, sessionID]);
 
   const confirmDelete = useCallback(() => {
-    if (!targetSessionId) return;
+    if (!sessionID) return;
 
     Alert.alert(
       "Deleting session",
@@ -76,31 +97,27 @@ const SessionEditor = () => {
           text: "Confirm",
           style: "default",
           onPress: () => {
-            navigate("/");
-            deleteSession(targetSessionId);
-            setTargetSessionId(null);
+            router.navigate(isTemplate ? "templates" : "/");
+            deleteSession(sessionID);
           },
         },
       ],
       { cancelable: true },
     );
-  }, [deleteSession, navigate, setTargetSessionId, targetSessionId]);
+  }, [deleteSession, sessionID]);
 
   const copySession = useCallback(() => {
     if (!targetSession) return;
 
-    const replacer = ["id", "title", "exercises", "sets", "weight", "reps"];
-    const tplString = JSON.stringify(targetSession, replacer);
+    const tplString = JSON.stringify(targetSession, REPLACER);
     const sessionCopy: SessionProps = JSON.parse(
       tplString,
       (key: string, value: unknown) => (key === "id" ? uuid.v4() : value),
     );
 
-    // TODO add saving/loading session templates
-    // addTplSession({ ...sessionCopy, title: sessionCopy.title + "(copy)" });
-    addSession({ ...sessionCopy, title: `${sessionCopy.title} (copy)` });
-    navigate("/");
-  }, [addSession, navigate, targetSession]);
+    addTemplateSession({ ...sessionCopy, title: sessionCopy.title + "(copy)" });
+    router.navigate("templates");
+  }, [addSession, targetSession]);
 
   return (
     <>
@@ -113,7 +130,7 @@ const SessionEditor = () => {
 
       {!isKeyboardVisible && (
         <>
-          {targetSessionId && (
+          {sessionID && (
             <View style={{ ...styles.btn, bottom: 40 }}>
               <Button
                 title="Delete session"
@@ -132,7 +149,7 @@ const SessionEditor = () => {
             </View>
             <View style={{ ...styles.btnCompact, ...styles.btnRight }}>
               <Button
-                title="Copy session"
+                title="Copy to templates"
                 color="orange"
                 disabled={!targetSession}
                 onPress={copySession}
@@ -157,5 +174,3 @@ const styles = StyleSheet.create({
   btnLeft: { left: 0 },
   btnRight: { right: 0 },
 });
-
-export default SessionEditor;

@@ -7,18 +7,16 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import {
-  listItemCommonStyles,
-  ExerciseConstructorListItem,
-} from "../components";
-import { SESSIONS } from "../global";
-import { usePersistentStore } from "../store";
+import { listItemCommonStyles, ExerciseDataListItem } from "../../components";
+import { SESSIONS, TEMPLATES } from "../../global";
+import { useSessionsStore, useTemplatesStore } from "../../store";
 
-const ExerciseConstructor = () => {
-  const { [SESSIONS]: sessions } = usePersistentStore();
+const ExerciseData = () => {
+  const { [SESSIONS]: sessions } = useSessionsStore();
+  const { [TEMPLATES]: templates } = useTemplatesStore();
 
   const uniqueExerciseTitles = useMemo(() => {
-    const exerciseTitles = sessions
+    const exerciseTitles = [...sessions, ...templates]
       .flatMap((s) => s.exercises || [])
       .map((e) => e.title)
       .sort();
@@ -37,7 +35,7 @@ const ExerciseConstructor = () => {
           <FlatList
             data={uniqueExerciseTitles}
             renderItem={(props: ListRenderItemInfo<string>) => (
-              <ExerciseConstructorListItem {...props} />
+              <ExerciseDataListItem {...props} />
             )}
           />
         </View>
@@ -56,4 +54,4 @@ const styles = StyleSheet.create({
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
 });
 
-export default ExerciseConstructor;
+export default ExerciseData;

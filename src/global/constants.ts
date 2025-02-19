@@ -1,5 +1,6 @@
 export const SESSIONS = "sessions";
 export const EXERCISE_DATA = "exerciseData";
+export const TEMPLATES = "templates";
 
 export const enum Feels {
   LikeNothing = 1,

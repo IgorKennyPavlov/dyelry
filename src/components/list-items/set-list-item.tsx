@@ -1,4 +1,4 @@
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, router } from "expo-router";
 import type { MutableRefObject } from "react";
 import { useRef, useState, useCallback, useMemo } from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
@@ -7,27 +7,41 @@ import { listItemCommonStyles } from "./list-item-common-styles";
 import {
   FeelsReadable,
   getIntervalSeconds,
-  useNavigate,
   FeelsColors,
   Feels,
   reduceSeconds,
   SESSIONS,
   getExerciseInterval,
+  TEMPLATES,
 } from "../../global";
 import type { SetProps } from "../../global/types";
-import {
-  useTargetStore,
-  useTargetSelectors,
-  usePersistentStore,
-} from "../../store";
+import { useSessionsStore, useTemplatesStore } from "../../store";
 
-export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
-  const { item: targetSet } = props;
+type SetListItemProps = ListRenderItemInfo<SetProps> & {
+  sessionID: string;
+  exerciseID: string;
+  isTemplate?: boolean;
+};
 
-  const { navigate } = useNavigate();
-  const { [SESSIONS]: sessions } = usePersistentStore();
-  const { setTargetSetId } = useTargetStore();
-  const { targetSession, targetExercise } = useTargetSelectors();
+export const SetListItem = (props: SetListItemProps) => {
+  const { item: targetSet, sessionID, exerciseID, isTemplate } = props;
+
+  // const { [SESSIONS]: sessions } = useSessionsStore();
+
+  const storeKey = isTemplate ? TEMPLATES : SESSIONS;
+  const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
+
+  const { [storeKey]: sessions } = useStore();
+
+  const targetSession = useMemo(
+    () => sessions.find((s) => s.id === sessionID),
+    [sessions, sessionID],
+  );
+
+  const targetExercise = useMemo(
+    () => targetSession?.exercises.find((e) => e.id === exerciseID),
+    [targetSession, exerciseID],
+  );
 
   const intervalId: MutableRefObject<number | null> = useRef(null);
   const [rest, setRest] = useState("--");
@@ -96,14 +110,18 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
   );
 
   const openExerciseSet = useCallback(() => {
-    setTargetSetId(targetSet.id);
-    navigate("/set-editor");
-  }, [navigate, setTargetSetId, targetSet.id]);
+    router.navigate({
+      pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]/set/[setID]`,
+      params: { sessionID, exerciseID, setID: targetSet.id },
+    });
+  }, [targetSet.id]);
 
   const openTimer = useCallback(() => {
-    setTargetSetId(targetSet.id);
-    navigate("/timer");
-  }, [navigate, setTargetSetId, targetSet.id]);
+    router.navigate({
+      pathname: `/session/[sessionID]/exercise/[exerciseID]/set/timer`,
+      params: { sessionID, exerciseID, setID: targetSet.id },
+    });
+  }, [targetSet.id]);
 
   const isTimerRunning = useMemo(
     () => intervalId.current && !getExerciseInterval(targetExercise)[1],
@@ -116,7 +134,7 @@ export const SetListItem = (props: ListRenderItemInfo<SetProps>) => {
         ...styles.plaque,
         borderColor: targetSet.end ? "gray" : "orange",
       }}
-      onPress={targetSet.end ? openExerciseSet : openTimer}
+      onPress={targetSet.end || isTemplate ? openExerciseSet : openTimer}
     >
       <Text style={{ width: "15%" }}>{targetSet.weight}</Text>
       <Text style={{ width: "15%" }}>{targetSet.reps}</Text>

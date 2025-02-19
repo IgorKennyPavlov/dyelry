@@ -39,8 +39,11 @@ export const getSessionInterval = (s?: SessionProps): Interval => {
   return [start, end];
 };
 
-export const getSessionTitle = (targetSession?: SessionProps) => {
-  let res = "Session";
+export const getSessionTitle = (
+  targetSession?: SessionProps,
+  isTemplate?: boolean,
+) => {
+  let res = `${isTemplate ? "(T)" : ""}Session`;
 
   if (!targetSession) {
     return "New " + res;

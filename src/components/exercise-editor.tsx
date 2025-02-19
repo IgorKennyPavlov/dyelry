@@ -1,36 +1,50 @@
-import { Stack } from "expo-router";
-import { useCallback, useMemo } from "react";
+import { Stack, useLocalSearchParams, router } from "expo-router";
+import { StyleSheet, Alert, View, Button } from "react-native";
+import { useKeyboard, SESSIONS, TEMPLATES } from "../global";
+import { useSessionsStore, useTemplatesStore } from "../store";
+import { useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Button, View, StyleSheet, Alert } from "react-native";
-
-import { Input } from "../../components";
-import { useNavigate, useKeyboard, SESSIONS } from "../../global";
-import type { ExerciseProps } from "../../global/types";
-import {
-  usePersistentStore,
-  useTargetStore,
-  useTargetSelectors,
-} from "../../store";
+import type { ExerciseProps } from "../global/types";
+import { Input } from "./form";
+import { uuid } from "expo-modules-core";
 
 interface ExerciseEditForm {
   title: string;
   comment: string;
 }
 
-const ExerciseEditor = () => {
-  const { navigate } = useNavigate();
+interface ExerciseEditorProps {
+  isTemplate?: boolean;
+}
+
+export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
   const { isKeyboardVisible } = useKeyboard();
+
+  const params = useLocalSearchParams<{
+    sessionID: string;
+    exerciseID?: string;
+  }>();
+  const { sessionID, exerciseID } = params;
+
+  const storeKey = isTemplate ? TEMPLATES : SESSIONS;
+  const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
+
   const {
-    [SESSIONS]: sessions,
+    [storeKey]: sessions,
     addExercise,
     editExercise,
     deleteExercise,
-  } = usePersistentStore();
-  const { targetSessionId, targetExerciseId, setTargetExerciseId } =
-    useTargetStore();
+  } = useStore();
 
-  const { targetExercise } = useTargetSelectors();
-  const isEditing = targetExercise?.title !== undefined;
+  const targetSession = useMemo(
+    () => sessions.find((s) => s.id === sessionID),
+    [sessions, sessionID],
+  );
+
+  const targetExercise = useMemo(
+    () => targetSession?.exercises?.find((e) => e.id === exerciseID),
+    [targetSession, exerciseID],
+  );
 
   const { getValues, control } = useForm<ExerciseEditForm>({
     defaultValues: {
@@ -40,7 +54,7 @@ const ExerciseEditor = () => {
   });
 
   const saveExercise = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId) return;
+    if (!sessionID) return;
 
     const { title, comment } = getValues();
 
@@ -51,31 +65,29 @@ const ExerciseEditor = () => {
     }
 
     const exerciseData: ExerciseProps = {
-      id: targetExerciseId,
+      id: exerciseID || uuid.v4(),
       title: title.trim(),
       comment: comment.trim(),
     };
 
-    if (targetExercise) {
-      editExercise(targetSessionId, targetExerciseId, exerciseData);
-      navigate("/session");
+    if (exerciseID) {
+      editExercise(sessionID, exerciseID, exerciseData);
+      router.navigate({
+        pathname: `/${isTemplate ? "template" : "session"}/[sessionID]`,
+        params: { sessionID },
+      });
       return;
     }
 
-    addExercise(targetSessionId, exerciseData);
-    navigate("/exercise");
-  }, [
-    addExercise,
-    editExercise,
-    getValues,
-    navigate,
-    targetExercise,
-    targetExerciseId,
-    targetSessionId,
-  ]);
+    addExercise(sessionID, exerciseData);
+    router.navigate({
+      pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
+      params: { sessionID, exerciseID: exerciseData.id },
+    });
+  }, [addExercise, editExercise, getValues, exerciseID, sessionID]);
 
   const confirmDelete = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId) return;
+    if (!sessionID || !exerciseID) return;
 
     Alert.alert(
       "Deleting exercise",
@@ -86,31 +98,27 @@ const ExerciseEditor = () => {
           text: "Confirm",
           style: "default",
           onPress: () => {
-            navigate("/session");
-            deleteExercise(targetSessionId, targetExerciseId);
-            setTargetExerciseId(null);
+            deleteExercise(sessionID, exerciseID);
+            router.navigate({
+              pathname: `/${isTemplate ? "template" : "session"}/[sessionID]`,
+              params: { sessionID },
+            });
           },
         },
       ],
       { cancelable: true },
     );
-  }, [
-    deleteExercise,
-    navigate,
-    setTargetExerciseId,
-    targetExerciseId,
-    targetSessionId,
-  ]);
+  }, [deleteExercise, exerciseID, sessionID]);
 
   const title = useMemo(() => {
-    let res = isEditing ? "Edit exercise" : "Create exercise";
+    let res = exerciseID ? "Edit exercise" : "Create exercise";
 
     if (targetExercise?.title) {
       res += ` (${targetExercise.title})`;
     }
 
-    return res;
-  }, [isEditing, targetExercise?.title]);
+    return (isTemplate ? "(T)" : "") + res;
+  }, [exerciseID, targetExercise?.title]);
 
   const uniqueExerciseTitles = useMemo(() => {
     const exerciseTitles = sessions
@@ -163,5 +171,3 @@ const styles = StyleSheet.create({
   field: { marginTop: 20 },
   btn: { position: "absolute", bottom: 0, width: "100%" },
 });
-
-export default ExerciseEditor;

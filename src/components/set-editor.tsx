@@ -1,4 +1,9 @@
-import { Stack, useFocusEffect } from "expo-router";
+import {
+  Stack,
+  useFocusEffect,
+  useLocalSearchParams,
+  router,
+} from "expo-router";
 import {
   useCallback,
   useState,
@@ -16,24 +21,24 @@ import {
   Alert,
 } from "react-native";
 
-import { Input, Select } from "../../components";
+import { Input, Select } from "./form";
 import {
   Feels,
   Sides,
   getIntervalSeconds,
-  useNavigate,
   useKeyboard,
   FeelsReadable,
   FeelsColors,
   SidesReadable,
   EXERCISE_DATA,
-} from "../../global";
+  SESSIONS,
+  TEMPLATES,
+} from "../global";
 import {
   useExerciseDataStore,
-  usePersistentStore,
-  useTargetStore,
-  useTargetSelectors,
-} from "../../store";
+  useSessionsStore,
+  useTemplatesStore,
+} from "../store";
 
 interface SetEditForm {
   weight: string;
@@ -43,15 +48,40 @@ interface SetEditForm {
   side?: Sides;
 }
 
-const SetEditor = () => {
-  const { navigate } = useNavigate();
+interface SetEditorProps {
+  isTemplate?: boolean;
+}
+
+export const SetEditor = ({ isTemplate }: SetEditorProps) => {
   const { isKeyboardVisible } = useKeyboard();
-  const { editSet, deleteSet } = usePersistentStore();
-  const { targetSessionId, targetExerciseId, targetSetId, setTargetSetId } =
-    useTargetStore();
-  const { targetExercise, targetSet } = useTargetSelectors();
 
   const { [EXERCISE_DATA]: exerciseData } = useExerciseDataStore();
+
+  const storeKey = isTemplate ? TEMPLATES : SESSIONS;
+  const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
+  const { [storeKey]: sessions, editSet, deleteSet } = useStore();
+
+  const params = useLocalSearchParams<{
+    sessionID: string;
+    exerciseID: string;
+    setID: string;
+  }>();
+  const { sessionID, exerciseID, setID } = params;
+
+  const targetSession = useMemo(
+    () => sessions.find((s) => s.id === sessionID),
+    [sessions, sessionID],
+  );
+
+  const targetExercise = useMemo(
+    () => targetSession?.exercises.find((e) => e.id === exerciseID),
+    [targetSession, exerciseID],
+  );
+
+  const targetSet = useMemo(
+    () => targetExercise?.sets?.find((s) => s.id === setID),
+    [targetExercise, setID],
+  );
 
   const [timer, setTimer] = useState(0);
   const intervalId: MutableRefObject<number | null> = useRef(null);
@@ -82,7 +112,7 @@ const SetEditor = () => {
   );
 
   const editSetParams = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId || !targetSetId) return;
+    if (!sessionID || !exerciseID || !setID) return;
 
     const { weight, reps, feels, comment, side } = getValues();
 
@@ -104,20 +134,16 @@ const SetEditor = () => {
       side,
       comment: comment.trim(),
     };
-    editSet(targetSessionId, targetExerciseId, targetSetId, updatedSet);
+    editSet(sessionID, exerciseID, setID, updatedSet);
 
-    navigate("/exercise");
-  }, [
-    getValues,
-    editSet,
-    targetSessionId,
-    targetExerciseId,
-    targetSetId,
-    navigate,
-  ]);
+    router.navigate({
+      pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
+      params: { sessionID, exerciseID },
+    });
+  }, [getValues, editSet, sessionID, exerciseID, setID]);
 
   const confirmDelete = useCallback(() => {
-    if (!targetSessionId || !targetExerciseId || !targetSetId) return;
+    if (!sessionID || !exerciseID || !setID) return;
 
     Alert.alert(
       "Deleting set",
@@ -128,22 +154,17 @@ const SetEditor = () => {
           text: "Confirm",
           style: "default",
           onPress: () => {
-            navigate("/exercise");
-            deleteSet(targetSessionId, targetExerciseId, targetSetId);
-            setTargetSetId(null);
+            deleteSet(sessionID, exerciseID, setID);
+            router.navigate({
+              pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
+              params: { sessionID, exerciseID },
+            });
           },
         },
       ],
       { cancelable: true },
     );
-  }, [
-    deleteSet,
-    navigate,
-    setTargetSetId,
-    targetExerciseId,
-    targetSessionId,
-    targetSetId,
-  ]);
+  }, [deleteSet, exerciseID, sessionID, setID]);
 
   const title = useMemo(() => {
     let res = isEditing ? "Edit set" : "Input set params";
@@ -250,5 +271,3 @@ const styles = StyleSheet.create({
   timer: { fontSize: 44, color: "green" },
   btn: { position: "absolute", bottom: 0, width: "100%" },
 });
-
-export default SetEditor;

@@ -1,3 +1,4 @@
+// TODO PAVLOV 100% copy of sessions-store.ts, the code should be reused
 import { produce } from "immer";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -8,11 +9,11 @@ import {
   importStoreAsync,
   exportStoreAsync,
 } from "./file-system";
-import { SESSIONS } from "../../global";
 import type { SessionProps, ExerciseProps, SetProps } from "../../global/types";
+import { TEMPLATES } from "../../global";
 
-interface SessionsStore {
-  [SESSIONS]: SessionProps[];
+interface TemplatesStore {
+  [TEMPLATES]: SessionProps[];
   addSession: (newSession: SessionProps) => void;
   editSession: (
     sessionId: string,
@@ -39,20 +40,20 @@ interface SessionsStore {
   exportSessions: () => Promise<void>;
 }
 
-export const useSessionsStore = create<SessionsStore>()(
+export const useTemplatesStore = create<TemplatesStore>()(
   persist(
     (set) => ({
-      [SESSIONS]: [] as SessionProps[],
+      [TEMPLATES]: [] as SessionProps[],
       addSession: (newSession) =>
         set(
-          produce((state: SessionsStore) => {
-            state[SESSIONS].push(newSession);
+          produce((state: TemplatesStore) => {
+            state[TEMPLATES].push(newSession);
           }),
         ),
       editSession: (sessionId, editedSession) =>
         set(
-          produce((state: SessionsStore) => {
-            const sessions = state[SESSIONS];
+          produce((state: TemplatesStore) => {
+            const sessions = state[TEMPLATES];
             const session = sessions.find((s) => s.id === sessionId);
 
             if (!session) return;
@@ -62,14 +63,16 @@ export const useSessionsStore = create<SessionsStore>()(
         ),
       deleteSession: (sessionId) =>
         set(
-          produce((state: SessionsStore) => {
-            state[SESSIONS] = state[SESSIONS].filter((s) => s.id !== sessionId);
+          produce((state: TemplatesStore) => {
+            state[TEMPLATES] = state[TEMPLATES].filter(
+              (s) => s.id !== sessionId,
+            );
           }),
         ),
       addExercise: (sessionId, newExercise) =>
         set(
-          produce((state: SessionsStore) => {
-            const sessions = state[SESSIONS];
+          produce((state: TemplatesStore) => {
+            const sessions = state[TEMPLATES];
             const session = sessions.find((s) => s.id === sessionId);
 
             if (!session) return;
@@ -83,8 +86,8 @@ export const useSessionsStore = create<SessionsStore>()(
         ),
       editExercise: (sessionId, exerciseId, editedExercise) =>
         set(
-          produce((state: SessionsStore) => {
-            const sessions = state[SESSIONS];
+          produce((state: TemplatesStore) => {
+            const sessions = state[TEMPLATES];
             const session = sessions.find((s) => s.id === sessionId);
             const exercise = session?.exercises?.find(
               (e) => e.id === exerciseId,
@@ -97,8 +100,8 @@ export const useSessionsStore = create<SessionsStore>()(
         ),
       deleteExercise: (sessionId, exerciseId) =>
         set(
-          produce((state: SessionsStore) => {
-            const sessions = state[SESSIONS];
+          produce((state: TemplatesStore) => {
+            const sessions = state[TEMPLATES];
             const session = sessions.find((s) => s.id === sessionId);
 
             if (!session) return;
@@ -110,8 +113,8 @@ export const useSessionsStore = create<SessionsStore>()(
         ),
       addSet: (sessionId, exerciseId, newSet) =>
         set(
-          produce((state: SessionsStore) => {
-            const sessions = state[SESSIONS];
+          produce((state: TemplatesStore) => {
+            const sessions = state[TEMPLATES];
             const session = sessions.find((s) => s.id === sessionId);
             const exercise = session?.exercises?.find(
               (e) => e.id === exerciseId,
@@ -128,8 +131,8 @@ export const useSessionsStore = create<SessionsStore>()(
         ),
       editSet: (sessionId, exerciseId, setId, updatedSet) =>
         set(
-          produce((state: SessionsStore) => {
-            const sessions = state[SESSIONS];
+          produce((state: TemplatesStore) => {
+            const sessions = state[TEMPLATES];
             const session = sessions.find((s) => s.id === sessionId);
             const exercise = session?.exercises?.find(
               (e) => e.id === exerciseId,
@@ -143,8 +146,8 @@ export const useSessionsStore = create<SessionsStore>()(
         ),
       deleteSet: (sessionId, exerciseId, setId) =>
         set(
-          produce((state: SessionsStore) => {
-            const sessions = state[SESSIONS];
+          produce((state: TemplatesStore) => {
+            const sessions = state[TEMPLATES];
             const session = sessions.find((s) => s.id === sessionId);
             const exercise = session?.exercises?.find(
               (e) => e.id === exerciseId,
@@ -157,15 +160,15 @@ export const useSessionsStore = create<SessionsStore>()(
         ),
       clearSessions: () =>
         set(
-          produce((state: SessionsStore) => {
-            state[SESSIONS] = [];
+          produce((state: TemplatesStore) => {
+            state[TEMPLATES] = [];
           }),
         ),
-      importSessions: () => importStoreAsync(SESSIONS),
-      exportSessions: () => exportStoreAsync(SESSIONS),
+      importSessions: () => importStoreAsync(TEMPLATES),
+      exportSessions: () => exportStoreAsync(TEMPLATES),
     }),
     {
-      name: SESSIONS,
+      name: TEMPLATES,
       storage: createJSONStorage(() => fileSystemStorage as StateStorage, {
         reviver: (key, value) => {
           if (

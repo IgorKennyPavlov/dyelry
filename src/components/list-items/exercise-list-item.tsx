@@ -4,19 +4,17 @@ import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 import { listItemCommonStyles } from "./list-item-common-styles";
-import {
-  useNavigate,
-  getIntervalSeconds,
-  getExerciseInterval,
-} from "../../global";
+import { getIntervalSeconds, getExerciseInterval } from "../../global";
 import type { ExerciseProps } from "../../global/types";
-import { useTargetStore } from "../../store";
+import { router } from "expo-router";
 
-export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
-  const { item: targetExercise } = props;
+type ExerciseListItemProps = ListRenderItemInfo<ExerciseProps> & {
+  sessionID: string;
+  isTemplate?: boolean;
+};
 
-  const { navigate } = useNavigate();
-  const { setTargetExerciseId } = useTargetStore();
+export const ExerciseListItem = (props: ExerciseListItemProps) => {
+  const { item: targetExercise, sessionID, isTemplate } = props;
 
   const duration = useMemo(() => {
     if (!targetExercise) return 0;
@@ -44,17 +42,21 @@ export const ExerciseListItem = (props: ListRenderItemInfo<ExerciseProps>) => {
   }, [duration, targetExercise]);
 
   const openExercise = useCallback(() => {
-    setTargetExerciseId(targetExercise.id);
-    navigate("/exercise");
-  }, [navigate, setTargetExerciseId, targetExercise.id]);
+    router.navigate({
+      pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
+      params: { sessionID, exerciseID: targetExercise.id },
+    });
+  }, [targetExercise.id]);
 
   const editExercise = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
-      setTargetExerciseId(targetExercise.id);
-      navigate("/exercise-editor");
+      router.navigate({
+        pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/editor`,
+        params: { sessionID, exerciseID: targetExercise.id },
+      });
     },
-    [navigate, setTargetExerciseId, targetExercise.id],
+    [targetExercise.id],
   );
 
   return (
