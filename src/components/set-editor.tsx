@@ -59,7 +59,7 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
 
   const storeKey = isTemplate ? TEMPLATES : SESSIONS;
   const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
-  const { [storeKey]: sessions, editSet, deleteSet } = useStore();
+  const { [storeKey]: sessions, addSet, editSet, deleteSet } = useStore();
 
   const params = useLocalSearchParams<{
     sessionID: string;
@@ -134,13 +134,16 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
       side,
       comment: comment.trim(),
     };
-    editSet(sessionID, exerciseID, setID, updatedSet);
 
-    router.navigate({
+    targetSet
+      ? editSet(sessionID, exerciseID, setID, updatedSet)
+      : addSet(sessionID, exerciseID, updatedSet);
+
+    router.dismissTo({
       pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
       params: { sessionID, exerciseID },
     });
-  }, [getValues, editSet, sessionID, exerciseID, setID]);
+  }, [getValues, editSet, sessionID, exerciseID, setID, targetSet]);
 
   const confirmDelete = useCallback(() => {
     if (!sessionID || !exerciseID || !setID) return;
@@ -155,7 +158,7 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
           style: "default",
           onPress: () => {
             deleteSet(sessionID, exerciseID, setID);
-            router.navigate({
+            router.dismissTo({
               pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
               params: { sessionID, exerciseID },
             });

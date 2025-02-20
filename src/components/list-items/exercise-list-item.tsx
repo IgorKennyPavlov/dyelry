@@ -42,7 +42,7 @@ export const ExerciseListItem = (props: ExerciseListItemProps) => {
   }, [duration, targetExercise]);
 
   const openExercise = useCallback(() => {
-    router.navigate({
+    router.push({
       pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
       params: { sessionID, exerciseID: targetExercise.id },
     });
@@ -51,7 +51,7 @@ export const ExerciseListItem = (props: ExerciseListItemProps) => {
   const editExercise = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
-      router.navigate({
+      router.push({
         pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/editor`,
         params: { sessionID, exerciseID: targetExercise.id },
       });

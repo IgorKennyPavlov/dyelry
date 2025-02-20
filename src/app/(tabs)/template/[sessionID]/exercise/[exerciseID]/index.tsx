@@ -1,4 +1,4 @@
-import { Exercise } from "../../../../../components";
+import { Exercise } from "../../../../../../components";
 
 const TemplateExercisePage = () => {
   return <Exercise isTemplate={true} />;

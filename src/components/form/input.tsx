@@ -62,8 +62,9 @@ export const Input = (props: InputProps) => {
           style={styles.autocompleteDismissOverlay}
         />
         <ScrollView style={styles.autocompleteList}>
-          {filtered.map((option) => (
+          {filtered.map((option, idx) => (
             <Pressable
+              key={idx}
               style={styles.autocompleteOption}
               onPress={() => {
                 setValueChanged(false);

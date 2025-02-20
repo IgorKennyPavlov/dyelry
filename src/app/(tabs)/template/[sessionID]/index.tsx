@@ -1,4 +1,4 @@
-import { Session } from "../../../components";
+import { Session } from "../../../../components";
 
 const TemplatePage = () => {
   return <Session isTemplate={true} />;

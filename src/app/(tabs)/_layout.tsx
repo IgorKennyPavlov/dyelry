@@ -15,8 +15,10 @@ const AppTabs = () => {
         tabBarStyle: { display: isTabBarVisible ? "flex" : "none" },
       }}
     >
+      <Tabs.Screen name="index" options={{ href: null }} />
+
       <Tabs.Screen
-        name="index"
+        name="session"
         options={{
           title: "Session List",
           tabBarIcon: ({ focused }) => (
@@ -28,8 +30,9 @@ const AppTabs = () => {
           ),
         }}
       />
+
       <Tabs.Screen
-        name="templates"
+        name="template"
         options={{
           title: "Templates",
           tabBarIcon: ({ focused }) => (
@@ -41,6 +44,7 @@ const AppTabs = () => {
           ),
         }}
       />
+
       <Tabs.Screen
         name="exercise-data"
         options={{
@@ -54,6 +58,7 @@ const AppTabs = () => {
           ),
         }}
       />
+
       <Tabs.Screen
         name="stats"
         options={{
@@ -67,6 +72,7 @@ const AppTabs = () => {
           ),
         }}
       />
+
       <Tabs.Screen
         name="impex"
         options={{
@@ -79,42 +85,6 @@ const AppTabs = () => {
             />
           ),
         }}
-      />
-
-      <Tabs.Screen name="session/editor" options={{ href: null }} />
-      <Tabs.Screen name="session/[sessionID]" options={{ href: null }} />
-      <Tabs.Screen name="session/[sessionID]/editor" options={{ href: null }} />
-      <Tabs.Screen
-        name="session/[sessionID]/exercise/[exerciseID]"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="session/[sessionID]/exercise/[exerciseID]/set/timer"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="session/[sessionID]/exercise/[exerciseID]/set/[setID]"
-        options={{ href: null }}
-      />
-
-      <Tabs.Screen name="template/editor" options={{ href: null }} />
-      <Tabs.Screen name="template/[sessionID]" options={{ href: null }} />
-      <Tabs.Screen
-        name="template/[sessionID]/editor"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="template/[sessionID]/exercise/[exerciseID]"
-        options={{ href: null }}
-      />
-      <Tabs.Screen
-        name="template/[sessionID]/exercise/[exerciseID]/set/[setID]"
-        options={{ href: null }}
-      />
-
-      <Tabs.Screen
-        name="edit-exercise-data/[exerciseTitle]"
-        options={{ headerShown: false, href: null }}
       />
     </Tabs>
   );

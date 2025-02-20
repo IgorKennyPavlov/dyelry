@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import type { ExerciseProps } from "../global/types";
 import { Input } from "./form";
 import { uuid } from "expo-modules-core";
+import { useAllSessionData } from "../global/hooks/useAllSessionData";
 
 interface ExerciseEditForm {
   title: string;
@@ -25,6 +26,8 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
     exerciseID?: string;
   }>();
   const { sessionID, exerciseID } = params;
+
+  const allSessions = useAllSessionData();
 
   const storeKey = isTemplate ? TEMPLATES : SESSIONS;
   const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
@@ -72,7 +75,7 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
 
     if (exerciseID) {
       editExercise(sessionID, exerciseID, exerciseData);
-      router.navigate({
+      router.dismissTo({
         pathname: `/${isTemplate ? "template" : "session"}/[sessionID]`,
         params: { sessionID },
       });
@@ -80,7 +83,7 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
     }
 
     addExercise(sessionID, exerciseData);
-    router.navigate({
+    router.dismissTo({
       pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
       params: { sessionID, exerciseID: exerciseData.id },
     });
@@ -99,7 +102,7 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
           style: "default",
           onPress: () => {
             deleteExercise(sessionID, exerciseID);
-            router.navigate({
+            router.dismissTo({
               pathname: `/${isTemplate ? "template" : "session"}/[sessionID]`,
               params: { sessionID },
             });
@@ -121,7 +124,7 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
   }, [exerciseID, targetExercise?.title]);
 
   const uniqueExerciseTitles = useMemo(() => {
-    const exerciseTitles = sessions
+    const exerciseTitles = allSessions
       .flatMap((s) => s.exercises || [])
       .map((e) => e.title);
     return [...new Set(exerciseTitles)];

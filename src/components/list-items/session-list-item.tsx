@@ -33,7 +33,7 @@ export const SessionListItem = (props: SessionListItemProps) => {
   }, [targetSession]);
 
   const openSession = useCallback(() => {
-    router.navigate({
+    router.push({
       pathname: `/${basePart}/[sessionID]`,
       params: { sessionID: targetSession.id },
     });
@@ -42,7 +42,7 @@ export const SessionListItem = (props: SessionListItemProps) => {
   const editSession = useCallback(
     (event: GestureResponderEvent) => {
       event.stopPropagation();
-      router.navigate({
+      router.push({
         pathname: `/${basePart}/editor`,
         params: { sessionID: targetSession.id },
       });
@@ -65,7 +65,7 @@ export const SessionListItem = (props: SessionListItemProps) => {
     );
 
     addSession(sessionCopy);
-    router.navigate("/");
+    router.push("session");
   }, [targetSession, addSession]);
 
   return (

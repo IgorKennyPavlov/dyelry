@@ -42,19 +42,19 @@ export const Exercise = ({ isTemplate }: ExerciseViewProps) => {
   );
 
   const createSet = useCallback(() => {
-    if (isTemplate) {
-      const id = uuid.v4();
-      addSet(sessionID, exerciseID, { id });
-      router.navigate({
-        pathname: `/template/[sessionID]/exercise/[exerciseID]/set/[setID]`,
-        params: { sessionID, exerciseID, setID: id },
+    if (!isTemplate) {
+      router.push({
+        pathname: `/session/[sessionID]/exercise/[exerciseID]/set/timer`,
+        params: { sessionID, exerciseID },
       });
       return;
     }
 
-    router.navigate({
-      pathname: `/session/[sessionID]/exercise/[exerciseID]/set/timer`,
-      params: { sessionID, exerciseID },
+    const id = uuid.v4();
+    addSet(sessionID, exerciseID, { id });
+    router.push({
+      pathname: `/template/[sessionID]/exercise/[exerciseID]/set/[setID]`,
+      params: { sessionID, exerciseID, setID: id },
     });
   }, []);
 
@@ -65,8 +65,10 @@ export const Exercise = ({ isTemplate }: ExerciseViewProps) => {
 
   const showAddBtn = useMemo(
     () =>
-      !targetExercise?.sets?.length || !!getExerciseInterval(targetExercise)[1],
-    [targetExercise],
+      !targetExercise?.sets?.length ||
+      !!getExerciseInterval(targetExercise)[1] ||
+      isTemplate,
+    [targetExercise, isTemplate],
   );
 
   return (

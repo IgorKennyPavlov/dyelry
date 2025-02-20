@@ -10,11 +10,11 @@ import {
   Dimensions,
 } from "react-native";
 
-import { listItemCommonStyles, SessionListItem } from "../../components";
-import { TEMPLATES, useSwipe } from "../../global";
-import { useTemplatesStore } from "../../store";
-import type { SessionProps } from "../../global/types";
-import { useHorizontalSwipe } from "../../decomposition/use-horizontal-swipe";
+import { listItemCommonStyles, SessionListItem } from "../../../components";
+import { TEMPLATES, useSwipe } from "../../../global";
+import { useTemplatesStore } from "../../../store";
+import type { SessionProps } from "../../../global/types";
+import { useHorizontalSwipe } from "../../../decomposition/use-horizontal-swipe";
 import { router } from "expo-router";
 
 const PAGE_SIZE = 10;
@@ -42,7 +42,7 @@ const Templates = () => {
   );
 
   const addTemplate = useCallback(() => {
-    router.navigate({ pathname: `template/editor` });
+    router.push({ pathname: `template/editor` });
   }, []);
 
   return (

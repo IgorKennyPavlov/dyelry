@@ -42,7 +42,7 @@ const Timer = () => {
   );
 
   const targetSet = useMemo(
-    () => targetExercise?.sets.find((s) => s.id === targetSetID),
+    () => targetExercise?.sets?.find((s) => s.id === targetSetID),
     [targetExercise, targetSetID],
   );
 
@@ -81,7 +81,7 @@ const Timer = () => {
 
     const end = new Date();
     editSet(sessionID, exerciseID, targetSetID, { end });
-    router.navigate({
+    router.replace({
       pathname: "/session/[sessionID]/exercise/[exerciseID]/set/[setID]",
       params: { sessionID, exerciseID, setID: targetSetID },
     });

@@ -38,7 +38,7 @@ export const Session = ({ isTemplate }: SessionViewProps) => {
   );
 
   const addExercise = useCallback(() => {
-    router.navigate({
+    router.push({
       pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/editor`,
       params: { sessionID },
     });

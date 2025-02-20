@@ -7,21 +7,22 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import { listItemCommonStyles, ExerciseDataListItem } from "../../components";
-import { SESSIONS, TEMPLATES } from "../../global";
-import { useSessionsStore, useTemplatesStore } from "../../store";
+import {
+  listItemCommonStyles,
+  ExerciseDataListItem,
+} from "../../../components";
+import { useAllSessionData } from "../../../global/hooks/useAllSessionData";
 
 const ExerciseData = () => {
-  const { [SESSIONS]: sessions } = useSessionsStore();
-  const { [TEMPLATES]: templates } = useTemplatesStore();
+  const allSessions = useAllSessionData();
 
   const uniqueExerciseTitles = useMemo(() => {
-    const exerciseTitles = [...sessions, ...templates]
+    const exerciseTitles = allSessions
       .flatMap((s) => s.exercises || [])
       .map((e) => e.title)
       .sort();
     return [...new Set(exerciseTitles)];
-  }, [sessions]);
+  }, [allSessions]);
 
   return (
     <View style={styles.constructorWrap}>

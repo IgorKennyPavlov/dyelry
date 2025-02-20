@@ -74,12 +74,12 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
 
     if (sessionID) {
       editSession(sessionID, sessionData);
-      router.navigate(isTemplate ? "templates" : "/");
+      router.dismissTo(isTemplate ? "template" : "session");
       return;
     }
 
     addSession(sessionData);
-    router.navigate({
+    router.dismissTo({
       pathname: `/${isTemplate ? "template" : "session"}/[sessionID]`,
       params: { sessionID: sessionData.id },
     });
@@ -97,7 +97,7 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
           text: "Confirm",
           style: "default",
           onPress: () => {
-            router.navigate(isTemplate ? "templates" : "/");
+            router.dismissTo(isTemplate ? "template" : "session");
             deleteSession(sessionID);
           },
         },
@@ -116,7 +116,7 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
     );
 
     addTemplateSession({ ...sessionCopy, title: sessionCopy.title + "(copy)" });
-    router.navigate("templates");
+    router.replace("template");
   }, [addSession, targetSession]);
 
   return (

@@ -19,8 +19,8 @@ export const ExerciseDataListItem = (props: ListRenderItemInfo<string>) => {
   const { [EXERCISE_DATA]: exercises } = useExerciseDataStore();
 
   const editExerciseData = useCallback(() => {
-    router.navigate({
-      pathname: "edit-exercise-data/[exerciseTitle]",
+    router.push({
+      pathname: "exercise-data/[exerciseTitle]",
       params: { exerciseTitle: title },
     });
   }, [title]);

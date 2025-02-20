@@ -1,14 +1,17 @@
 import { Stack } from "expo-router";
-import { Text } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 
 import { useHydrated } from "../store";
 
 const AppLayout = () => {
   const hydrated = useHydrated();
 
-  if (!hydrated) {
-    return <Text>LOADING...</Text>;
-  }
+  if (!hydrated)
+    return (
+      <View style={styles.loading}>
+        <Text>LOADING...</Text>
+      </View>
+    );
 
   return (
     <Stack>
@@ -16,5 +19,9 @@ const AppLayout = () => {
     </Stack>
   );
 };
+
+const styles = StyleSheet.create({
+  loading: { flex: 1, justifyContent: "center", alignItems: "center" },
+});
 
 export default AppLayout;

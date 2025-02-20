@@ -117,12 +117,12 @@ const ExerciseDataEditor = () => {
     isEditing
       ? editExerciseData(exerciseTitle, exerciseData)
       : addExerciseData(exerciseTitle, exerciseData);
-    router.navigate("exercise-constructor");
+    router.dismissTo("exercise-data");
   }, [addExerciseData, editExerciseData, getValues, isEditing, exerciseTitle]);
 
   const removeExerciseData = useCallback(() => {
     deleteExerciseData(exerciseTitle);
-    router.navigate("exercise-constructor");
+    router.dismissTo("exercise-data");
   }, [deleteExerciseData, exerciseTitle]);
 
   const title = useMemo(() => {

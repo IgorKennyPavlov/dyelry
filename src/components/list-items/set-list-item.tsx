@@ -110,14 +110,14 @@ export const SetListItem = (props: SetListItemProps) => {
   );
 
   const openExerciseSet = useCallback(() => {
-    router.navigate({
+    router.push({
       pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]/set/[setID]`,
       params: { sessionID, exerciseID, setID: targetSet.id },
     });
   }, [targetSet.id]);
 
   const openTimer = useCallback(() => {
-    router.navigate({
+    router.push({
       pathname: `/session/[sessionID]/exercise/[exerciseID]/set/timer`,
       params: { sessionID, exerciseID, setID: targetSet.id },
     });

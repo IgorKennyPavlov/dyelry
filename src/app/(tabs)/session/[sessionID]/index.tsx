@@ -1,4 +1,4 @@
-import { Session } from "../../../components";
+import { Session } from "../../../../components";
 
 const SessionPage = () => {
   return <Session />;
