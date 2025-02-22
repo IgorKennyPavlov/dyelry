@@ -49,17 +49,12 @@ export const Session = ({ isTemplate }: SessionViewProps) => {
     [targetSession],
   );
 
-  const listOffset = useMemo(
-    () => (getSessionInterval(targetSession)[1] ? 76 : 40),
-    [targetSession],
-  );
-
   return (
     <>
       <Stack.Screen options={{ title }} />
 
       {targetSession?.exercises?.length ? (
-        <View style={{ paddingBottom: listOffset }}>
+        <View style={{ paddingBottom: 76 }}>
           <View style={listItemCommonStyles.header}>
             <Text style={{ width: "40%" }}>Title</Text>
             <Text style={{ width: "30%" }}>Duration</Text>

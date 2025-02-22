@@ -58,18 +58,15 @@ export const Exercise = ({ isTemplate }: ExerciseViewProps) => {
     });
   }, []);
 
-  const listOffset = useMemo(
-    () => (getExerciseInterval(targetExercise)[1] ? 76 : 40),
-    [targetExercise],
-  );
-
   const showAddBtn = useMemo(
     () =>
+      isTemplate ||
       !targetExercise?.sets?.length ||
-      !!getExerciseInterval(targetExercise)[1] ||
-      isTemplate,
+      !!getExerciseInterval(targetExercise)[1],
     [targetExercise, isTemplate],
   );
+
+  const listOffset = useMemo(() => (showAddBtn ? 76 : 40), [showAddBtn]);
 
   return (
     <>

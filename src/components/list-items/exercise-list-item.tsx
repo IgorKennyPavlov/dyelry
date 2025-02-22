@@ -61,7 +61,9 @@ export const ExerciseListItem = (props: ExerciseListItemProps) => {
 
   return (
     <Pressable style={styles.plaque} onPress={openExercise}>
-      <Text style={{ width: "40%" }}>{targetExercise.title}</Text>
+      <Text style={{ width: "40%" }} numberOfLines={2}>
+        {targetExercise.title}
+      </Text>
       <Text style={{ width: "30%" }}>{`~${duration} min`}</Text>
       <Text style={{ width: "20%" }}>{kgPerMin}</Text>
 

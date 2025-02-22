@@ -86,7 +86,7 @@ const Templates = () => {
 
 const styles = StyleSheet.create({
   swipeable: { flexGrow: 1 },
-  list: { paddingBottom: 50 },
+  list: { paddingBottom: 116 },
   emptyList: { height: 200, justifyContent: "center", alignItems: "center" },
   confirmBtn: { position: "absolute", bottom: 0, width: "100%" },
 });

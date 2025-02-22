@@ -76,7 +76,7 @@ export const SessionListItem = (props: SessionListItemProps) => {
         </Text>
       )}
 
-      <Text style={{ width: isTemplate ? "75%" : "45%" }}>
+      <Text style={{ width: isTemplate ? "75%" : "45%" }} numberOfLines={2}>
         {targetSession?.title}
       </Text>
 
