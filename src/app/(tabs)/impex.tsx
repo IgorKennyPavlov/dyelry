@@ -153,7 +153,7 @@ const Impex = () => {
 
       <View style={{ ...styles.confirmBtn, top: 240 }}>
         <Button
-          title="Import templates"
+          title="Import exercise data"
           color="green"
           onPress={tryToImportExerciseData}
         />
@@ -179,7 +179,7 @@ const Impex = () => {
 
       <View style={{ ...styles.confirmBtn, top: 400 }}>
         <Button
-          title="Import exercise data"
+          title="Import templates"
           color="green"
           onPress={tryToImportTemplates}
         />
