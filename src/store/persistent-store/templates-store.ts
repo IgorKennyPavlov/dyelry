@@ -4,13 +4,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { StateStorage } from "zustand/middleware/persist";
 
-import {
-  fileSystemStorage,
-  importStoreAsync,
-  exportStoreAsync,
-} from "./file-system";
+import { fileSystemStorage } from "./file-system";
 import type { SessionProps, ExerciseProps, SetProps } from "../../global/types";
-import { TEMPLATES } from "../../global";
+import { TEMPLATES } from "../keys";
 
 interface TemplatesStore {
   [TEMPLATES]: SessionProps[];
@@ -36,8 +32,6 @@ interface TemplatesStore {
   ) => void;
   deleteSet: (sessionId: string, exerciseId: string, setId: string) => void;
   clearSessions: () => void;
-  importSessions: () => Promise<void>;
-  exportSessions: () => Promise<void>;
 }
 
 export const useTemplatesStore = create<TemplatesStore>()(
@@ -164,36 +158,17 @@ export const useTemplatesStore = create<TemplatesStore>()(
             state[TEMPLATES] = [];
           }),
         ),
-      importSessions: () => importStoreAsync(TEMPLATES),
-      exportSessions: () => exportStoreAsync(TEMPLATES),
     }),
     {
       name: TEMPLATES,
-      storage: createJSONStorage(() => fileSystemStorage as StateStorage, {
-        reviver: (key, value) => {
-          if (
-            value &&
-            typeof value === "object" &&
-            "revivingType" in value &&
-            "value" in value &&
-            value.revivingType === "data"
-          ) {
-            return new Date(value.value as string);
-          }
-          return value;
-        },
-        replacer: (key, value) => {
-          // TODO why value instanceof Date doesn't work?
-          // if (value instanceof Date) {
-          //   return { revivingType: "data", value: value.toISOString() };
-          // }
-          if (["start", "end"].includes(key)) {
-            return { revivingType: "data", value };
-          }
-
-          return value;
-        },
-      }),
+      storage: createJSONStorage(() => fileSystemStorage as StateStorage),
+      merge: (persisted, current) => {
+        return {
+          ...current,
+          ...persisted,
+          [TEMPLATES]: persisted[TEMPLATES] || [],
+        };
+      },
     },
   ),
 );

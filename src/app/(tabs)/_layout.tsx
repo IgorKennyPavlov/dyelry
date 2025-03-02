@@ -1,10 +1,19 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useTabBarStore } from "../../store";
+import { useTabBarStore, useUsersStore } from "../../store";
+import { useMemo } from "react";
+import { Text } from "react-native";
+import { USERS } from "../../store/keys";
 
 const AppTabs = () => {
   const { isTabBarVisible } = useTabBarStore();
+  const { [USERS]: users, signOut } = useUsersStore();
+
+  const activeUser = useMemo(
+    () => Object.keys(users).find((key) => users[key]),
+    [users],
+  );
 
   return (
     <Tabs
@@ -13,6 +22,18 @@ const AppTabs = () => {
         headerTintColor: "#fff",
         tabBarHideOnKeyboard: true,
         tabBarStyle: { display: isTabBarVisible ? "flex" : "none" },
+        headerRight: () => (
+          <>
+            <Text style={{ marginRight: 12, color: "#fff" }}>{activeUser}</Text>
+            <Ionicons
+              name="exit-outline"
+              color="#fff"
+              size={32}
+              onPress={signOut}
+            />
+          </>
+        ),
+        headerRightContainerStyle: { paddingHorizontal: 12 },
       }}
     >
       <Tabs.Screen name="index" options={{ href: null }} />

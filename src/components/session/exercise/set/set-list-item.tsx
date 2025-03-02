@@ -3,19 +3,18 @@ import type { MutableRefObject } from "react";
 import { useRef, useState, useCallback, useMemo } from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 
-import { listItemCommonStyles } from "./list-item-common-styles";
 import {
+  listItemCommonStyles,
   FeelsReadable,
   getIntervalSeconds,
   FeelsColors,
   Feels,
   reduceSeconds,
-  SESSIONS,
   getExerciseInterval,
-  TEMPLATES,
-} from "../../global";
-import type { SetProps } from "../../global/types";
-import { useSessionsStore, useTemplatesStore } from "../../store";
+} from "../../../../global";
+import type { SetProps } from "../../../../global/types";
+import { useSessionsStore, useTemplatesStore } from "../../../../store";
+import { TEMPLATES, SESSIONS } from "../../../../store/keys";
 
 type SetListItemProps = ListRenderItemInfo<SetProps> & {
   sessionID: string;
@@ -25,8 +24,6 @@ type SetListItemProps = ListRenderItemInfo<SetProps> & {
 
 export const SetListItem = (props: SetListItemProps) => {
   const { item: targetSet, sessionID, exerciseID, isTemplate } = props;
-
-  // const { [SESSIONS]: sessions } = useSessionsStore();
 
   const storeKey = isTemplate ? TEMPLATES : SESSIONS;
   const useStore = isTemplate ? useTemplatesStore : useSessionsStore;

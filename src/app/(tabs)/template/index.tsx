@@ -10,12 +10,16 @@ import {
   Dimensions,
 } from "react-native";
 
-import { listItemCommonStyles, SessionListItem } from "../../../components";
-import { TEMPLATES, useSwipe } from "../../../global";
+import { SessionListItem } from "../../../components";
+import {
+  useSwipe,
+  useHorizontalSwipeAnimation,
+  listItemCommonStyles,
+} from "../../../global";
 import { useTemplatesStore } from "../../../store";
 import type { SessionProps } from "../../../global/types";
-import { useHorizontalSwipe } from "../../../decomposition/use-horizontal-swipe";
 import { router } from "expo-router";
+import { TEMPLATES } from "../../../store/keys";
 
 const PAGE_SIZE = 10;
 
@@ -33,7 +37,7 @@ const Templates = () => {
     setStartIdx(Math.max(Math.min(newIdx, templates.length), 0));
   };
 
-  const { animateSwipe, animatedXPos } = useHorizontalSwipe();
+  const { animateSwipe, animatedXPos } = useHorizontalSwipeAnimation();
   const screenWidth = Dimensions.get("window").width;
 
   const { onTouchStart, onTouchEnd } = useSwipe(

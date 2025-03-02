@@ -3,9 +3,12 @@ import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, StyleSheet, Pressable } from "react-native";
 import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
-import { listItemCommonStyles } from "./list-item-common-styles";
-import { getIntervalSeconds, getExerciseInterval } from "../../global";
-import type { ExerciseProps } from "../../global/types";
+import {
+  listItemCommonStyles,
+  getIntervalSeconds,
+  getExerciseInterval,
+} from "../../../global";
+import type { ExerciseProps } from "../../../global/types";
 import { router } from "expo-router";
 
 type ExerciseListItemProps = ListRenderItemInfo<ExerciseProps> & {

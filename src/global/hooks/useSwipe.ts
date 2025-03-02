@@ -1,14 +1,14 @@
 import { useRef } from "react";
-import { Dimensions } from "react-native";
+import { Dimensions, Animated } from "react-native";
 import { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
 const windowWidth = Dimensions.get("window").width;
 
-export function useSwipe(
+export const useSwipe = (
   onSwipeLeft?: (e: GestureResponderEvent) => void,
   onSwipeRight?: (e: GestureResponderEvent) => void,
   rangeOffset = 4,
-) {
+) => {
   const startRef = useRef(0);
 
   // set user touch start position
@@ -32,4 +32,29 @@ export function useSwipe(
   };
 
   return { onTouchStart, onTouchEnd };
-}
+};
+
+export const useHorizontalSwipeAnimation = () => {
+  const animatedXPos = useRef(new Animated.Value(0)).current;
+  const animateSwipe = (
+    leaveTo: number,
+    enterFrom: number,
+    cb?: () => void,
+  ) => {
+    Animated.timing(animatedXPos, {
+      toValue: leaveTo,
+      duration: 100,
+      useNativeDriver: true,
+    }).start(() => {
+      animatedXPos.setValue(enterFrom);
+      cb?.();
+      Animated.timing(animatedXPos, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  return { animatedXPos, animateSwipe };
+};

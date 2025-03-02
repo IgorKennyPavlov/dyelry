@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { InputModeOptions } from "react-native/Libraries/Components/TextInput/TextInput";
 
-import { formCommonStyles } from "./form-common-styles";
+import { formCommonStyles } from "../../global";
 
 interface InputProps {
   control: Control<any>;

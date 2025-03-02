@@ -1,14 +1,12 @@
 import { useMemo, useCallback } from "react";
 import { Text, StyleSheet, View, FlatList } from "react-native";
 
-import { listItemCommonStyles, StatsListItem } from "../../components";
+import { StatsListItem } from "../../components";
 import {
-  SESSIONS,
-  EXERCISE_DATA,
   MusclesReadable,
-  Muscles,
   getSessionInterval,
   Sides,
+  listItemCommonStyles,
 } from "../../global";
 import type {
   ExerciseProps,
@@ -16,6 +14,7 @@ import type {
   SetProps,
 } from "../../global/types";
 import { useSessionsStore, useExerciseDataStore } from "../../store";
+import { SESSIONS, EXERCISE_DATA } from "../../store/keys";
 
 const Stats = () => {
   const { [SESSIONS]: sessions } = useSessionsStore();

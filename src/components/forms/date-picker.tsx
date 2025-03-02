@@ -5,7 +5,7 @@ import { useState, useCallback } from "react";
 import { Control, useController } from "react-hook-form";
 import { StyleSheet, View, Text, Pressable, ViewStyle } from "react-native";
 
-import { formCommonStyles } from "./form-common-styles";
+import { formCommonStyles } from "../../global";
 
 interface DatePickerProps {
   name: string;

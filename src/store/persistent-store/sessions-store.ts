@@ -3,13 +3,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { StateStorage } from "zustand/middleware/persist";
 
-import {
-  fileSystemStorage,
-  importStoreAsync,
-  exportStoreAsync,
-} from "./file-system";
-import { SESSIONS } from "../../global";
+import { fileSystemStorage } from "./file-system";
 import type { SessionProps, ExerciseProps, SetProps } from "../../global/types";
+import { SESSIONS } from "../keys";
 
 interface SessionsStore {
   [SESSIONS]: SessionProps[];
@@ -35,8 +31,6 @@ interface SessionsStore {
   ) => void;
   deleteSet: (sessionId: string, exerciseId: string, setId: string) => void;
   clearSessions: () => void;
-  importSessions: () => Promise<void>;
-  exportSessions: () => Promise<void>;
 }
 
 export const useSessionsStore = create<SessionsStore>()(
@@ -161,8 +155,6 @@ export const useSessionsStore = create<SessionsStore>()(
             state[SESSIONS] = [];
           }),
         ),
-      importSessions: () => importStoreAsync(SESSIONS),
-      exportSessions: () => exportStoreAsync(SESSIONS),
     }),
     {
       name: SESSIONS,
@@ -191,6 +183,13 @@ export const useSessionsStore = create<SessionsStore>()(
           return value;
         },
       }),
+      merge: (persisted, current) => {
+        return {
+          ...current,
+          ...persisted,
+          [SESSIONS]: persisted[SESSIONS] || [],
+        };
+      },
     },
   ),
 );

@@ -9,10 +9,11 @@ import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Button, View, StyleSheet, Alert, Dimensions } from "react-native";
 
-import { Input } from "./form";
-import { useKeyboard, getSessionTitle, SESSIONS, TEMPLATES } from "../global";
-import type { SessionProps } from "../global/types";
-import { useSessionsStore, useTemplatesStore } from "../store";
+import { Input } from "../forms";
+import { useKeyboard, getSessionTitle } from "../../global";
+import type { SessionProps } from "../../global/types";
+import { useSessionsStore, useTemplatesStore } from "../../store";
+import { TEMPLATES, SESSIONS } from "../../store/keys";
 
 interface SessionEditForm {
   title: string;

@@ -9,15 +9,11 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import { ExerciseListItem, listItemCommonStyles } from "./list-items";
-import {
-  getSessionTitle,
-  getSessionInterval,
-  SESSIONS,
-  TEMPLATES,
-} from "../global";
-import type { ExerciseProps } from "../global/types";
-import { useSessionsStore, useTemplatesStore } from "../store";
+import { getSessionTitle, listItemCommonStyles } from "../../global";
+import type { ExerciseProps } from "../../global/types";
+import { useSessionsStore, useTemplatesStore } from "../../store";
+import { ExerciseListItem } from "./exercise";
+import { TEMPLATES, SESSIONS } from "../../store/keys";
 
 interface SessionViewProps {
   isTemplate?: boolean;

@@ -3,12 +3,15 @@ import { useMemo, useCallback } from "react";
 import { Text, ListRenderItemInfo, Pressable } from "react-native";
 import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
 
-import { listItemCommonStyles } from "./list-item-common-styles";
-import { getIntervalSeconds, getSessionInterval } from "../../global";
+import {
+  listItemCommonStyles,
+  getIntervalSeconds,
+  getSessionInterval,
+} from "../../global";
 import type { SessionProps } from "../../global/types";
 import { router } from "expo-router";
 import { uuid } from "expo-modules-core";
-import { useTemplatesStore, useSessionsStore } from "../../store";
+import { useSessionsStore } from "../../store";
 
 type SessionListItemProps = ListRenderItemInfo<SessionProps> & {
   isTemplate?: boolean;

@@ -21,7 +21,7 @@ import {
   Alert,
 } from "react-native";
 
-import { Input, Select } from "./form";
+import { Input, Select } from "../../../forms";
 import {
   Feels,
   Sides,
@@ -30,15 +30,13 @@ import {
   FeelsReadable,
   FeelsColors,
   SidesReadable,
-  EXERCISE_DATA,
-  SESSIONS,
-  TEMPLATES,
-} from "../global";
+} from "../../../../global";
 import {
   useExerciseDataStore,
   useSessionsStore,
   useTemplatesStore,
-} from "../store";
+} from "../../../../store";
+import { EXERCISE_DATA, TEMPLATES, SESSIONS } from "../../../../store/keys";
 
 interface SetEditForm {
   weight: string;

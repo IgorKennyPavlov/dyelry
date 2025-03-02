@@ -7,11 +7,9 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import {
-  listItemCommonStyles,
-  ExerciseDataListItem,
-} from "../../../components";
+import { ExerciseDataListItem } from "../../../components";
 import { useAllSessionData } from "../../../global/hooks/useAllSessionData";
+import { listItemCommonStyles } from "../../../global";
 
 const ExerciseData = () => {
   const allSessions = useAllSessionData();

@@ -3,13 +3,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { StateStorage } from "zustand/middleware/persist";
 
-import {
-  fileSystemStorage,
-  importStoreAsync,
-  exportStoreAsync,
-} from "./file-system";
-import { EXERCISE_DATA } from "../../global";
+import { fileSystemStorage } from "./file-system";
 import type { ExerciseDataProps } from "../../global/types";
+import { EXERCISE_DATA } from "../keys";
 
 interface ExerciseDataStore {
   [EXERCISE_DATA]: Record<string, ExerciseDataProps>;
@@ -20,8 +16,6 @@ interface ExerciseDataStore {
   ) => void;
   deleteExerciseData: (title: string) => void;
   clearExerciseData: () => void;
-  importExerciseData: () => Promise<void>;
-  exportExerciseData: () => Promise<void>;
 }
 
 export const useExerciseDataStore = create<ExerciseDataStore>()(
@@ -51,26 +45,23 @@ export const useExerciseDataStore = create<ExerciseDataStore>()(
             delete state[EXERCISE_DATA][title];
           }),
         ),
-
       clearExerciseData: () =>
         set(
           produce((state: ExerciseDataStore) => {
             state[EXERCISE_DATA] = {};
           }),
         ),
-      importExerciseData: () => importStoreAsync(EXERCISE_DATA),
-      exportExerciseData: () => exportStoreAsync(EXERCISE_DATA),
     }),
     {
       name: EXERCISE_DATA,
-      storage: createJSONStorage(() => fileSystemStorage as StateStorage, {
-        reviver: (key, value) => {
-          return value;
-        },
-        replacer: (key, value) => {
-          return value;
-        },
-      }),
+      storage: createJSONStorage(() => fileSystemStorage as StateStorage),
+      merge: (persisted, current) => {
+        return {
+          ...current,
+          ...persisted,
+          [EXERCISE_DATA]: persisted[EXERCISE_DATA] || {},
+        };
+      },
     },
   ),
 );

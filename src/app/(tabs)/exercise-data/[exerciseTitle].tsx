@@ -15,14 +15,10 @@ import {
 import { Button, View, StyleSheet, Pressable, ScrollView } from "react-native";
 
 import { Input, Select } from "../../../components";
-import {
-  useKeyboard,
-  EXERCISE_DATA,
-  Muscles,
-  MusclesReadable,
-} from "../../../global";
+import { useKeyboard, Muscles, MusclesReadable } from "../../../global";
 import type { ExerciseDataProps } from "../../../global/types";
 import { useExerciseDataStore } from "../../../store";
+import { EXERCISE_DATA } from "../../../store/keys";
 
 interface ExerciseDataForm {
   unilateral?: boolean;

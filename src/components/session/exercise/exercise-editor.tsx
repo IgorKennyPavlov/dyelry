@@ -1,13 +1,14 @@
 import { Stack, useLocalSearchParams, router } from "expo-router";
 import { StyleSheet, Alert, View, Button } from "react-native";
-import { useKeyboard, SESSIONS, TEMPLATES } from "../global";
-import { useSessionsStore, useTemplatesStore } from "../store";
+import { useKeyboard } from "../../../global";
+import { useSessionsStore, useTemplatesStore } from "../../../store";
 import { useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import type { ExerciseProps } from "../global/types";
-import { Input } from "./form";
+import type { ExerciseProps } from "../../../global/types";
+import { Input } from "../../forms";
 import { uuid } from "expo-modules-core";
-import { useAllSessionData } from "../global/hooks/useAllSessionData";
+import { useAllSessionData } from "../../../global/hooks/useAllSessionData";
+import { TEMPLATES, SESSIONS } from "../../../store/keys";
 
 interface ExerciseEditForm {
   title: string;

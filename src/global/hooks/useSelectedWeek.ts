@@ -1,17 +1,14 @@
 import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { useCallback, useMemo } from "react";
 import { useForm } from "react-hook-form";
-
-import { SESSIONS, getSessionInterval } from "../global";
-import { useSessionsStore } from "../store";
+import { getSessionInterval } from "../helpers";
+import { SessionProps } from "../types";
 
 interface DisplayedWeekForm {
   targetDate: Date;
 }
 
-export const useSelectedWeek = () => {
-  const { [SESSIONS]: sessions } = useSessionsStore();
-
+export const useSelectedWeek = (sessions: SessionProps[]) => {
   const getLastMonday = useCallback((date: Date) => {
     const monday = new Date(date);
     monday.setDate(date.getDate() - ((date.getDay() + 6) % 7));

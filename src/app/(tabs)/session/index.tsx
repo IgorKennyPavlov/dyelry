@@ -13,21 +13,23 @@ import {
   Dimensions,
 } from "react-native";
 
+import { SessionListItem, DatePicker } from "../../../components";
 import {
-  SessionListItem,
+  useSelectedWeek,
+  useHorizontalSwipeAnimation,
+  useSwipe,
   listItemCommonStyles,
-  DatePicker,
-} from "../../../components";
-import { useHorizontalSwipe } from "../../../decomposition/use-horizontal-swipe";
-import { useSelectedWeek } from "../../../decomposition/use-selected-week";
-import { useSwipe } from "../../../global";
+} from "../../../global";
 import type { SessionProps } from "../../../global/types";
+import { useSessionsStore } from "../../../store";
+import { SESSIONS } from "../../../store/keys";
 
 const SessionList = () => {
-  const { week, control, shiftWeek, selectDate } = useSelectedWeek();
+  const { [SESSIONS]: sessions } = useSessionsStore();
+  const { week, control, shiftWeek, selectDate } = useSelectedWeek(sessions);
   const { monday, sunday, weekSessions } = week;
 
-  const { animateSwipe, animatedXPos } = useHorizontalSwipe();
+  const { animateSwipe, animatedXPos } = useHorizontalSwipeAnimation();
   const screenWidth = Dimensions.get("window").width;
 
   const { onTouchStart, onTouchEnd } = useSwipe(

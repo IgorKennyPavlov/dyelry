@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from "react-native";
 
-import { formCommonStyles } from "./form-common-styles";
+import { formCommonStyles } from "../../global";
 
 interface SelectOption {
   value: any;

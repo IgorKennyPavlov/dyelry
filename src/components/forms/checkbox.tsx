@@ -2,7 +2,7 @@ import { Checkbox as ExpoCheckbox } from "expo-checkbox";
 import { Controller, Control } from "react-hook-form";
 import { View, Text, StyleSheet, ViewStyle } from "react-native";
 
-import { formCommonStyles } from "./form-common-styles";
+import { formCommonStyles } from "../../global";
 
 interface SelectProps {
   control: Control<any>;

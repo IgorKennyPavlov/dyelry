@@ -1,5 +1,5 @@
 import { useSessionsStore, useTemplatesStore } from "../../store";
-import { SESSIONS, TEMPLATES } from "../constants";
+import { SESSIONS, TEMPLATES } from "../../store/keys";
 
 export const useAllSessionData = () => {
   const { [SESSIONS]: sessions } = useSessionsStore();

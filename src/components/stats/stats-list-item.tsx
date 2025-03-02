@@ -1,6 +1,6 @@
 import { Text, ListRenderItemInfo, View } from "react-native";
 
-import { listItemCommonStyles } from "./list-item-common-styles";
+import { listItemCommonStyles } from "../../global";
 
 interface DataByMuscleProps {
   title: string;

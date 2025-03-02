@@ -8,10 +8,10 @@ import {
   View,
 } from "react-native";
 
-import { listItemCommonStyles } from "./list-item-common-styles";
-import { EXERCISE_DATA } from "../../global";
+import { listItemCommonStyles } from "../../global";
 import { useExerciseDataStore } from "../../store";
 import { router } from "expo-router";
+import { EXERCISE_DATA } from "../../store/keys";
 
 export const ExerciseDataListItem = (props: ListRenderItemInfo<string>) => {
   const title = props.item;

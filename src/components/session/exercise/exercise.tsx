@@ -9,11 +9,12 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import { SetListItem, listItemCommonStyles } from "./list-items";
-import { getExerciseInterval, SESSIONS, TEMPLATES } from "../global";
-import type { SetProps } from "../global/types";
-import { useSessionsStore, useTemplatesStore } from "../store";
+import { getExerciseInterval, listItemCommonStyles } from "../../../global";
+import type { SetProps } from "../../../global/types";
+import { useSessionsStore, useTemplatesStore } from "../../../store";
 import { uuid } from "expo-modules-core";
+import { SetListItem } from "./set";
+import { TEMPLATES, SESSIONS } from "../../../store/keys";
 
 interface ExerciseViewProps {
   isTemplate?: boolean;

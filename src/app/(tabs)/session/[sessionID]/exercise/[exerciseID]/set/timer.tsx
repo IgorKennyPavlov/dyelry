@@ -13,9 +13,9 @@ import {
   useMemo,
 } from "react";
 import { Text, Button, View, StyleSheet, Alert } from "react-native";
-
-import { getIntervalSeconds, SESSIONS } from "../../../../../../../global";
+import { getIntervalSeconds } from "../../../../../../../global";
 import { useSessionsStore, useHideTabBar } from "../../../../../../../store";
+import { SESSIONS } from "../../../../../../../store/keys";
 
 const Timer = () => {
   useHideTabBar();

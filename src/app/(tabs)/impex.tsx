@@ -1,24 +1,28 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { View, Button, StyleSheet, Alert } from "react-native";
 
 import {
   useSessionsStore,
   useExerciseDataStore,
   useTemplatesStore,
+  useUsersStore,
+  importStoreAsync,
+  exportStoreAsync,
 } from "../../store";
+import { USERS, SESSIONS, TEMPLATES, EXERCISE_DATA } from "../../store/keys";
 
 // TODO copy-pasted code. Refactoring is needed.
 const Impex = () => {
-  const { clearSessions, importSessions, exportSessions } = useSessionsStore();
+  const { [USERS]: users } = useUsersStore();
 
-  const { clearExerciseData, importExerciseData, exportExerciseData } =
-    useExerciseDataStore();
+  const { clearSessions } = useSessionsStore();
+  const { clearSessions: clearTemplates } = useTemplatesStore();
+  const { clearExerciseData } = useExerciseDataStore();
 
-  const {
-    clearSessions: clearTemplates,
-    importSessions: importTemplates,
-    exportSessions: exportTemplates,
-  } = useTemplatesStore();
+  const activeUser = useMemo(
+    () => Object.keys(users).find((key) => users[key]),
+    [users],
+  );
 
   const tryToClearSessions = useCallback(() => {
     Alert.alert(
@@ -33,9 +37,10 @@ const Impex = () => {
   }, [clearSessions]);
 
   const importSessionsStore = useCallback(async () => {
-    await importSessions();
+    const postfix = activeUser ? `-${activeUser.replaceAll(" ", "_")}` : "";
+    await importStoreAsync(SESSIONS + postfix);
     useSessionsStore.persist.rehydrate();
-  }, [importSessions]);
+  }, [activeUser]);
 
   const tryToImportSessions = useCallback(() => {
     Alert.alert(
@@ -49,34 +54,10 @@ const Impex = () => {
     );
   }, [importSessionsStore]);
 
-  const tryToClearExerciseData = useCallback(() => {
-    Alert.alert(
-      "Cleaning storage",
-      "Are you REALLY sure?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: clearExerciseData },
-      ],
-      { cancelable: true },
-    );
-  }, [clearExerciseData]);
-
-  const importExerciseDataStore = useCallback(async () => {
-    await importExerciseData();
-    useExerciseDataStore.persist.rehydrate();
-  }, [importExerciseData]);
-
-  const tryToImportExerciseData = useCallback(() => {
-    Alert.alert(
-      "Importing exercises",
-      "Are you REALLY sure? Your exercise library will be overridden!",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: importExerciseDataStore },
-      ],
-      { cancelable: true },
-    );
-  }, [importExerciseDataStore]);
+  const exportSessions = useCallback(async () => {
+    const postfix = activeUser ? `-${activeUser.replaceAll(" ", "_")}` : "";
+    await exportStoreAsync(SESSIONS + postfix);
+  }, [activeUser]);
 
   const tryToClearTemplates = useCallback(() => {
     Alert.alert(
@@ -91,9 +72,10 @@ const Impex = () => {
   }, [clearTemplates]);
 
   const importTemplatesStore = useCallback(async () => {
-    await importTemplates();
+    const postfix = activeUser ? `-${activeUser.replaceAll(" ", "_")}` : "";
+    await importStoreAsync(TEMPLATES + postfix);
     useTemplatesStore.persist.rehydrate();
-  }, [importTemplates]);
+  }, [activeUser]);
 
   const tryToImportTemplates = useCallback(() => {
     Alert.alert(
@@ -107,9 +89,49 @@ const Impex = () => {
     );
   }, [importTemplatesStore]);
 
+  const exportTemplates = useCallback(async () => {
+    const postfix = activeUser ? `-${activeUser.replaceAll(" ", "_")}` : "";
+    await exportStoreAsync(TEMPLATES + postfix);
+  }, [activeUser]);
+
+  const tryToClearExerciseData = useCallback(() => {
+    Alert.alert(
+      "Cleaning storage",
+      "Are you REALLY sure?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: clearExerciseData },
+      ],
+      { cancelable: true },
+    );
+  }, [clearExerciseData]);
+
+  const importExerciseDataStore = useCallback(async () => {
+    const postfix = activeUser ? `-${activeUser.replaceAll(" ", "_")}` : "";
+    await importStoreAsync(EXERCISE_DATA + postfix);
+    useExerciseDataStore.persist.rehydrate();
+  }, [activeUser]);
+
+  const tryToImportExerciseData = useCallback(() => {
+    Alert.alert(
+      "Importing exercises",
+      "Are you REALLY sure? Your exercise library will be overridden!",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Confirm", style: "default", onPress: importExerciseDataStore },
+      ],
+      { cancelable: true },
+    );
+  }, [importExerciseDataStore]);
+
+  const exportExerciseData = useCallback(async () => {
+    const postfix = activeUser ? `-${activeUser.replaceAll(" ", "_")}` : "";
+    await exportStoreAsync(EXERCISE_DATA + postfix);
+  }, [activeUser]);
+
   return (
-    <>
-      <View style={{ ...styles.confirmBtn, top: 0 }}>
+    <View style={styles.btnPanel}>
+      <View style={styles.confirmBtn}>
         <Button
           title="Clear sessions"
           color="red"
@@ -117,7 +139,7 @@ const Impex = () => {
         />
       </View>
 
-      <View style={{ ...styles.confirmBtn, top: 40 }}>
+      <View style={styles.confirmBtn}>
         <Button
           title="Export sessions"
           color="orange"
@@ -125,7 +147,7 @@ const Impex = () => {
         />
       </View>
 
-      <View style={{ ...styles.confirmBtn, top: 80 }}>
+      <View style={styles.confirmBtn}>
         <Button
           title="Import sessions"
           color="green"
@@ -135,33 +157,7 @@ const Impex = () => {
 
       {/*===========================================================*/}
 
-      <View style={{ ...styles.confirmBtn, top: 160 }}>
-        <Button
-          title="Clear exercise data"
-          color="red"
-          onPress={tryToClearExerciseData}
-        />
-      </View>
-
-      <View style={{ ...styles.confirmBtn, top: 200 }}>
-        <Button
-          title="Export exercise data"
-          color="orange"
-          onPress={exportExerciseData}
-        />
-      </View>
-
-      <View style={{ ...styles.confirmBtn, top: 240 }}>
-        <Button
-          title="Import exercise data"
-          color="green"
-          onPress={tryToImportExerciseData}
-        />
-      </View>
-
-      {/*===========================================================*/}
-
-      <View style={{ ...styles.confirmBtn, top: 320 }}>
+      <View style={{ ...styles.confirmBtn, marginTop: 40 }}>
         <Button
           title="Clear templates"
           color="red"
@@ -169,7 +165,7 @@ const Impex = () => {
         />
       </View>
 
-      <View style={{ ...styles.confirmBtn, top: 360 }}>
+      <View style={styles.confirmBtn}>
         <Button
           title="Export templates"
           color="orange"
@@ -177,19 +173,46 @@ const Impex = () => {
         />
       </View>
 
-      <View style={{ ...styles.confirmBtn, top: 400 }}>
+      <View style={styles.confirmBtn}>
         <Button
           title="Import templates"
           color="green"
           onPress={tryToImportTemplates}
         />
       </View>
-    </>
+
+      {/*===========================================================*/}
+
+      <View style={{ ...styles.confirmBtn, marginTop: 40 }}>
+        <Button
+          title="Clear exercise data"
+          color="red"
+          onPress={tryToClearExerciseData}
+        />
+      </View>
+
+      <View style={styles.confirmBtn}>
+        <Button
+          title="Export exercise data"
+          color="orange"
+          onPress={exportExerciseData}
+        />
+      </View>
+
+      <View style={styles.confirmBtn}>
+        <Button
+          title="Import exercise data"
+          color="green"
+          onPress={tryToImportExerciseData}
+        />
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  confirmBtn: { position: "absolute", bottom: 0, width: "100%" },
+  btnPanel: { flex: 1 },
+  confirmBtn: { width: "100%", height: 40 },
 });
 
 export default Impex;
