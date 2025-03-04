@@ -1,0 +1,185 @@
+{
+  "loading": "loading",
+  "no": "no",
+  "yes": "yes",
+  "copy": "copy",
+  "min": "min",
+  "areYouSure": "Are you sure?",
+  "header": {
+    "sessionList": "Session List",
+    "templates": "Templates",
+    "exerciseData": "Exercise Data",
+    "stats": "Stats",
+    "impex": "ImpEx",
+    "activityTimer": "Activity timer",
+    "session": "Session",
+    "newSession": "New Session",
+    "template": "Template",
+    "newTemplate": "New Template",
+    "editExercise": "Edit exercise",
+    "createExercise": "Create exercise",
+    "editSet": "Edit set",
+    "inputSetParams": "Input set params",
+    "userSelect": "Select or create a user"
+  },
+  "label": {
+    "newUser": "new user",
+    "unilateral": "unilateral",
+    "bodyWeightRate": "used body weight rate (%, for bodyweight exercises)",
+    "muscleGroup": "muscle group",
+    "loadFraction": "load fraction",
+    "targetDate": "date",
+    "title": "title",
+    "comment": "comment",
+    "side": "side",
+    "selectSide": "Select side",
+    "weight": "weight",
+    "reps": "reps",
+    "feels": "feels",
+    "restTimer": "Rest timer"
+  },
+  "list": {
+    "stats": {
+      "title": "title",
+      "setsPerWeek": "Sets / Week",
+      "kgPerWeek": "Kg / Week",
+      "empty": {
+        "title": "No stats available.",
+        "text": "Record some training sessions and describe the exercises with exercise constructor."
+      }
+    },
+    "exerciseData": {
+      "title": "title",
+      "description": "description"
+    },
+    "session": {
+      "date": "date",
+      "tag": "tag",
+      "duration": "duration",
+      "empty": {
+        "title": "No sessions recorded"
+      }
+    },
+    "exercise": {
+      "title": "title",
+      "duration": "duration",
+      "kgPerMin": "kg/min",
+      "empty": {
+        "title": "No exercises recorded"
+      }
+    },
+    "template": {
+      "tag": "tag",
+      "empty": {
+        "title": "No templates recorded"
+      }
+    },
+    "set": {
+      "weight": "weight",
+      "reps": "reps",
+      "duration": "duration",
+      "feels": "feels",
+      "rest": "rest",
+      "empty": {
+        "title": "No sets recorded"
+      }
+    }
+  },
+  "action": {
+    "add": "add",
+    "edit": "edit",
+    "delete": "delete",
+    "save": "save",
+    "cancel": "cancel",
+    "confirm": "confirm",
+    "stop": "stop",
+    "start": "start",
+    "clearSessions": "clear sessions",
+    "exportSessions": "export sessions",
+    "importSessions": "import sessions",
+    "clearTemplates": "clear templates",
+    "exportTemplates": "export templates",
+    "importTemplates": "import templates",
+    "clearExerciseData": "clear exercise data",
+    "exportExerciseData": "export exercise data",
+    "importExerciseData": "import exercise data",
+    "addMuscleGroup": "add muscle group",
+    "addSession": "add session",
+    "addTemplate": "create template",
+    "addExercise": "add exercise",
+    "deleteSession": "delete session",
+    "updateSession": "update session",
+    "copyToTemplates": "copy to templates",
+    "deleteExercise": "delete exercise",
+    "updateExercise": "update exercise",
+    "addSet": "add set",
+    "deleteSet": "delete set",
+    "saveSet": "save set"
+  },
+  "alert": {
+    "userExists": "User {{newUser}} already exists!",
+    "100PercentOverflow": "Percent value can't be more than 100",
+    "removeDuplicates": "Remove duplicates!",
+    "importNotValid": "The imported file doesn't contain the required data! Make sure you're importing the correct file!",
+    "fillRequired": "Fill the required fields!",
+    "selectSideForUnilateral": "The exercise is unilateral! Select the trained side!",
+    "confirmDeleteUser": {
+      "title": "Deleting user {{username}}",
+      "text": "All the training data of this user will also be permanently removed. Make sure you've exported all the necessary data.\n\nDo you really want to continue?"
+    },
+    "cleanStorageConfirm": {
+      "title": "Cleaning storage",
+      "text": "Are you REALLY sure?"
+    },
+    "importStorageConfirm": {
+      "title": "Importing sessions",
+      "text": "Are you REALLY sure? Your old data will be overridden!"
+    },
+    "finishingSet": {
+      "title": "Finishing set"
+    },
+    "deleteSession": {
+      "title": "Deleting session"
+    },
+    "deleteExercise": {
+      "title": "Deleting exercise"
+    },
+    "deleteSet": {
+      "title": "Deleting set"
+    }
+  },
+  "enums": {
+    "feels": {
+      "likeNothing": "Like nothing",
+      "easy": "Easy",
+      "ok": "Ok",
+      "hard": "Hard",
+      "failed": "Failed"
+    },
+    "sides": {
+      "left": "Left",
+      "right": "Right"
+    },
+    "muscles": {
+      "pecs": "Pecs",
+      "frontDelts": "Front Delts",
+      "sideDelts": "Side Delts",
+      "rearDelts": "Rear Delts",
+      "bis": "Bis",
+      "tris": "Tris",
+      "forearms": "Forearms",
+      "abs": "Abs",
+      "obliques": "Obliques",
+      "upperTraps": "Upper Traps",
+      "lowerTraps": "Lower Traps",
+      "lats": "Lats",
+      "erectors": "Spine Erectors",
+      "quads": "Quads",
+      "hams": "Hams",
+      "glutes": "Glutes",
+      "abductors": "Hip Abductors",
+      "adductors": "Hip Adductors",
+      "calves": "Calves"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, router } from "expo-router";
+import { Stack, useLocalSearchParams, router, Tabs } from "expo-router";
 import { useMemo, useCallback } from "react";
 import {
   Text,
@@ -14,12 +14,14 @@ import type { ExerciseProps } from "../../global/types";
 import { useSessionsStore, useTemplatesStore } from "../../store";
 import { ExerciseListItem } from "./exercise";
 import { TEMPLATES, SESSIONS } from "../../store/keys";
+import { useTranslation } from "react-i18next";
 
 interface SessionViewProps {
   isTemplate?: boolean;
 }
 
 export const Session = ({ isTemplate }: SessionViewProps) => {
+  const { t } = useTranslation();
   const storeKey = isTemplate ? TEMPLATES : SESSIONS;
   const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
 
@@ -42,20 +44,25 @@ export const Session = ({ isTemplate }: SessionViewProps) => {
 
   const title = useMemo(
     () => getSessionTitle(targetSession, isTemplate),
-    [targetSession],
+    [t, targetSession],
   );
 
   return (
     <>
-      <Stack.Screen options={{ title }} />
+      <Tabs.Screen options={{ title, headerShown: true }} />
 
       {targetSession?.exercises?.length ? (
         <View style={{ paddingBottom: 76 }}>
           <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "40%" }}>Title</Text>
-            <Text style={{ width: "30%" }}>Duration</Text>
-            <Text style={{ width: "20%" }}>Kg/Min</Text>
-            <Text style={{ width: "10%" }}>Edit</Text>
+            <Text style={{ width: "40%" }}>
+              {t("list.exercise.title").toUpperCase()}
+            </Text>
+            <Text style={{ width: "30%" }}>
+              {t("list.exercise.duration").toUpperCase()}
+            </Text>
+            <Text style={{ width: "20%" }}>
+              {t("list.exercise.kgPerMin").toUpperCase()}
+            </Text>
           </View>
 
           <FlatList
@@ -71,12 +78,16 @@ export const Session = ({ isTemplate }: SessionViewProps) => {
         </View>
       ) : (
         <View style={styles.emptyList}>
-          <Text>No exercises recorded</Text>
+          <Text>{t("list.exercise.empty.title")}</Text>
         </View>
       )}
 
       <View style={styles.btn}>
-        <Button title="Add exercise" color="green" onPress={addExercise} />
+        <Button
+          title={t("action.addExercise")}
+          color="green"
+          onPress={addExercise}
+        />
       </View>
     </>
   );

@@ -1,5 +1,5 @@
 import AntIcon from "@expo/vector-icons/AntDesign";
-import { Tabs, router } from "expo-router";
+import { router, Stack } from "expo-router";
 import { useCallback, useMemo } from "react";
 import {
   FlatList,
@@ -23,8 +23,10 @@ import {
 import type { SessionProps } from "../../../global/types";
 import { useSessionsStore } from "../../../store";
 import { SESSIONS } from "../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 const SessionList = () => {
+  const { t } = useTranslation();
   const { [SESSIONS]: sessions } = useSessionsStore();
   const { week, control, shiftWeek, selectDate } = useSelectedWeek(sessions);
   const { monday, sunday, weekSessions } = week;
@@ -41,17 +43,15 @@ const SessionList = () => {
     router.push(`/session/editor`);
   }, []);
 
-  const headerTitle = useMemo(() => {
+  const targetWeek = useMemo(() => {
     const o: Intl.DateTimeFormatOptions = { day: "2-digit", month: "2-digit" };
     const mondayString = monday.toLocaleDateString("ru-RU", o);
     const sundayString = sunday.toLocaleDateString("ru-RU", o);
-    return `Session List (${mondayString} - ${sundayString})`;
-  }, [monday, sunday]);
+    return `(${mondayString} - ${sundayString})`;
+  }, [t, monday, sunday]);
 
   return (
     <>
-      <Tabs.Screen options={{ headerTitle }} />
-
       <Animated.View
         style={{
           ...styles.swipeable,
@@ -63,10 +63,15 @@ const SessionList = () => {
         {weekSessions?.length ? (
           <View style={styles.list}>
             <View style={listItemCommonStyles.header}>
-              <Text style={{ width: "25%" }}>Date</Text>
-              <Text style={{ width: "45%" }}>Title</Text>
-              <Text style={{ width: "20%" }}>Duration</Text>
-              <Text style={{ width: "10%" }}>Edit</Text>
+              <Text style={{ width: "25%" }}>
+                {t("list.session.date").toUpperCase()}
+              </Text>
+              <Text style={{ width: "45%" }}>
+                {t("list.session.tag").toUpperCase()}
+              </Text>
+              <Text style={{ width: "20%" }}>
+                {t("list.session.duration").toUpperCase()}
+              </Text>
             </View>
 
             <FlatList
@@ -78,7 +83,7 @@ const SessionList = () => {
           </View>
         ) : (
           <View style={styles.emptyList}>
-            <Text>No sessions recorded</Text>
+            <Text>{t("list.session.empty.title")}</Text>
           </View>
         )}
       </Animated.View>
@@ -90,7 +95,7 @@ const SessionList = () => {
         <DatePicker
           style={styles.weekPicker}
           name="targetDate"
-          label="target date"
+          label={`${t("label.targetDate")} ${targetWeek}`}
           control={control}
           onChange={selectDate}
         />
@@ -100,7 +105,7 @@ const SessionList = () => {
       </View>
 
       <View style={styles.confirmBtn}>
-        <Button title="Add session" onPress={addSession} />
+        <Button title={t("action.addSession")} onPress={addSession} />
       </View>
     </>
   );

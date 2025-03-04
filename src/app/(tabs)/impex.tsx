@@ -10,9 +10,11 @@ import {
   exportStoreAsync,
 } from "../../store";
 import { USERS, SESSIONS, TEMPLATES, EXERCISE_DATA } from "../../store/keys";
+import { useTranslation } from "react-i18next";
 
 // TODO copy-pasted code. Refactoring is needed.
 const Impex = () => {
+  const { t } = useTranslation();
   const { [USERS]: users } = useUsersStore();
 
   const { clearSessions } = useSessionsStore();
@@ -26,11 +28,11 @@ const Impex = () => {
 
   const tryToClearSessions = useCallback(() => {
     Alert.alert(
-      "Cleaning storage",
-      "Are you REALLY sure?",
+      t("alert.cleanStorageConfirm.title"),
+      t("alert.cleanStorageConfirm.text"),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: clearSessions },
+        { text: t("action.cancel"), style: "cancel" },
+        { text: t("action.confirm"), style: "default", onPress: clearSessions },
       ],
       { cancelable: true },
     );
@@ -44,11 +46,15 @@ const Impex = () => {
 
   const tryToImportSessions = useCallback(() => {
     Alert.alert(
-      "Importing sessions",
-      "Are you REALLY sure? Your sessions will be overridden!",
+      t("alert.importStorageConfirm.title"),
+      t("alert.importStorageConfirm.text"),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: importSessionsStore },
+        { text: t("action.cancel"), style: "cancel" },
+        {
+          text: t("action.confirm"),
+          style: "default",
+          onPress: importSessionsStore,
+        },
       ],
       { cancelable: true },
     );
@@ -61,11 +67,15 @@ const Impex = () => {
 
   const tryToClearTemplates = useCallback(() => {
     Alert.alert(
-      "Cleaning storage",
-      "Are you REALLY sure?",
+      t("alert.cleanStorageConfirm.title"),
+      t("alert.cleanStorageConfirm.text"),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: clearTemplates },
+        { text: t("action.cancel"), style: "cancel" },
+        {
+          text: t("action.confirm"),
+          style: "default",
+          onPress: clearTemplates,
+        },
       ],
       { cancelable: true },
     );
@@ -79,11 +89,15 @@ const Impex = () => {
 
   const tryToImportTemplates = useCallback(() => {
     Alert.alert(
-      "Importing exercises",
-      "Are you REALLY sure? Your exercise library will be overridden!",
+      t("alert.importStorageConfirm.title"),
+      t("alert.importStorageConfirm.text"),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: importTemplatesStore },
+        { text: t("action.cancel"), style: "cancel" },
+        {
+          text: t("action.confirm"),
+          style: "default",
+          onPress: importTemplatesStore,
+        },
       ],
       { cancelable: true },
     );
@@ -96,11 +110,15 @@ const Impex = () => {
 
   const tryToClearExerciseData = useCallback(() => {
     Alert.alert(
-      "Cleaning storage",
-      "Are you REALLY sure?",
+      t("alert.cleanStorageConfirm.title"),
+      t("alert.cleanStorageConfirm.text"),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: clearExerciseData },
+        { text: t("action.cancel"), style: "cancel" },
+        {
+          text: t("action.confirm"),
+          style: "default",
+          onPress: clearExerciseData,
+        },
       ],
       { cancelable: true },
     );
@@ -114,11 +132,15 @@ const Impex = () => {
 
   const tryToImportExerciseData = useCallback(() => {
     Alert.alert(
-      "Importing exercises",
-      "Are you REALLY sure? Your exercise library will be overridden!",
+      t("alert.importStorageConfirm.title"),
+      t("alert.importStorageConfirm.text"),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: importExerciseDataStore },
+        { text: t("action.cancel"), style: "cancel" },
+        {
+          text: t("action.confirm"),
+          style: "default",
+          onPress: importExerciseDataStore,
+        },
       ],
       { cancelable: true },
     );
@@ -133,7 +155,7 @@ const Impex = () => {
     <View style={styles.btnPanel}>
       <View style={styles.confirmBtn}>
         <Button
-          title="Clear sessions"
+          title={t("action.clearSessions")}
           color="red"
           onPress={tryToClearSessions}
         />
@@ -141,7 +163,7 @@ const Impex = () => {
 
       <View style={styles.confirmBtn}>
         <Button
-          title="Export sessions"
+          title={t("action.exportSessions")}
           color="orange"
           onPress={exportSessions}
         />
@@ -149,7 +171,7 @@ const Impex = () => {
 
       <View style={styles.confirmBtn}>
         <Button
-          title="Import sessions"
+          title={t("action.importSessions")}
           color="green"
           onPress={tryToImportSessions}
         />
@@ -159,7 +181,7 @@ const Impex = () => {
 
       <View style={{ ...styles.confirmBtn, marginTop: 40 }}>
         <Button
-          title="Clear templates"
+          title={t("action.clearTemplates")}
           color="red"
           onPress={tryToClearTemplates}
         />
@@ -167,7 +189,7 @@ const Impex = () => {
 
       <View style={styles.confirmBtn}>
         <Button
-          title="Export templates"
+          title={t("action.exportTemplates")}
           color="orange"
           onPress={exportTemplates}
         />
@@ -175,7 +197,7 @@ const Impex = () => {
 
       <View style={styles.confirmBtn}>
         <Button
-          title="Import templates"
+          title={t("action.importTemplates")}
           color="green"
           onPress={tryToImportTemplates}
         />
@@ -185,7 +207,7 @@ const Impex = () => {
 
       <View style={{ ...styles.confirmBtn, marginTop: 40 }}>
         <Button
-          title="Clear exercise data"
+          title={t("action.clearExerciseData")}
           color="red"
           onPress={tryToClearExerciseData}
         />
@@ -193,7 +215,7 @@ const Impex = () => {
 
       <View style={styles.confirmBtn}>
         <Button
-          title="Export exercise data"
+          title={t("action.exportExerciseData")}
           color="orange"
           onPress={exportExerciseData}
         />
@@ -201,7 +223,7 @@ const Impex = () => {
 
       <View style={styles.confirmBtn}>
         <Button
-          title="Import exercise data"
+          title={t("action.importExerciseData")}
           color="green"
           onPress={tryToImportExerciseData}
         />

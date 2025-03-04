@@ -2,6 +2,7 @@ import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
 import { WritingOptions, ReadingOptions } from "expo-file-system";
 import * as Sharing from "expo-sharing";
+import { t } from "i18next";
 
 const options = { encoding: FileSystem.EncodingType.UTF8 } as
   | WritingOptions
@@ -83,9 +84,7 @@ export const importStoreAsync = async (key: string) => {
     const hasRequiredData = importedState?.[targetStateKey];
 
     if (!hasRequiredData) {
-      alert(
-        "The imported file doesn't contain the required data! Make sure you're importing the correct file!",
-      );
+      alert(t("alert.importNotValid"));
       return;
     }
 

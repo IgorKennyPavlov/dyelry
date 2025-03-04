@@ -1,4 +1,5 @@
 import type { SessionProps, ExerciseProps } from "./types";
+import { t } from "i18next";
 
 type Interval = [Date | undefined, Date | undefined];
 
@@ -43,10 +44,16 @@ export const getSessionTitle = (
   targetSession?: SessionProps,
   isTemplate?: boolean,
 ) => {
-  let res = `${isTemplate ? "(T)" : ""}Session`;
+  let res: string;
+
+  if (isTemplate) {
+    res = targetSession ? t("header.template") : t("header.newTemplate");
+  } else {
+    res = targetSession ? t("header.session") : t("header.newSession");
+  }
 
   if (!targetSession) {
-    return "New " + res;
+    return res;
   }
 
   const [start] = getSessionInterval(targetSession);

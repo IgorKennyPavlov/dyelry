@@ -6,7 +6,6 @@ export const listItemCommonStyles = StyleSheet.create({
     flexDirection: "row",
     height: 40,
     paddingHorizontal: 12,
-    justifyContent: "space-between",
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",

@@ -15,8 +15,10 @@ import type {
 } from "../../global/types";
 import { useSessionsStore, useExerciseDataStore } from "../../store";
 import { SESSIONS, EXERCISE_DATA } from "../../store/keys";
+import { useTranslation } from "react-i18next";
 
 const Stats = () => {
+  const { t } = useTranslation();
   const { [SESSIONS]: sessions } = useSessionsStore();
   const { [EXERCISE_DATA]: describedExercises } = useExerciseDataStore();
 
@@ -97,7 +99,7 @@ const Stats = () => {
       .flat();
 
     return Array.from(MusclesReadable.entries())
-      .map(([title, readableTitle]) => {
+      .map(([title, translationKey]) => {
         const lastWeekMuscleData = describedLastWeek.filter(
           ({ muscle }) => title === +muscle,
         );
@@ -111,22 +113,28 @@ const Stats = () => {
           [0, 0],
         );
         return {
-          title: readableTitle,
+          title: t(translationKey),
           sets,
           weight: [left, right],
         };
       })
       .filter((muscle) => muscle.sets);
-  }, [describedExercises, lastWeekExercises]);
+  }, [t, describedExercises, lastWeekExercises]);
 
   return (
     <View style={styles.statsWrap}>
       {showStats ? (
         <View>
           <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "50%" }}>Title</Text>
-            <Text style={{ width: "25%" }}>Sets / Week</Text>
-            <Text style={{ width: "25%" }}>Kg / Week</Text>
+            <Text style={{ width: "50%" }}>
+              {t("list.stats.title").toUpperCase()}
+            </Text>
+            <Text style={{ width: "25%" }}>
+              {t("list.stats.setsPerWeek").toUpperCase()}
+            </Text>
+            <Text style={{ width: "25%" }}>
+              {t("list.stats.kgPerWeek").toUpperCase()}
+            </Text>
           </View>
           <FlatList
             data={getStatItems()}
@@ -135,11 +143,8 @@ const Stats = () => {
         </View>
       ) : (
         <View style={styles.emptyStats}>
-          <Text>No stats available.</Text>
-          <Text>
-            Record some training sessions and describe the exercises with
-            exercise constructor.
-          </Text>
+          <Text>{t("list.stats.empty.title")}</Text>
+          <Text>{t("list.stats.empty.text")}</Text>
         </View>
       )}
     </View>
@@ -148,7 +153,12 @@ const Stats = () => {
 
 const styles = StyleSheet.create({
   statsWrap: { flex: 1, marginBottom: 40 },
-  emptyStats: { height: 200, justifyContent: "center", alignItems: "center" },
+  emptyStats: {
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 12,
+  },
 });
 
 export default Stats;

@@ -16,8 +16,10 @@ import { Text, Button, View, StyleSheet, Alert } from "react-native";
 import { getIntervalSeconds } from "../../../../../../../global";
 import { useSessionsStore, useHideTabBar } from "../../../../../../../store";
 import { SESSIONS } from "../../../../../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 const Timer = () => {
+  const { t } = useTranslation();
   useHideTabBar();
 
   const params = useLocalSearchParams<{
@@ -89,18 +91,22 @@ const Timer = () => {
 
   const finishExerciseSet = useCallback(() => {
     Alert.alert(
-      "Finishing set",
-      "Are you sure?",
+      t("alert.finishingSet.title"),
+      t("areYouSure"),
       [
-        { text: "Cancel", style: "cancel" },
-        { text: "Confirm", style: "default", onPress: endExerciseSet },
+        { text: t("action.cancel"), style: "cancel" },
+        {
+          text: t("action.confirm"),
+          style: "default",
+          onPress: endExerciseSet,
+        },
       ],
       { cancelable: true },
     );
   }, [endExerciseSet]);
 
   const title = useMemo(
-    () => `Activity timer (${targetExercise?.title})`,
+    () => `${t("header.activityTimer")} (${targetExercise?.title})`,
     [targetExercise?.title],
   );
 
@@ -114,7 +120,7 @@ const Timer = () => {
 
       <View style={styles.btn}>
         <Button
-          title={start ? "stop" : "start"}
+          title={start ? t("action.stop") : t("action.start")}
           color={start ? "orange" : "green"}
           onPress={start ? finishExerciseSet : startExerciseSet}
         />

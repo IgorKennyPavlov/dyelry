@@ -12,13 +12,21 @@ import {
   FieldPath,
   FieldArrayPath,
 } from "react-hook-form";
-import { Button, View, StyleSheet, Pressable, ScrollView } from "react-native";
+import {
+  Button,
+  View,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  Text,
+} from "react-native";
 
 import { Input, Select } from "../../../components";
 import { useKeyboard, Muscles, MusclesReadable } from "../../../global";
 import type { ExerciseDataProps } from "../../../global/types";
 import { useExerciseDataStore } from "../../../store";
 import { EXERCISE_DATA } from "../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 interface ExerciseDataForm {
   unilateral?: boolean;
@@ -27,6 +35,7 @@ interface ExerciseDataForm {
 }
 
 const ExerciseDataEditor = () => {
+  const { t } = useTranslation();
   const { isKeyboardVisible } = useKeyboard();
   const {
     [EXERCISE_DATA]: exercises,
@@ -85,12 +94,12 @@ const ExerciseDataEditor = () => {
       loadingDistribution.some((item) => Number(item.value) > 100) ||
       Number(loadingDistribution) > 100
     ) {
-      alert("Percent value can't be more than 100");
+      alert(t("alert.100PercentOverflow"));
       return;
     }
     const uniqueMuscles = new Set(loadingDistribution.map((item) => item.key));
     if (uniqueMuscles.size < loadingDistribution.length) {
-      alert("Remove duplicates!");
+      alert(t("alert.removeDuplicates"));
       return;
     }
 
@@ -122,15 +131,15 @@ const ExerciseDataEditor = () => {
   }, [deleteExerciseData, exerciseTitle]);
 
   const title = useMemo(() => {
-    return `${isEditing ? "Edit" : "Add"} exercise data (${exerciseTitle})`;
-  }, [isEditing, exerciseTitle]);
+    return `${(isEditing ? t("action.edit") : t("action.add")).toUpperCase()} (${exerciseTitle})`;
+  }, [t, isEditing, exerciseTitle]);
 
   const muscleOptions = useMemo(
     () =>
-      Array.from(MusclesReadable.entries()).map(([value, label]) => {
-        return { label, value: String(value) };
+      Array.from(MusclesReadable.entries()).map(([value, translationKey]) => {
+        return { label: t(translationKey), value: String(value) };
       }),
-    [],
+    [t],
   );
 
   return (
@@ -144,13 +153,14 @@ const ExerciseDataEditor = () => {
           ...(isKeyboardVisible ? { marginBottom: 0 } : {}),
         }}
       >
+        {/* TODO refactor to checkbox, why did you do this? =) */}
         <Select
-          label="Unilateral"
+          label={t("label.unilateral")}
           control={control}
           name="unilateral"
           options={[
-            { label: "No", value: false },
-            { label: "Yes", value: true },
+            { label: t("no"), value: false },
+            { label: t("yes"), value: true },
           ]}
         />
 
@@ -158,9 +168,22 @@ const ExerciseDataEditor = () => {
           style={styles.field}
           control={control}
           name="bodyWeightRate"
-          label="Used body weight rate (%, for bodyweight exercises)"
+          label={t("label.bodyWeightRate")}
           inputMode="numeric"
         />
+
+        {!!fields.length && (
+          <View
+            style={{ marginTop: 20, marginBottom: 12, flexDirection: "row" }}
+          >
+            <Text style={{ width: "40%" }}>
+              {t("label.muscleGroup").toUpperCase()}
+            </Text>
+            <Text style={{ width: "35%" }}>
+              {`${t("label.loadFraction").toUpperCase()} (%)`}
+            </Text>
+          </View>
+        )}
 
         {fields.map((item, index) => {
           const { name: muscleName } = register(
@@ -182,7 +205,7 @@ const ExerciseDataEditor = () => {
 
               <Input
                 style={{ width: "35%" }}
-                label="Load fraction (%)"
+                label=" "
                 control={control}
                 name={loadName}
                 inputMode="numeric"
@@ -197,7 +220,7 @@ const ExerciseDataEditor = () => {
 
         <View style={{ marginTop: 12 }}>
           <Button
-            title="Add muscle group"
+            title={`${t("action.addMuscleGroup")}`}
             onPress={() => append({ key: Muscles.Pecs, value: "0" })}
           />
         </View>
@@ -207,11 +230,15 @@ const ExerciseDataEditor = () => {
         <>
           {targetExerciseData && (
             <View style={{ ...styles.btn, bottom: 40 }}>
-              <Button title="Delete" onPress={removeExerciseData} color="red" />
+              <Button
+                title={t("action.delete")}
+                onPress={removeExerciseData}
+                color="red"
+              />
             </View>
           )}
           <View style={styles.btn}>
-            <Button title="Save" onPress={saveExerciseData} />
+            <Button title={t("action.save")} onPress={saveExerciseData} />
           </View>
         </>
       )}

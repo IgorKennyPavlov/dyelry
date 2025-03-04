@@ -7,11 +7,11 @@ export const enum Feels {
 }
 
 export const FeelsReadable = new Map<Feels, string>([
-  [Feels.LikeNothing, "Like nothing"],
-  [Feels.Easy, "Easy"],
-  [Feels.Ok, "Ok"],
-  [Feels.Hard, "Hard"],
-  [Feels.Failed, "Failed"],
+  [Feels.LikeNothing, "enums.feels.likeNothing"],
+  [Feels.Easy, "enums.feels.easy"],
+  [Feels.Ok, "enums.feels.ok"],
+  [Feels.Hard, "enums.feels.hard"],
+  [Feels.Failed, "enums.feels.failed"],
 ]);
 
 export const FeelsColors = new Map<Feels, string>([
@@ -45,25 +45,25 @@ export const enum Muscles {
 }
 
 export const MusclesReadable = new Map<Muscles, string>([
-  [Muscles.Pecs, "Pecs"],
-  [Muscles.FrontDelts, "Front Delts"],
-  [Muscles.SideDelts, "Side Delts"],
-  [Muscles.RearDelts, "Rear Delts"],
-  [Muscles.Bis, "Bis"],
-  [Muscles.Tris, "Tris"],
-  [Muscles.Forearms, "Forearms"],
-  [Muscles.Abs, "Abs"],
-  [Muscles.Obliques, "Obliques"],
-  [Muscles.UpperTraps, "Upper Traps"],
-  [Muscles.LowerTraps, "Lower Traps"],
-  [Muscles.Lats, "Lats"],
-  [Muscles.Erectors, "Spine Erectors"],
-  [Muscles.Quads, "Quads"],
-  [Muscles.Hams, "Hams"],
-  [Muscles.Glutes, "Glutes"],
-  [Muscles.Abductors, "Hip Abductors"],
-  [Muscles.Adductors, "Hip Adductors"],
-  [Muscles.Calves, "Calves"],
+  [Muscles.Pecs, "enums.muscles.pecs"],
+  [Muscles.FrontDelts, "enums.muscles.frontDelts"],
+  [Muscles.SideDelts, "enums.muscles.sideDelts"],
+  [Muscles.RearDelts, "enums.muscles.rearDelts"],
+  [Muscles.Bis, "enums.muscles.bis"],
+  [Muscles.Tris, "enums.muscles.tris"],
+  [Muscles.Forearms, "enums.muscles.forearms"],
+  [Muscles.Abs, "enums.muscles.abs"],
+  [Muscles.Obliques, "enums.muscles.obliques"],
+  [Muscles.UpperTraps, "enums.muscles.upperTraps"],
+  [Muscles.LowerTraps, "enums.muscles.lowerTraps"],
+  [Muscles.Lats, "enums.muscles.lats"],
+  [Muscles.Erectors, "enums.muscles.erectors"],
+  [Muscles.Quads, "enums.muscles.quads"],
+  [Muscles.Hams, "enums.muscles.hams"],
+  [Muscles.Glutes, "enums.muscles.glutes"],
+  [Muscles.Abductors, "enums.muscles.abductors"],
+  [Muscles.Adductors, "enums.muscles.adductors"],
+  [Muscles.Calves, "enums.muscles.calves"],
 ]);
 
 export const enum Sides {
@@ -72,6 +72,6 @@ export const enum Sides {
 }
 
 export const SidesReadable = new Map<Sides, string>([
-  [Sides.Left, "Left"],
-  [Sides.Right, "Right"],
+  [Sides.Left, "enums.sides.left"],
+  [Sides.Right, "enums.sides.right"],
 ]);

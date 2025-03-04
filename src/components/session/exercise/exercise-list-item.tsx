@@ -10,6 +10,7 @@ import {
 } from "../../../global";
 import type { ExerciseProps } from "../../../global/types";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 type ExerciseListItemProps = ListRenderItemInfo<ExerciseProps> & {
   sessionID: string;
@@ -18,6 +19,7 @@ type ExerciseListItemProps = ListRenderItemInfo<ExerciseProps> & {
 
 export const ExerciseListItem = (props: ExerciseListItemProps) => {
   const { item: targetExercise, sessionID, isTemplate } = props;
+  const { t } = useTranslation();
 
   const duration = useMemo(() => {
     if (!targetExercise) return 0;
@@ -67,7 +69,7 @@ export const ExerciseListItem = (props: ExerciseListItemProps) => {
       <Text style={{ width: "40%" }} numberOfLines={2}>
         {targetExercise.title}
       </Text>
-      <Text style={{ width: "30%" }}>{`~${duration} min`}</Text>
+      <Text style={{ width: "30%" }}>{`~${duration} ${t("min")}`}</Text>
       <Text style={{ width: "20%" }}>{kgPerMin}</Text>
 
       <Pressable style={{ width: "10%" }} onPress={editExercise}>

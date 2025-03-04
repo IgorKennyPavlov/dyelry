@@ -14,6 +14,7 @@ import { useKeyboard, getSessionTitle } from "../../global";
 import type { SessionProps } from "../../global/types";
 import { useSessionsStore, useTemplatesStore } from "../../store";
 import { TEMPLATES, SESSIONS } from "../../store/keys";
+import { useTranslation } from "react-i18next";
 
 interface SessionEditForm {
   title: string;
@@ -27,6 +28,7 @@ interface SessionEditorProps {
 const REPLACER = ["id", "title", "exercises", "sets", "weight", "reps", "side"];
 
 export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
+  const { t } = useTranslation();
   const { isKeyboardVisible } = useKeyboard();
 
   const { sessionID } = useLocalSearchParams<{
@@ -52,7 +54,7 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
 
   const title = useMemo(
     () => getSessionTitle(targetSession, isTemplate),
-    [targetSession],
+    [t, targetSession],
   );
   const { getValues, control, reset } = useForm<SessionEditForm>();
 
@@ -90,12 +92,12 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
     if (!sessionID) return;
 
     Alert.alert(
-      "Deleting session",
-      "Are you sure?",
+      t("alert.deleteSession.title"),
+      t("areYouSure"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("action.cancel"), style: "cancel" },
         {
-          text: "Confirm",
+          text: t("action.confirm"),
           style: "default",
           onPress: () => {
             router.dismissTo(isTemplate ? "template" : "session");
@@ -116,7 +118,10 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
       (key: string, value: unknown) => (key === "id" ? uuid.v4() : value),
     );
 
-    addTemplateSession({ ...sessionCopy, title: sessionCopy.title + "(copy)" });
+    addTemplateSession({
+      ...sessionCopy,
+      title: sessionCopy.title + `(${t("copy")})`,
+    });
     router.replace("template");
   }, [addSession, targetSession]);
 
@@ -125,8 +130,18 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
       <Tabs.Screen options={{ title }} />
 
       <View style={styles.formWrap}>
-        <Input style={styles.field} control={control} name="title" />
-        <Input style={styles.field} control={control} name="comment" />
+        <Input
+          style={styles.field}
+          control={control}
+          label={t("label.title")}
+          name="title"
+        />
+        <Input
+          style={styles.field}
+          control={control}
+          label={t("label.comment")}
+          name="comment"
+        />
       </View>
 
       {!isKeyboardVisible && (
@@ -134,7 +149,7 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
           {sessionID && (
             <View style={{ ...styles.btn, bottom: 40 }}>
               <Button
-                title="Delete session"
+                title={t("action.deleteSession")}
                 color="red"
                 onPress={confirmDelete}
               />
@@ -144,13 +159,17 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
           <>
             <View style={{ ...styles.btnCompact, ...styles.btnLeft }}>
               <Button
-                title={`${targetSession ? "Update" : "Add"} session`}
+                title={
+                  targetSession
+                    ? t("action.updateSession")
+                    : t("action.addSession")
+                }
                 onPress={saveSession}
               />
             </View>
             <View style={{ ...styles.btnCompact, ...styles.btnRight }}>
               <Button
-                title="Copy to templates"
+                title={t("action.copyToTemplates")}
                 color="orange"
                 disabled={!targetSession}
                 onPress={copySession}

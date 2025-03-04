@@ -37,6 +37,7 @@ import {
   useTemplatesStore,
 } from "../../../../store";
 import { EXERCISE_DATA, TEMPLATES, SESSIONS } from "../../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 interface SetEditForm {
   weight: string;
@@ -51,6 +52,7 @@ interface SetEditorProps {
 }
 
 export const SetEditor = ({ isTemplate }: SetEditorProps) => {
+  const { t } = useTranslation();
   const { isKeyboardVisible } = useKeyboard();
 
   const { [EXERCISE_DATA]: exerciseData } = useExerciseDataStore();
@@ -116,12 +118,12 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
 
     // TODO replace with proper validation
     if (weight.trim() === "" || reps.trim() === "") {
-      alert("Fill the required fields!");
+      alert(t("alert.fillRequired"));
       return;
     }
 
     if (isUnilateral && !side) {
-      alert("The exercise is unilateral! Select the trained side!");
+      alert(t("alert.selectSideForUnilateral"));
       return;
     }
 
@@ -141,18 +143,18 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
       pathname: `/${isTemplate ? "template" : "session"}/[sessionID]/exercise/[exerciseID]`,
       params: { sessionID, exerciseID },
     });
-  }, [getValues, editSet, sessionID, exerciseID, setID, targetSet]);
+  }, [t, getValues, editSet, sessionID, exerciseID, setID, targetSet]);
 
   const confirmDelete = useCallback(() => {
     if (!sessionID || !exerciseID || !setID) return;
 
     Alert.alert(
-      "Deleting set",
-      "Are you sure?",
+      t("alert.deleteSet.title"),
+      t("areYouSure"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("action.cancel"), style: "cancel" },
         {
-          text: "Confirm",
+          text: t("action.confirm"),
           style: "default",
           onPress: () => {
             deleteSet(sessionID, exerciseID, setID);
@@ -165,24 +167,28 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
       ],
       { cancelable: true },
     );
-  }, [deleteSet, exerciseID, sessionID, setID]);
+  }, [t, deleteSet, exerciseID, sessionID, setID]);
 
   const title = useMemo(() => {
-    let res = isEditing ? "Edit set" : "Input set params";
+    let res = isEditing ? t("header.editSet") : t("header.inputSetParams");
 
     if (targetExercise?.title) {
       res += ` (${targetExercise.title})`;
     }
 
     return res;
-  }, [isEditing, targetExercise?.title]);
+  }, [t, isEditing, targetExercise?.title]);
 
   const feelingOptions = useMemo(
     () =>
-      Array.from(FeelsReadable.entries()).map(([value, label]) => {
-        return { label, value, style: { color: FeelsColors.get(value) } };
+      Array.from(FeelsReadable.entries()).map(([value, translationKey]) => {
+        return {
+          label: t(translationKey),
+          value,
+          style: { color: FeelsColors.get(value) },
+        };
       }),
-    [],
+    [t],
   );
 
   const isUnilateral = useMemo(
@@ -192,10 +198,10 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
 
   const sideOptions = useMemo(
     () =>
-      Array.from(SidesReadable.entries()).map(([value, label]) => {
-        return { label, value: String(value) };
+      Array.from(SidesReadable.entries()).map(([value, translationKey]) => {
+        return { label: t(translationKey), value: String(value) };
       }),
-    [],
+    [t],
   );
 
   return (
@@ -207,9 +213,10 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
           <Select
             style={styles.field}
             control={control}
+            label={t("label.side")}
             name="side"
             options={[
-              { label: "Select side", value: undefined },
+              { label: t("label.selectSide"), value: undefined },
               ...sideOptions,
             ]}
             required
@@ -219,6 +226,7 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
         <Input
           style={styles.field}
           control={control}
+          label={t("label.weight")}
           name="weight"
           inputMode="numeric"
           required
@@ -226,6 +234,7 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
         <Input
           style={styles.field}
           control={control}
+          label={t("label.reps")}
           name="reps"
           inputMode="numeric"
           required
@@ -233,32 +242,38 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
         <Select
           style={styles.field}
           control={control}
+          label={t("label.feels")}
           name="feels"
           options={feelingOptions}
         />
         <Input
           style={styles.field}
           control={control}
+          label={t("label.comment")}
           name="comment"
           multiline
         />
 
         {!isEditing && (
-          <>
-            <Text>Rest timer:</Text>
+          <View style={styles.timerWrap}>
+            <Text>{t("label.restTimer").toUpperCase()}:</Text>
             <Text style={styles.timer}>{String(timer)}</Text>
-          </>
+          </View>
         )}
       </ScrollView>
 
       {!isKeyboardVisible && (
         <>
-          <View style={{ ...styles.btn, bottom: 40 }}>
-            <Button title="Delete set" color="red" onPress={confirmDelete} />
+          <View style={{ ...styles.btn, bottom: 36 }}>
+            <Button
+              title={t("action.deleteSet")}
+              color="red"
+              onPress={confirmDelete}
+            />
           </View>
 
           <View style={styles.btn}>
-            <Button title="Save set" onPress={editSetParams} />
+            <Button title={t("action.saveSet")} onPress={editSetParams} />
           </View>
         </>
       )}
@@ -267,8 +282,9 @@ export const SetEditor = ({ isTemplate }: SetEditorProps) => {
 };
 
 const styles = StyleSheet.create({
-  formWrap: { flex: 1 },
+  formWrap: { flex: 1, marginBottom: 70 },
   field: { marginTop: 20 },
+  timerWrap: { marginTop: 20 },
   timer: { fontSize: 44, color: "green" },
   btn: { position: "absolute", bottom: 0, width: "100%" },
 });

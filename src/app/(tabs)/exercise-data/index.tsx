@@ -10,8 +10,10 @@ import {
 import { ExerciseDataListItem } from "../../../components";
 import { useAllSessionData } from "../../../global/hooks/useAllSessionData";
 import { listItemCommonStyles } from "../../../global";
+import { useTranslation } from "react-i18next";
 
 const ExerciseData = () => {
+  const { t } = useTranslation();
   const allSessions = useAllSessionData();
 
   const uniqueExerciseTitles = useMemo(() => {
@@ -27,8 +29,12 @@ const ExerciseData = () => {
       {uniqueExerciseTitles?.length ? (
         <View style={styles.list}>
           <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "80%" }}>Title</Text>
-            <Text style={{ width: "20%" }}>Data</Text>
+            <Text style={{ width: "75%" }}>
+              {t("list.exerciseData.title").toUpperCase()}
+            </Text>
+            <Text style={{ width: "25%", textAlign: "right" }}>
+              {t("list.exerciseData.description").toUpperCase()}
+            </Text>
           </View>
 
           <FlatList

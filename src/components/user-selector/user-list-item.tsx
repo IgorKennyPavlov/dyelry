@@ -5,8 +5,10 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useUsersStore, clearUserStoredData } from "../../store";
 import { useCallback } from "react";
 import type { GestureResponderEvent } from "react-native/Libraries/Types/CoreEventTypes";
+import { useTranslation } from "react-i18next";
 
 export const UserListItem = (props: ListRenderItemInfo<string>) => {
+  const { t } = useTranslation();
   const username = props.item;
 
   const { selectUser, deleteUser } = useUsersStore();
@@ -16,12 +18,12 @@ export const UserListItem = (props: ListRenderItemInfo<string>) => {
       event.stopPropagation();
 
       Alert.alert(
-        `Deleting user ${username}`,
-        `All the training data of this user will also be permanently removed. Make sure you've exported all the necessary data.\n\nDo you really want to continue?`,
+        t("alert.confirmDeleteUser.title", { username }),
+        t("alert.confirmDeleteUser.text"),
         [
-          { text: "Cancel", style: "cancel" },
+          { text: t("action.cancel"), style: "cancel" },
           {
-            text: "Confirm",
+            text: t("action.confirm"),
             style: "default",
             onPress: async () => {
               await clearUserStoredData(username);

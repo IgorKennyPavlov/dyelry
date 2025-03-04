@@ -1,19 +1,13 @@
 import { Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useTabBarStore, useUsersStore } from "../../store";
-import { useMemo } from "react";
-import { Text } from "react-native";
-import { USERS } from "../../store/keys";
+import { useTabBarStore } from "../../store";
+import { HeaderMenu } from "../../components";
+import { useTranslation } from "react-i18next";
 
 const AppTabs = () => {
+  const { t } = useTranslation();
   const { isTabBarVisible } = useTabBarStore();
-  const { [USERS]: users, signOut } = useUsersStore();
-
-  const activeUser = useMemo(
-    () => Object.keys(users).find((key) => users[key]),
-    [users],
-  );
 
   return (
     <Tabs
@@ -22,17 +16,7 @@ const AppTabs = () => {
         headerTintColor: "#fff",
         tabBarHideOnKeyboard: true,
         tabBarStyle: { display: isTabBarVisible ? "flex" : "none" },
-        headerRight: () => (
-          <>
-            <Text style={{ marginRight: 12, color: "#fff" }}>{activeUser}</Text>
-            <Ionicons
-              name="exit-outline"
-              color="#fff"
-              size={32}
-              onPress={signOut}
-            />
-          </>
-        ),
+        headerRight: () => <HeaderMenu />,
         headerRightContainerStyle: { paddingHorizontal: 12 },
       }}
     >
@@ -41,7 +25,7 @@ const AppTabs = () => {
       <Tabs.Screen
         name="session"
         options={{
-          title: "Session List",
+          title: t("header.sessionList"),
           tabBarIcon: ({ focused }) => (
             <Ionicons
               name="list-outline"
@@ -55,7 +39,7 @@ const AppTabs = () => {
       <Tabs.Screen
         name="template"
         options={{
-          title: "Templates",
+          title: t("header.templates"),
           tabBarIcon: ({ focused }) => (
             <MaterialIcons
               name="schema"
@@ -69,7 +53,7 @@ const AppTabs = () => {
       <Tabs.Screen
         name="exercise-data"
         options={{
-          title: "Exercise Data",
+          title: t("header.exerciseData"),
           tabBarIcon: ({ focused }) => (
             <MaterialIcons
               name="construction"
@@ -83,7 +67,7 @@ const AppTabs = () => {
       <Tabs.Screen
         name="stats"
         options={{
-          title: "Stats",
+          title: t("header.stats"),
           tabBarIcon: ({ focused }) => (
             <Ionicons
               name="stats-chart"
@@ -97,7 +81,7 @@ const AppTabs = () => {
       <Tabs.Screen
         name="impex"
         options={{
-          title: "ImpEx",
+          title: t("header.impex"),
           tabBarIcon: ({ focused }) => (
             <MaterialIcons
               name="import-export"

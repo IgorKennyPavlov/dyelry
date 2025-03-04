@@ -12,6 +12,7 @@ import type { SessionProps } from "../../global/types";
 import { router } from "expo-router";
 import { uuid } from "expo-modules-core";
 import { useSessionsStore } from "../../store";
+import { useTranslation } from "react-i18next";
 
 type SessionListItemProps = ListRenderItemInfo<SessionProps> & {
   isTemplate?: boolean;
@@ -22,6 +23,7 @@ const REPLACER = ["id", "title", "exercises", "sets", "weight", "reps", "side"];
 export const SessionListItem = (props: SessionListItemProps) => {
   const { item: targetSession, isTemplate } = props;
   const basePart = isTemplate ? "template" : "session";
+  const { t } = useTranslation();
 
   const { addSession } = useSessionsStore();
 
@@ -85,7 +87,7 @@ export const SessionListItem = (props: SessionListItemProps) => {
 
       {!isTemplate && (
         <Text style={{ width: "20%" }}>
-          {targetSessionInterval[1] ? `~${duration} min` : "--"}
+          {targetSessionInterval[1] ? `~${duration} ${t("min")}` : "--"}
         </Text>
       )}
 

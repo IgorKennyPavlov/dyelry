@@ -15,6 +15,7 @@ import { useSessionsStore, useTemplatesStore } from "../../../store";
 import { uuid } from "expo-modules-core";
 import { SetListItem } from "./set";
 import { TEMPLATES, SESSIONS } from "../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 interface ExerciseViewProps {
   isTemplate?: boolean;
@@ -26,6 +27,7 @@ export const Exercise = ({ isTemplate }: ExerciseViewProps) => {
     exerciseID: string;
   }>();
   const { sessionID, exerciseID } = params;
+  const { t } = useTranslation();
 
   const storeKey = isTemplate ? TEMPLATES : SESSIONS;
   const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
@@ -74,18 +76,28 @@ export const Exercise = ({ isTemplate }: ExerciseViewProps) => {
       <Stack.Screen
         options={{
           headerShown: true,
-          title: (isTemplate ? "(T)" : "") + targetExercise?.title,
+          title: (isTemplate ? "*" : "") + targetExercise?.title,
         }}
       />
 
       {targetExercise?.sets?.length ? (
         <View style={{ paddingBottom: listOffset }}>
           <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "15%" }}>Weight</Text>
-            <Text style={{ width: "15%" }}>Reps</Text>
-            <Text style={{ width: "20%" }}>Duration</Text>
-            <Text style={{ width: "30%" }}>Feels</Text>
-            <Text style={{ width: "20%" }}>Rest</Text>
+            <Text style={{ width: "15%" }}>
+              {t("list.set.weight").toUpperCase()}
+            </Text>
+            <Text style={{ width: "15%" }}>
+              {t("list.set.reps").toUpperCase()}
+            </Text>
+            <Text style={{ width: "20%" }}>
+              {t("list.set.duration").toUpperCase()}
+            </Text>
+            <Text style={{ width: "30%" }}>
+              {t("list.set.feels").toUpperCase()}
+            </Text>
+            <Text style={{ width: "20%" }}>
+              {t("list.set.rest").toUpperCase()}
+            </Text>
           </View>
 
           <FlatList
@@ -102,13 +114,17 @@ export const Exercise = ({ isTemplate }: ExerciseViewProps) => {
         </View>
       ) : (
         <View style={styles.emptyList}>
-          <Text>No sets recorded</Text>
+          <Text>{t("list.set.empty.title")}</Text>
         </View>
       )}
 
       {showAddBtn && (
         <View style={styles.btn}>
-          <Button title="Add set" color="green" onPress={createSet} />
+          <Button
+            title={t("action.addSet")}
+            color="green"
+            onPress={createSet}
+          />
         </View>
       )}
     </>

@@ -15,6 +15,7 @@ import {
 import type { SetProps } from "../../../../global/types";
 import { useSessionsStore, useTemplatesStore } from "../../../../store";
 import { TEMPLATES, SESSIONS } from "../../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 type SetListItemProps = ListRenderItemInfo<SetProps> & {
   sessionID: string;
@@ -24,6 +25,7 @@ type SetListItemProps = ListRenderItemInfo<SetProps> & {
 
 export const SetListItem = (props: SetListItemProps) => {
   const { item: targetSet, sessionID, exerciseID, isTemplate } = props;
+  const { t } = useTranslation();
 
   const storeKey = isTemplate ? TEMPLATES : SESSIONS;
   const useStore = isTemplate ? useTemplatesStore : useSessionsStore;
@@ -145,7 +147,7 @@ export const SetListItem = (props: SetListItemProps) => {
           color: FeelsColors.get(targetSet.feels as Feels),
         }}
       >
-        {FeelsReadable.get(targetSet.feels as Feels)}
+        {t(FeelsReadable.get(targetSet.feels as Feels))}
       </Text>
 
       <Text

@@ -9,6 +9,7 @@ import { Input } from "../../forms";
 import { uuid } from "expo-modules-core";
 import { useAllSessionData } from "../../../global/hooks/useAllSessionData";
 import { TEMPLATES, SESSIONS } from "../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 interface ExerciseEditForm {
   title: string;
@@ -20,6 +21,7 @@ interface ExerciseEditorProps {
 }
 
 export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
+  const { t } = useTranslation();
   const { isKeyboardVisible } = useKeyboard();
 
   const params = useLocalSearchParams<{
@@ -64,7 +66,7 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
 
     // TODO replace with proper validation
     if (title.trim() === "") {
-      alert("Fill the title field!");
+      alert(t("alert.fillRequired"));
       return;
     }
 
@@ -94,12 +96,12 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
     if (!sessionID || !exerciseID) return;
 
     Alert.alert(
-      "Deleting exercise",
-      "Are you sure?",
+      t("alert.deleteExercise.title"),
+      t("areYouSure"),
       [
-        { text: "Cancel", style: "cancel" },
+        { text: t("action.cancel"), style: "cancel" },
         {
-          text: "Confirm",
+          text: t("action.confirm"),
           style: "default",
           onPress: () => {
             deleteExercise(sessionID, exerciseID);
@@ -112,17 +114,19 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
       ],
       { cancelable: true },
     );
-  }, [deleteExercise, exerciseID, sessionID]);
+  }, [t, deleteExercise, exerciseID, sessionID]);
 
   const title = useMemo(() => {
-    let res = exerciseID ? "Edit exercise" : "Create exercise";
+    let res = exerciseID
+      ? t("header.editExercise")
+      : t("header.createExercise");
 
     if (targetExercise?.title) {
       res += ` (${targetExercise.title})`;
     }
 
-    return (isTemplate ? "(T)" : "") + res;
-  }, [exerciseID, targetExercise?.title]);
+    return (isTemplate ? "*" : "") + res;
+  }, [t, exerciseID, targetExercise?.title]);
 
   const uniqueExerciseTitles = useMemo(() => {
     const exerciseTitles = allSessions
@@ -139,11 +143,17 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
         <Input
           style={styles.field}
           control={control}
+          label={t("label.title")}
           name="title"
           autocomplete={uniqueExerciseTitles}
           required
         />
-        <Input style={styles.field} control={control} name="comment" />
+        <Input
+          style={styles.field}
+          control={control}
+          label={t("label.comment")}
+          name="comment"
+        />
       </View>
 
       {!isKeyboardVisible && (
@@ -151,7 +161,7 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
           {targetExercise && (
             <View style={{ ...styles.btn, bottom: 40 }}>
               <Button
-                title="Delete exercise"
+                title={t("action.deleteExercise")}
                 color="red"
                 onPress={confirmDelete}
               />
@@ -160,7 +170,11 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
 
           <View style={styles.btn}>
             <Button
-              title={`${targetExercise ? "Update" : "Add"} exercise`}
+              title={
+                targetExercise
+                  ? t("action.updateExercise")
+                  : t("action.addExercise")
+              }
               onPress={saveExercise}
             />
           </View>

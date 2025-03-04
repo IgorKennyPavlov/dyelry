@@ -27,10 +27,10 @@ export const ExerciseDataListItem = (props: ListRenderItemInfo<string>) => {
 
   return (
     <Pressable style={styles.plaque} onPress={editExerciseData}>
-      <Text style={{ width: "80%" }} numberOfLines={2}>
+      <Text style={{ width: "75%" }} numberOfLines={2}>
         {title}
       </Text>
-      <View style={{ width: "20%" }}>
+      <View style={{ width: "25%", alignItems: "flex-end" }}>
         {exercises[title] ? (
           <AntDesign name="checksquareo" size={24} />
         ) : (

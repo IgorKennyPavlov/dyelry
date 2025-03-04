@@ -20,10 +20,12 @@ import { useTemplatesStore } from "../../../store";
 import type { SessionProps } from "../../../global/types";
 import { router } from "expo-router";
 import { TEMPLATES } from "../../../store/keys";
+import { useTranslation } from "react-i18next";
 
 const PAGE_SIZE = 10;
 
 const Templates = () => {
+  const { t } = useTranslation();
   const { [TEMPLATES]: templates } = useTemplatesStore();
   const [startIdx, setStartIdx] = useState(0);
 
@@ -62,9 +64,9 @@ const Templates = () => {
         {page?.length ? (
           <View style={styles.list}>
             <View style={listItemCommonStyles.header}>
-              <Text style={{ width: "75%" }}>Title</Text>
-              <Text style={{ width: "15%" }}>Create</Text>
-              <Text style={{ width: "10%" }}>Edit</Text>
+              <Text style={{ width: "75%" }}>
+                {t("list.template.tag").toUpperCase()}
+              </Text>
             </View>
 
             <FlatList
@@ -76,13 +78,13 @@ const Templates = () => {
           </View>
         ) : (
           <View style={styles.emptyList}>
-            <Text>No templates created</Text>
+            <Text>{t("list.template.empty.title")}</Text>
           </View>
         )}
       </Animated.View>
 
       <View style={styles.confirmBtn}>
-        <Button title="Create template" onPress={addTemplate} />
+        <Button title={t("action.addTemplate")} onPress={addTemplate} />
       </View>
     </>
   );
