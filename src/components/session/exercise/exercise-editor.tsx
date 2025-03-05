@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams, router } from "expo-router";
 import { StyleSheet, Alert, View, Button } from "react-native";
-import { useKeyboard } from "../../../global";
+import { useKeyboard, getUniqueExerciseTitles } from "../../../global";
 import { useSessionsStore, useTemplatesStore } from "../../../store";
 import { useMemo, useCallback } from "react";
 import { useForm } from "react-hook-form";
@@ -128,12 +128,10 @@ export const ExerciseEditor = ({ isTemplate }: ExerciseEditorProps) => {
     return (isTemplate ? "*" : "") + res;
   }, [t, exerciseID, targetExercise?.title]);
 
-  const uniqueExerciseTitles = useMemo(() => {
-    const exerciseTitles = allSessions
-      .flatMap((s) => s.exercises || [])
-      .map((e) => e.title);
-    return [...new Set(exerciseTitles)];
-  }, [sessions]);
+  const uniqueExerciseTitles = useMemo(
+    () => getUniqueExerciseTitles(allSessions),
+    [allSessions],
+  );
 
   return (
     <>

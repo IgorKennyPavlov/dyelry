@@ -68,3 +68,10 @@ export const getSessionTitle = (
 
   return res;
 };
+
+export const getUniqueExerciseTitles = (sessions: SessionProps[]) => {
+  const exerciseTitles = sessions
+    .flatMap((s) => s.exercises || [])
+    .map((e) => e.title);
+  return Array.from(new Set(exerciseTitles));
+};

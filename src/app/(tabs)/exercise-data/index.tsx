@@ -7,22 +7,30 @@ import {
   ListRenderItemInfo,
 } from "react-native";
 
-import { ExerciseDataListItem } from "../../../components";
+import {
+  ExerciseDataListItem,
+  ExerciseDataListItemProps,
+} from "../../../components";
 import { useAllSessionData } from "../../../global/hooks/useAllSessionData";
-import { listItemCommonStyles } from "../../../global";
+import { listItemCommonStyles, getUniqueExerciseTitles } from "../../../global";
 import { useTranslation } from "react-i18next";
+import { EXERCISE_DATA } from "../../../store/keys";
+import { useExerciseDataStore } from "../../../store";
 
 const ExerciseData = () => {
   const { t } = useTranslation();
   const allSessions = useAllSessionData();
+  const { [EXERCISE_DATA]: exercises } = useExerciseDataStore();
 
   const uniqueExerciseTitles = useMemo(() => {
-    const exerciseTitles = allSessions
-      .flatMap((s) => s.exercises || [])
-      .map((e) => e.title)
-      .sort();
-    return [...new Set(exerciseTitles)];
-  }, [allSessions]);
+    return getUniqueExerciseTitles(allSessions)
+      .map((title) => ({ title, isDescribed: !!exercises[title] }))
+      .sort((a, b) => {
+        const notDescribed = Number(a.isDescribed) - Number(b.isDescribed);
+        if (notDescribed) return notDescribed;
+        return a.title < b.title ? -1 : 1;
+      });
+  }, [allSessions, exercises]);
 
   return (
     <View style={styles.constructorWrap}>
@@ -39,9 +47,9 @@ const ExerciseData = () => {
 
           <FlatList
             data={uniqueExerciseTitles}
-            renderItem={(props: ListRenderItemInfo<string>) => (
-              <ExerciseDataListItem {...props} />
-            )}
+            renderItem={(
+              props: ListRenderItemInfo<ExerciseDataListItemProps>,
+            ) => <ExerciseDataListItem {...props} />}
           />
         </View>
       ) : (

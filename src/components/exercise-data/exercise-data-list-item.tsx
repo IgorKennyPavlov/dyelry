@@ -9,14 +9,17 @@ import {
 } from "react-native";
 
 import { listItemCommonStyles } from "../../global";
-import { useExerciseDataStore } from "../../store";
 import { router } from "expo-router";
-import { EXERCISE_DATA } from "../../store/keys";
 
-export const ExerciseDataListItem = (props: ListRenderItemInfo<string>) => {
-  const title = props.item;
+export interface ExerciseDataListItemProps {
+  title: string;
+  isDescribed: boolean;
+}
 
-  const { [EXERCISE_DATA]: exercises } = useExerciseDataStore();
+export const ExerciseDataListItem = (
+  props: ListRenderItemInfo<ExerciseDataListItemProps>,
+) => {
+  const { title, isDescribed } = props.item;
 
   const editExerciseData = useCallback(() => {
     router.push({
@@ -31,7 +34,7 @@ export const ExerciseDataListItem = (props: ListRenderItemInfo<string>) => {
         {title}
       </Text>
       <View style={{ width: "25%", alignItems: "flex-end" }}>
-        {exercises[title] ? (
+        {isDescribed ? (
           <AntDesign name="checksquareo" size={24} />
         ) : (
           <AntDesign name="closesquareo" size={24} />

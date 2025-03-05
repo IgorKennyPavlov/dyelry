@@ -169,7 +169,7 @@ export const SessionEditor = ({ isTemplate }: SessionEditorProps) => {
             </View>
             <View style={{ ...styles.btnCompact, ...styles.btnRight }}>
               <Button
-                title={t("action.copyToTemplates")}
+                title={t("action.toTemplates")}
                 color="orange"
                 disabled={!targetSession}
                 onPress={copySession}

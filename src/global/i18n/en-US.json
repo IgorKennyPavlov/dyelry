@@ -10,6 +10,7 @@
     "templates": "Templates",
     "exerciseData": "Exercise Data",
     "stats": "Stats",
+    "statsPerWeek": "Stats per week",
     "impex": "ImpEx",
     "activityTimer": "Activity timer",
     "session": "Session",
@@ -40,9 +41,9 @@
   },
   "list": {
     "stats": {
-      "title": "title",
-      "setsPerWeek": "Sets / Week",
-      "kgPerWeek": "Kg / Week",
+      "muscle": "muscles",
+      "sets": "sets",
+      "kg": "kg",
       "empty": {
         "title": "No stats available.",
         "text": "Record some training sessions and describe the exercises with exercise constructor."
@@ -109,7 +110,7 @@
     "addExercise": "add exercise",
     "deleteSession": "delete session",
     "updateSession": "update session",
-    "copyToTemplates": "copy to templates",
+    "toTemplates": "to templates",
     "deleteExercise": "delete exercise",
     "updateExercise": "update exercise",
     "addSet": "add set",

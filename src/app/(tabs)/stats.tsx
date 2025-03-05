@@ -16,6 +16,7 @@ import type {
 import { useSessionsStore, useExerciseDataStore } from "../../store";
 import { SESSIONS, EXERCISE_DATA } from "../../store/keys";
 import { useTranslation } from "react-i18next";
+import { Stack } from "expo-router";
 
 const Stats = () => {
   const { t } = useTranslation();
@@ -118,36 +119,41 @@ const Stats = () => {
           weight: [left, right],
         };
       })
-      .filter((muscle) => muscle.sets);
+      .filter((muscle) => muscle.sets)
+      .sort((a, b) => a.sets - b.sets);
   }, [t, describedExercises, lastWeekExercises]);
 
   return (
-    <View style={styles.statsWrap}>
-      {showStats ? (
-        <View>
-          <View style={listItemCommonStyles.header}>
-            <Text style={{ width: "50%" }}>
-              {t("list.stats.title").toUpperCase()}
-            </Text>
-            <Text style={{ width: "25%" }}>
-              {t("list.stats.setsPerWeek").toUpperCase()}
-            </Text>
-            <Text style={{ width: "25%" }}>
-              {t("list.stats.kgPerWeek").toUpperCase()}
-            </Text>
+    <>
+      <Stack.Screen options={{ title: t("header.statsPerWeek") }} />
+
+      <View style={styles.statsWrap}>
+        {showStats ? (
+          <View>
+            <View style={listItemCommonStyles.header}>
+              <Text style={{ width: "50%" }}>
+                {t("list.stats.muscle").toUpperCase()}
+              </Text>
+              <Text style={{ width: "25%" }}>
+                {t("list.stats.sets").toUpperCase()}
+              </Text>
+              <Text style={{ width: "25%" }}>
+                {t("list.stats.kg").toUpperCase()}
+              </Text>
+            </View>
+            <FlatList
+              data={getStatItems()}
+              renderItem={(props) => <StatsListItem {...props} />}
+            />
           </View>
-          <FlatList
-            data={getStatItems()}
-            renderItem={(props) => <StatsListItem {...props} />}
-          />
-        </View>
-      ) : (
-        <View style={styles.emptyStats}>
-          <Text>{t("list.stats.empty.title")}</Text>
-          <Text>{t("list.stats.empty.text")}</Text>
-        </View>
-      )}
-    </View>
+        ) : (
+          <View style={styles.emptyStats}>
+            <Text>{t("list.stats.empty.title")}</Text>
+            <Text>{t("list.stats.empty.text")}</Text>
+          </View>
+        )}
+      </View>
+    </>
   );
 };
 
