@@ -27,7 +27,13 @@ export const UserSelector = () => {
 
   const addNewUser = useCallback(() => {
     const formValues = getValues();
-    const newUser = formValues.newUser;
+    const newUser = formValues.newUser?.trim();
+
+    // TODO add proper validation
+    if (!newUser) {
+      alert(t("alert.fillRequired"));
+      return;
+    }
 
     if (users[newUser] !== undefined) {
       alert(t("alert.userExists", { newUser }));
@@ -52,6 +58,7 @@ export const UserSelector = () => {
         control={control}
         name="newUser"
         inputMode="text"
+        required
       />
       <View style={{ marginTop: 12 }}>
         <Button title={t("action.add")} onPress={addNewUser} />
