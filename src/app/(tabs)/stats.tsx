@@ -16,7 +16,6 @@ import type {
 import { useSessionsStore, useExerciseDataStore } from "../../store";
 import { SESSIONS, EXERCISE_DATA } from "../../store/keys";
 import { useTranslation } from "react-i18next";
-import { Stack } from "expo-router";
 
 const Stats = () => {
   const { t } = useTranslation();
@@ -125,8 +124,6 @@ const Stats = () => {
 
   return (
     <>
-      <Stack.Screen options={{ title: t("header.statsPerWeek") }} />
-
       <View style={styles.statsWrap}>
         {showStats ? (
           <View>

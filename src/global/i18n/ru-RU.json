@@ -8,10 +8,9 @@
   "header": {
     "sessionList": "Список тренировок",
     "templates": "Шаблоны",
-    "exerciseData": "Данные упражнений",
-    "stats": "Статистика",
-    "statsPerWeek": "Статистика за неделю",
-    "impex": "Импорт/экспорт",
+    "exerciseData": "Упражнения",
+    "stats": "За неделю",
+    "impex": "Экспорт",
     "activityTimer": "Таймер активности",
     "session": "Тренировка",
     "newSession": "Новая тренировка",
