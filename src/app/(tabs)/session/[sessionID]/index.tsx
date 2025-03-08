@@ -1,7 +1,5 @@
 import { Session } from "../../../../components";
 
-const SessionPage = () => {
-  return <Session />;
-};
+const SessionPage = () => <Session />;
 
 export default SessionPage;

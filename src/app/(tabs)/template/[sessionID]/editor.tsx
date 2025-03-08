@@ -1,7 +1,5 @@
 import { ExerciseEditor } from "../../../../components";
 
-const TemplateExerciseEditorPage = () => {
-  return <ExerciseEditor isTemplate={true} />;
-};
+const TemplateExerciseEditorPage = () => <ExerciseEditor isTemplate={true} />;
 
 export default TemplateExerciseEditorPage;

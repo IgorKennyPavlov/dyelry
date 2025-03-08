@@ -1,7 +1,5 @@
 import { SetEditor } from "../../../../../../../components";
 
-const TemplateSetEditorPage = () => {
-  return <SetEditor isTemplate={true} />;
-};
+const TemplateSetEditorPage = () => <SetEditor isTemplate={true} />;
 
 export default TemplateSetEditorPage;

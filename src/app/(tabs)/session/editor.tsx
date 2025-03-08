@@ -1,7 +1,5 @@
 import { SessionEditor } from "../../../components";
 
-const SessionEditorPage = () => {
-  return <SessionEditor />;
-};
+const SessionEditorPage = () => <SessionEditor />;
 
 export default SessionEditorPage;

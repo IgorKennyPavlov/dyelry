@@ -1,6 +1,5 @@
 import { SetEditor } from "../../../../../../../components";
 
-const SetEditorPage = () => {
-  return <SetEditor />;
-};
+const SetEditorPage = () => <SetEditor />;
+
 export default SetEditorPage;

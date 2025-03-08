@@ -1,1 +1,2 @@
-export * from "./exercise-data-list-item";
+export * from "./exercise-data";
+export * from "./exercise-data-editor";

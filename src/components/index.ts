@@ -1,4 +1,7 @@
-export * from "./HeaderMenu";
+export * from "./header-menu";
+export * from "./impex";
+export * from "./session-list";
+export * from "./template-list";
 
 export * from "./forms";
 

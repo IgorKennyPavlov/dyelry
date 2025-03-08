@@ -1,6 +1,5 @@
 import { Exercise } from "../../../../../../components";
 
-const ExercisePage = () => {
-  return <Exercise />;
-};
+const ExercisePage = () => <Exercise />;
+
 export default ExercisePage;

@@ -1,7 +1,5 @@
 import { Session } from "../../../../components";
 
-const TemplatePage = () => {
-  return <Session isTemplate={true} />;
-};
+const TemplatePage = () => <Session isTemplate={true} />;
 
 export default TemplatePage;
