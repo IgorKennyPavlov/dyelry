@@ -12,8 +12,7 @@ uninstalling it. No analytics software is present in the app either.
 
 <hr style="border:1px solid gray">
 
-If you find any security vulnerability that has been inadvertently caused by me, or have any question regarding how the
-app protects your privacy, please email me or post a discussion on GitHub, and I will do what I can to address the
+If you find any security vulnerability that has been inadvertently caused by me, please email me or post a discussion on GitHub, and I will do what I can to address the
 issue.
 
 Yours sincerely,  
