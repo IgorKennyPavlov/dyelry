@@ -11,7 +11,8 @@
     "lint": "eslint src",
     "start:android": "npx expo start --go -a",
     "start:ios": "npx expo start --go -i",
-    "build:android": "npx eas-cli@latest build --profile preview --platform android"
+    "build:android": "npx eas-cli@latest build --profile preview --platform android",
+    "build:prod:android": "npx eas-cli@latest build --platform android"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
