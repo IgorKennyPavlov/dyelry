@@ -26,7 +26,7 @@ import { Muscles, useKeyboard, MusclesReadable } from "../../global";
 import { EXERCISE_DATA } from "../../store/keys";
 import { useExerciseDataStore } from "../../store";
 import { ExerciseDataProps } from "../../global/types";
-import { Select, Input } from "../forms";
+import { Select, Input, Checkbox } from "../forms";
 
 interface ExerciseDataForm {
   unilateral?: boolean;
@@ -97,6 +97,7 @@ export const ExerciseDataEditor = () => {
       alert(t("alert.100PercentOverflow"));
       return;
     }
+
     const uniqueMuscles = new Set(loadingDistribution.map((item) => item.key));
     if (uniqueMuscles.size < loadingDistribution.length) {
       alert(t("alert.removeDuplicates"));
@@ -154,14 +155,10 @@ export const ExerciseDataEditor = () => {
         }}
       >
         {/* TODO refactor to checkbox, why did you do this? =) */}
-        <Select
+        <Checkbox
           label={t("label.unilateral")}
           control={control}
           name="unilateral"
-          options={[
-            { label: t("no"), value: false },
-            { label: t("yes"), value: true },
-          ]}
         />
 
         <Input
